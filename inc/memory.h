@@ -67,7 +67,7 @@ uint8_t *my_reverse(uint8_t *src, size_t length);
 @return: byte pointer to source if successful else turn 0
 */
 
-unit32_t string_size(uint8_t *src);
+uint32_t string_size(uint8_t *src);
 
 /*
 @description: gives the length of the entered string
