@@ -5,8 +5,8 @@ Description:
  header file for debug.h for the following function
 - print_array
 **************************************************************/
-#ifndef CONVERSION_H
-#define CONVERSION_H
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
 
 #include <stdio.h>
 #include <stdint.h>
@@ -18,4 +18,4 @@ void print_array(uint8_t *start, uint32_t length);
 @parameters: a pointer to the memory location and length of bytes to print
 */
 
-#endif /*end of debug.h*/
+#endif /* __DEBUG_H__ */

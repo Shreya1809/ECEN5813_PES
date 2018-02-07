@@ -163,7 +163,7 @@ int32_t *reserve_words(size_t length)
 {
     int *p;
     p= (int*)malloc(sizeof(uint32_t)*length);
-    if (p == '\0')
+    if (*p == '\0')
         return NULL;
     else return p;
 }

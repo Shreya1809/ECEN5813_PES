@@ -11,7 +11,7 @@ source files for debug.c for the following conversion function
 void print_array(uint8_t* start, uint32_t length)
 {
     int i = 0;
-    if(start!= '\0')
+    if(*start != '\0')
     {
         while(length!= 0)
         {
