@@ -20,4 +20,4 @@ void print_array(unit8_t* start, uint32_t length)
         }
     }
 }
-
+#endif /*end of debug.h*/

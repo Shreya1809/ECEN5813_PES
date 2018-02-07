@@ -20,14 +20,14 @@ source files for memory.c for the following memory functions
 #include "memory.h"
 
 /*copies a length of bytes from source to destination with no data corruption in case of overlap*/
-unit8_t *my_memmove(unit8_t *src, unit_t *dst, size_t length)
+uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length)
 {
     if(*src != '\0' && *dst != '\0'&& 0 < length < 21474836470)
     {
         if((src+length)>dst && (dst > src)) //overlap, source has lower memory
             //copy from opposite end
         {
-            for(uint_32 i = length -1; i > 0; i--)
+            for(uint32_t i = length -1; i > 0; i--)
             {
                 *(dst+i) = *(src+i);
             }
@@ -36,7 +36,7 @@ unit8_t *my_memmove(unit8_t *src, unit_t *dst, size_t length)
 
             //copy from front end
         {
-            for(uint_32 i = 0; i < length; i++)
+            for(uint32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
@@ -45,7 +45,7 @@ unit8_t *my_memmove(unit8_t *src, unit_t *dst, size_t length)
 
             //copy from front end
         {
-            for(uint_32 i = 0; i < length; i++)
+            for(uint32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
@@ -54,7 +54,7 @@ unit8_t *my_memmove(unit8_t *src, unit_t *dst, size_t length)
 
             //copy from front end
         {
-            for(uint_32 i = 0; i < length; i++)
+            for(uint32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
@@ -66,16 +66,16 @@ unit8_t *my_memmove(unit8_t *src, unit_t *dst, size_t length)
 
 
 /*compares source with destination and returns 0 if its a match*/
-unit8_t *my_memcmp(unit8_t *src, unit_t *dst, size_t length)
+uint8_t *my_memcmp(uint8_t *src, uint8_t *dst, size_t length)
 {
     if(*src != '\0' && *dst != '\0'&& 0 < length < 2147483647)
     {
         for(uint32_t i = 0; i < length; i++,src++,dst++)
         {
             if(*src < *dst)
-                return 1;
+                return dst;
             if(*src > *dst)
-                return 1;
+                return dst;
         }
     }
     else return 0; // return 0 for match
@@ -83,16 +83,16 @@ unit8_t *my_memcmp(unit8_t *src, unit_t *dst, size_t length)
 
 
 /*copies a length of bytes from source to destination with likely data corruption in case of overlap*/
-unit8_t *my_memcpy(unit8_t *src, unit_t *dst, size_t length)
+uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 {
     if(*src != '\0' && *dst != '\0'&& 0 < length < 2147483647)
     {
         while(length--)
         {
-            *src = *dest
-                if(*src ! = *dest) //verify data copy
-                    return -1;
-            src++; dest++;
+            *src = *dst;
+                if(*src != *dst); //verify data copy
+                    return NULL;
+            src++; dst++;
         }
         return dst;
     }
@@ -101,7 +101,7 @@ unit8_t *my_memcpy(unit8_t *src, unit_t *dst, size_t length)
 
 
 /*sets all location of memory to a given value*/
-unit8_t *my_memset(unit8_t *src, size_t length, unit8_t value)
+uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 {
 
     if(*src != '\0'&& 0 < length < 2147483647)
@@ -119,7 +119,7 @@ unit8_t *my_memset(unit8_t *src, size_t length, unit8_t value)
 
 
 /*sets all the elements of the memory space to 0*/
-unit8_t *my_memzero(unit8_t *src, size_t length)
+uint8_t *my_memzero(uint8_t *src, size_t length)
 {
     if(*src != '\0' && 0 < length < 2147483647)
     {
@@ -136,11 +136,11 @@ unit8_t *my_memzero(unit8_t *src, size_t length)
 
 
 /*reverses the order of all bytes*/
-unit8_t *my_reverse(unit8_t *src, size_t length)
+uint8_t *my_reverse(uint8_t *src, size_t length)
 {
     if(*src != '\0' && 0 < length < 2147483647 && length==string_size(src))
     {
-        unit8_t a,temp, i = 0;
+        uint8_t a,temp, i = 0;
 
         if(length%2 == 0) //check is length is even
         {
@@ -161,9 +161,9 @@ unit8_t *my_reverse(unit8_t *src, size_t length)
 
 
 /*gives the size of string*/
-unit32_t string_size(unit8_t *src)
+uint32_t string_size(uint8_t *src)
 {
-    unit32_t count = 0;
+    uint32_t count = 0;
     while(*src !='\0') //checking the string and incrementing the count untill null is found
     {
         count++;
@@ -177,7 +177,7 @@ unit32_t string_size(unit8_t *src)
 int32_t *reserve_words(size_t length)
 {
     int *p;
-    p= (int*)malloc(sizeof(unit32_t)*length);
+    p= (int*)malloc(sizeof(uint32_t)*length);
     if (p == '\0')
         return NULL;
     else p;
@@ -185,7 +185,7 @@ int32_t *reserve_words(size_t length)
 
 
 /*frees dynamic memory allocation*/
-unit8_t free_words(unit8_t *src)
+uint8_t free_words(uint8_t *src)
 {
     free(src);
     //how to check if free worked?

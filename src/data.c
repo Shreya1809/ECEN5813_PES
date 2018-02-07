@@ -12,9 +12,10 @@ source files for data.c for the following data functions
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stddef.h>
 
-#define LITTLE_ENDIAN  (0)
-#define BIG_ENDIAN     (1)
+#define LITTLE_ENDIANN  (0)
+#define BIG_ENDIANN     (1)
 #define SWAP_NO_ERROR  (0)
 #define SWAP_ERROR    (-1)
 
@@ -37,7 +38,7 @@ void print_cstd_type_sizes()
     size_t temp = 0; //stores size of each variable
 
     temp = sizeof(a);
-#ifdef $PLATFORM, HOST
+#ifndef KL25Z
     printf("size of the integer a is %d bytes", temp);
     temp = sizeof(b);
     printf("size of the character b is %d bytes", temp);
@@ -61,7 +62,7 @@ void print_cstd_type_sizes()
     printf("size of the signed integer k is %d bytes", temp);
     temp = sizeof(l);
     printf("size of the signed long l is %d bytes", temp);
-
+#endif
 }
 
 /*reports on the type sizes of stdint*/
@@ -85,7 +86,7 @@ void print_stdint_type_sizes()
     size_t temp = 0; //stores size of each variable
 
     temp = sizeof(a);
-#ifdef $PLATFORM, HOST
+#ifndef KL25Z
     printf("size of the int8_t a is %d bytes", temp);
     temp = sizeof(b);
     printf("size of the uint8_t b is %d bytes", temp);
@@ -113,7 +114,7 @@ void print_stdint_type_sizes()
     printf("size of the size_t  m is %d bytes", temp);
     temp = sizeof(n);
     printf("size of the ptrdiff_t n is %d bytes", temp);
-
+#endif
 }
 
 /*reports on the type sizes of pointers*/
@@ -136,7 +137,7 @@ void print_pointer_sizes()
     size_t temp = 0; //stores size of each variable
 
     temp = sizeof(a);
-#ifdef $PLATFORM, HOST
+#ifndef KL25Z
     printf("size of the  char ptr a is %d bytes", temp);
     temp = sizeof(b);
     printf("size of the short ptr b is %d bytes", temp);
@@ -162,27 +163,26 @@ void print_pointer_sizes()
     printf("size of the int double pointer  l is %d bytes", temp);
     temp = sizeof(m);
     printf("size of the void double pointer  m is %d bytes", temp);
-
+#endif
 }
 /* function to determine the endianness */
 uint32_t determine_endianness()
 {
     unsigned int x = 0x01234567;
     char *c = (char*) &x;
-
+#ifndef KL25Z
     printf ("*c is: 0x%x\n", *c);
     if (*c == 0x76)
     {
         printf ("little endian. \n");
-        return LITTLE_ENDIAN;
+        return LITTLE_ENDIANN;
     }
     else
     {
         printf ("big endian. \n");
-        return BIG_INDIAN;
+        return BIG_ENDIANN;
     }
-
+#endif
 }
 
 /*function to swap endianess*/
-
