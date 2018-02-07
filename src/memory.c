@@ -1,21 +1,24 @@
+/**
+ * @file memory.c
+ * @brief Custom memory functions
+ *
+ * - my_memmove
+ * - my_memcpy
+ * - my_memset
+ * - my_memzero
+ * - my_reverse
+ * - reserve_words
+ * - free_words
+ *
+ * @author Shreya Chakraborty
+ * @author Miles Frain
+ * @version 1.0
+ * @date 2018-02-07
+ */
 
-/************************************************************
-Authors:
-Miles Frain & Shreya Chakraborty
-Description:
-source files for memory.c for the following memory functions
-- my_memmove
-- my_memset
-- my_reverse
-- my_memcmp
-- string_size
-- my_memzero
-- my_memcpy
-- reserve_words
-- free_words
- **************************************************************/
-
-
+#include <stdio.h>
+#include <stdint.h>
+#include <malloc.h>
 
 #include "memory.h"
 
@@ -63,8 +66,6 @@ uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length)
     }
     else return 0;
 }
-
-
 
 
 /*copies a length of bytes from source to destination with likely data corruption in case of overlap*/
@@ -142,19 +143,6 @@ uint8_t *my_reverse(uint8_t *src, size_t length)
     }
 
     else return 0;
-}
-
-
-/*gives the size of string*/
-uint32_t string_size(uint8_t *src)
-{
-    uint32_t count = 0;
-    while(*src !='\0') //checking the string and incrementing the count untill null is found
-    {
-        count++;
-        src++;
-    }
-    return count;
 }
 
 

@@ -1,94 +1,106 @@
-/************************************************************
-Authors:
- Miles Frain & Shreya Chakraborty
-Description:
- header files for memory.c for the following memory functions
-- my_memmove
-- my_memset
-- my_reverse
-- my_memcmp
-- string_size
-- my_memzero
-- my_memcpy
-- reserve_words
-- free_words
-**************************************************************/
-#ifndef MEMORY_H
-#define MEMORY_H
+/**
+ * @file memory.h
+ * @brief Custom memory functions
+ *
+ * - my_memmove
+ * - my_memcpy
+ * - my_memset
+ * - my_memzero
+ * - my_reverse
+ * - reserve_words
+ * - free_words
+ *
+ * @author Shreya Chakraborty
+ * @author Miles Frain
+ * @version 1.0
+ * @date 2018-02-07
+ */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <malloc.h>
+#ifndef __MEMORY_H__
+#define __MEMORY_H__
+
+/**
+ * @brief Move block of memory
+ *
+ * Copies a length of bytes from source to destination.
+ * Can handle overlaps.
+ *
+ * @param src Memory pointer of where to copy from
+ * @param dst Memory pointer of where to copy to
+ * @param length Number of bytes to move
+ *
+ * @return Memory pointer of destination, NULL if src or dst are NULL
+ */
 uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length);
 
-/*
-@description:copies a length of bytes from source to destination,can handle overlaps
-@parameters:source pointer,destination pointer,length of memory block
-@return:pointer to destination
-*/
 
-uint8_t *my_memcmp(uint8_t *src, uint8_t *dst, size_t length);
-
-/*
-@description: compares source with destination for given size of length
-@parameters: source pointer , destination pointer, length of memory block
-@return:0 if there is a match
-*/
-
+/**
+ * @brief Copy block of memory
+ *
+ * Copies a length of bytes from source to destination.
+ * Undefined behavior if memory regions overlap.
+ *
+ * @param src Memory pointer of where to copy from
+ * @param dst Memory pointer of where to copy to
+ * @param length Number of bytes to copy
+ *
+ * @return Memory pointer of destination, NULL if src or dst are NULL
+ */
 uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length);
 
-/*
-@description:copies a length of bytes from source to destination,undefined behavior in case of overlap
-@parameters:source pointer,destination pointer,length of memory block
-@return:pointer to destination
-*/
 
+/**
+ * @brief Sets entire memory block to given value
+ *
+ * @param src Pointer to memory
+ * @param length Size of memory block in bytes
+ * @param value Value to write to entire memory block
+ *
+ * @return Pointer to input memory source
+ */
 uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value);
 
-/*
-@description: sets all location of the memory block to the given value
-@parameters:src byte to pointer,length of memory block, value to set
-@return: byte pointer to source
-*/
 
+/**
+ * @brief Sets entire memory block to given zero
+ *
+ * @param src Pointer to memory
+ * @param length Size of memory block in bytes
+ *
+ * @return Pointer to input memory source
+ */
 uint8_t *my_memzero(uint8_t *src, size_t length);
 
-/*
-@description: sets all location of memory block to 0
-@parameters:src byte pointer and length
-@return:byte pointer to src
-*/
 
+/**
+ * @brief Reverses order of characters in string
+ *
+ * @param src Pointer to string
+ * @param length Length of string in characters (bytes)
+ *
+ * @return Pointer to input memory source
+ */
 uint8_t *my_reverse(uint8_t *src, size_t length);
 
-/*
-@description: reverses the order of the string
-@parameters:src byte pointer and length of memory block
-@return: byte pointer to source if successful else turn 0
-*/
 
-uint32_t string_size(uint8_t *src);
-
-/*
-@description: gives the length of the entered string
-@parameters: source string
-@return: length of the strin
-*/
-
+/**
+ * @brief Allocates block of memory
+ *
+ * @param length Size of memory block to allocate in bytes
+ *
+ * @return Pointer to allocation, NULL if failure
+ */
 int32_t *reserve_words(size_t length);
 
-/*
-@description:allocates a block of memory of given length
-@parameters: length
-@return: null for failure and byte pointer to allocation if success
-*/
 
-uint8_t free_words(uint32_t *src);
+/**
+ * @brief Deallocates a block of memory
+ *
+ * @param src Pointer to memory to deallocate
+ *
+ * @return 0 if successful, 1 for failure
+ */
+uint8_t free_words(uint8_t *src);
 
-/*
-@description: deallocates a block of memory
-@parameters: src pointer to memory
-@return: 0 if successful and 1 if not
-*/
 
-#endif//MEMORY_H
+#endif // __MEMORY_H__
