@@ -8,7 +8,7 @@ source files for debug.c for the following conversion function
 #include "debug.h"
 #ifdef VERBOSE
 
-void print_array(unit8_t* start, uint32_t length)
+void print_array(uint8_t* start, uint32_t length)
 {
     int i = 0;
     if(start!= '\0')
