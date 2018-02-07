@@ -23,6 +23,7 @@
 #include "project1.h"
 #include "memory.h"
 #include "conversion.h"
+#include "debug.h"
 
 #define BASE_16 (16)
 #define BASE_10 (10)

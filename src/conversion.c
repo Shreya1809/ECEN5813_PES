@@ -63,7 +63,7 @@ int32_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)
             data = data/base; //stores the quotient
             i++;length++;
         }
-        if(sign = 1){
+        if(sign == 1){
             *(ptr+i) = 45; //ascii of '-' is 45
             i++; length++;
         }

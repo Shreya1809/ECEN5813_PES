@@ -83,7 +83,7 @@ int32_t *reserve_words(size_t length);
 @return: null for failure and byte pointer to allocation if success
 */
 
-uint8_t free_words(uint8_t *src);
+uint8_t free_words(uint32_t *src);
 
 /*
 @description: deallocates a block of memory

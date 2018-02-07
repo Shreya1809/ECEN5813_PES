@@ -22,7 +22,7 @@ source files for memory.c for the following memory functions
 /*copies a length of bytes from source to destination with no data corruption in case of overlap*/
 uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length)
 {
-    if(*src != '\0' && *dst != '\0'&& 0 < length < 21474836470)
+    if(*src != '\0' && *dst != '\0'&& length > 0)
     {
         if((src+length)>dst && (dst > src)) //overlap, source has lower memory
             //copy from opposite end
@@ -65,33 +65,18 @@ uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length)
 }
 
 
-/*compares source with destination and returns 0 if its a match*/
-uint8_t *my_memcmp(uint8_t *src, uint8_t *dst, size_t length)
-{
-    if(*src != '\0' && *dst != '\0'&& 0 < length < 2147483647)
-    {
-        for(uint32_t i = 0; i < length; i++,src++,dst++)
-        {
-            if(*src < *dst)
-                return dst;
-            if(*src > *dst)
-                return dst;
-        }
-    }
-    else return 0; // return 0 for match
-}
 
 
 /*copies a length of bytes from source to destination with likely data corruption in case of overlap*/
 uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 {
-    if(*src != '\0' && *dst != '\0'&& 0 < length < 2147483647)
+    if(*src != '\0' && *dst != '\0'&& (length > 0))
     {
         while(length--)
         {
             *src = *dst;
-                if(*src != *dst); //verify data copy
-                    return NULL;
+            if(*src != *dst); //verify data copy
+            return NULL;
             src++; dst++;
         }
         return dst;
@@ -104,7 +89,7 @@ uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 {
 
-    if(*src != '\0'&& 0 < length < 2147483647)
+    if(*src != '\0'&& (length >0))
     {
         while(length!=0)
         {
@@ -121,7 +106,7 @@ uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 /*sets all the elements of the memory space to 0*/
 uint8_t *my_memzero(uint8_t *src, size_t length)
 {
-    if(*src != '\0' && 0 < length < 2147483647)
+    if(*src != '\0' &&  (length > 0))
     {
         while(length!=0) //while length is not zero, execute loop
         {
@@ -138,7 +123,7 @@ uint8_t *my_memzero(uint8_t *src, size_t length)
 /*reverses the order of all bytes*/
 uint8_t *my_reverse(uint8_t *src, size_t length)
 {
-    if(*src != '\0' && 0 < length < 2147483647 && length==string_size(src))
+    if(*src != '\0' && ( length > 0) && length==string_size(src))
     {
         uint8_t a,temp, i = 0;
 
@@ -180,15 +165,18 @@ int32_t *reserve_words(size_t length)
     p= (int*)malloc(sizeof(uint32_t)*length);
     if (p == '\0')
         return NULL;
-    else p;
+    else return p;
 }
 
 
 /*frees dynamic memory allocation*/
-uint8_t free_words(uint8_t *src)
+uint8_t free_words(uint32_t *src)
 {
-    free(src);
-    //how to check if free worked?
-
+    if(*src != '\0')
+    {
+        free(src);
+        return 0;
+    }
+    else return 1;
 }
 
