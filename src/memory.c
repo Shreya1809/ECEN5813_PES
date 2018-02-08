@@ -168,3 +168,15 @@ uint8_t free_words(uint32_t *src)
     else return 1;
 }
 
+/*gives the size of string*/
+uint32_t string_size(uint8_t *src)
+{
+    uint32_t count = 0;
+    while(*src !='\0') //checking the string and incrementing the count untill null is found
+    {
+        count++;
+        src++;
+    }
+    return count;
+}
+

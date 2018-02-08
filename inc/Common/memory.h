@@ -9,6 +9,7 @@
  * - my_reverse
  * - reserve_words
  * - free_words
+ * - string_size
  *
  * @author Shreya Chakraborty
  * @author Miles Frain
@@ -100,7 +101,16 @@ int32_t *reserve_words(size_t length);
  *
  * @return 0 if successful, 1 for failure
  */
-uint8_t free_words(uint8_t *src);
+uint8_t free_words(uint32_t *src);
+
+/**
+ * @brief Finds length of string
+ *
+ * @param src Pointer to string
+ *
+ * @return Length of string in characters (bytes), 0 if null pointer
+ */
+uint32_t string_size(uint8_t *src);
 
 
 #endif // __MEMORY_H__
