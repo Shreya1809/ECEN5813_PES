@@ -25,60 +25,60 @@
 /*copies a length of bytes from source to destination with no data corruption in case of overlap*/
 uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length)
 {
-    if(*src != '\0' && *dst != '\0'&& length > 0)
+    if((src != NULL) && (dst != NULL) && (length > 0))
     {
-        if((src+length)>dst && (dst > src)) //overlap, source has lower memory
+        if((src + length > dst) && (dst > src)) //overlap, source has lower memory
             //copy from opposite end
         {
-            for(uint32_t i = length -1; i > 0; i--)
+            for(int32_t i = length -1; i >= 0; i--)
             {
                 *(dst+i) = *(src+i);
             }
         }
-        else if ((dst+length)>src && (src > dst)) //overlap, destination has lower 		memory than source
+        else if ((dst + length > src) && (src > dst)) //overlap, destination has lower memory than source
 
             //copy from front end
         {
-            for(uint32_t i = 0; i < length; i++)
+            for(int32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
         }
-        else if ((src+length)<dst && (dst > src)) // no overlap, destination has higher memory 	than source
+        else if ((src + length <= dst) && (dst > src)) // no overlap, destination has higher memory than source
 
             //copy from front end
         {
-            for(uint32_t i = 0; i < length; i++)
+            for(int32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
         }
-        else if ((dst+length)<src && (src > dst)) // no overlap, destination has lower memory than source
+        else if ((dst + length <= src) && (src > dst)) // no overlap, destination has lower memory than source
 
             //copy from front end
         {
-            for(uint32_t i = 0; i < length; i++)
+            for(int32_t i = 0; i < length; i++)
             {
                 *(dst+i) = *(src+i);
             }
         }
         return dst;
     }
-    else return 0;
+    else
+    {
+	   return 0;
+    }
 }
 
 
 /*copies a length of bytes from source to destination with likely data corruption in case of overlap*/
 uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 {
-    if(*src != '\0' && *dst != '\0'&& (length > 0))
+    if((src != NULL) && (dst != NULL) && (length > 0))
     {
         while(length--)
         {
-            *src = *dst;
-            if(*src != *dst); //verify data copy
-            return NULL;
-            src++; dst++;
+            *dst++ = *src++;
         }
         return dst;
     }
@@ -90,7 +90,7 @@ uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 {
 
-    if(*src != '\0'&& (length >0))
+    if(src != NULL && (length >0))
     {
         while(length!=0)
         {
@@ -107,7 +107,7 @@ uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 /*sets all the elements of the memory space to 0*/
 uint8_t *my_memzero(uint8_t *src, size_t length)
 {
-    if(*src != '\0' &&  (length > 0))
+    if(src != NULL &&  (length > 0))
     {
         while(length!=0) //while length is not zero, execute loop
         {
@@ -124,7 +124,7 @@ uint8_t *my_memzero(uint8_t *src, size_t length)
 /*reverses the order of all bytes*/
 uint8_t *my_reverse(uint8_t *src, size_t length)
 {
-    if(*src != '\0' && ( length > 0) && length==string_size(src))
+    if(src != NULL && (length > 0))
     {
         uint8_t a,temp, i = 0;
 
@@ -147,20 +147,16 @@ uint8_t *my_reverse(uint8_t *src, size_t length)
 
 
 /*takes a number of words to allocate in dynamic memory*/
-int32_t *reserve_words(size_t length)
+uint32_t *reserve_words(size_t length)
 {
-    int *p;
-    p= (int*)malloc(sizeof(uint32_t)*length);
-    if (*p == '\0')
-        return NULL;
-    else return p;
+    return (uint32_t*)malloc(sizeof(uint32_t)*length);
 }
 
 
 /*frees dynamic memory allocation*/
 uint8_t free_words(uint32_t *src)
 {
-    if(*src != '\0')
+    if(src != NULL)
     {
         free(src);
         return 0;

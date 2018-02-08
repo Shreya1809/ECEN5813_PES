@@ -91,7 +91,7 @@ uint8_t *my_reverse(uint8_t *src, size_t length);
  *
  * @return Pointer to allocation, NULL if failure
  */
-int32_t *reserve_words(size_t length);
+uint32_t *reserve_words(size_t length);
 
 
 /**
