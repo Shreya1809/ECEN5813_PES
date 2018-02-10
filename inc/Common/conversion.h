@@ -2,7 +2,7 @@
 Authors:
  Miles Frain & Shreya Chakraborty
 Description:
- header files for conversion.h for the following conversion function functions
+ header files for conversion.h for the following conversion functions
 - my_itoa
 - my_atoi
 **************************************************************/

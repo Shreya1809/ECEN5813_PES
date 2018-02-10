@@ -2,9 +2,10 @@
 Authors:
 Miles Frain & Shreya Chakraborty
 Description:
-header files for conversion.h for the following conversion function functions
-- my_itoa
-- my_atoi
+header files for platform.h to define various platforms like
+- host
+- kl25z
+- BBB
  **************************************************************/
 
 #ifndef PLATFORM_H

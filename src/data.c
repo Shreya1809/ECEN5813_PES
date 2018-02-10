@@ -186,3 +186,14 @@ uint32_t determine_endianness()
 }
 
 /*function to swap endianess*/
+int32_t  swap_data_endianness(uint8_t * data, size_t type_length)
+{
+    uint32_t *change_order = NULL;
+    uint8_t i = 0;
+    for(i = 0;i<type_length; i++){
+        change_order= (int32_t*)my_reverse(data,type_length);//changing the order of bytes
+    }
+    if(change_order)
+        return SWAP_NO_ERROR;
+    else return SWAP_ERROR;
+}
