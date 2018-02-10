@@ -8,6 +8,7 @@
  */
 
 #include "debug.h"
+#include "platform.h"
 #ifdef VERBOSE
 
 void print_array(uint8_t* start, uint32_t length)
@@ -17,7 +18,7 @@ void print_array(uint8_t* start, uint32_t length)
     {
         while(length != 0)
         {
-            printf("Address: %p and Data: %d\n ", (start+i),*(start+i)) ;
+            PRINTF("Address: %p and Data: %d\n ", (start+i),*(start+i)) ;
             i++; length--;
         }
     }
