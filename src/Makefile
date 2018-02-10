@@ -10,20 +10,20 @@ ARCH_KL25Z = armv6-m
 FPU = fpv4-sp-d16
 SPECS_KL25Z = nosys.specs
 
-INCLUDES := -I ../inc/Common/
+INCLUDES := -I ../inc/common/
 
-INCLUDES_KL25Z = -I ../inc/Common/ \
+INCLUDES_KL25Z = -I ../inc/common/ \
 	     -I ../inc/CMSIS/ \
 	     -I ../inc/KL25Z/
 
 ##default platform host
-ifeq ($(PLATFORM), HOST)
+#ifeq ($(PLATFORM), HOST)
 CC= gcc
 CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
 CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
 LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
 OBJFILES += $(SOURCES_COMMOM:.c=.o)
-endif
+#endif
 
 ##default platform host
 #ifeq ($(PLATFORM), HOST)
