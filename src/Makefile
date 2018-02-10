@@ -16,11 +16,14 @@ INCLUDES_KL25Z = -I ../inc/Common/ \
 	     -I ../inc/CMSIS/ \
 	     -I ../inc/KL25Z/
 
+##default platform host
+ifeq ($(PLATFORM), HOST)
 CC= gcc
 CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
 CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
 LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
 OBJFILES += $(SOURCES_COMMOM:.c=.o)
+endif
 
 ##default platform host
 #ifeq ($(PLATFORM), HOST)
