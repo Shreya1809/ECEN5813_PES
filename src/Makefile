@@ -21,7 +21,7 @@ INCLUDES_KL25Z = -I ../inc/common/ \
 ifeq ($(PLATFORM),KL25Z)
 $(warning KL25Z platform)
   CC = arm-none-eabi-gcc
-  CFLAGS = -Wall -Werror -g -O0 -std=c99 -mcpu=$(CPU_KL25Z) \
+  CFLAGS = -Wall -Werror -g -O0 -std=c99 -MMD -mcpu=$(CPU_KL25Z) \
   		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
   		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
   CPPFLAGS = -DKL25Z -DPROJECT1 -D$(PRINT)
@@ -34,7 +34,7 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   else ifeq ($(PLATFORM),BBB)
     CC= arm-linux-gnueabihf-gcc
   endif
-  CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
+  CFLAGS += -Wall -Werror -g -O0 -std=c99 -MMD $(INCLUDES)
   CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
   LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
   OBJFILES += $(SOURCES_COMMON:.c=.o)
@@ -62,6 +62,7 @@ compile-all: $(OBJFILES)
 
 clean :
 	rm -f *.o
+	rm -f *.d
 	rm -f *.elf
 	rm -f *.i
 	rm -f *.map
