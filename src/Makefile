@@ -46,7 +46,6 @@ endif
 
 %.asm : %.c
 	@echo "Building $@ assembly file from $?\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $? -o $@
 	$(CC) $(CFLAGS) $(CPPFLAGS) -S $< -o $@
 
 %.i : %.c
