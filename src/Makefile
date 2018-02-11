@@ -3,7 +3,7 @@ include sources.mk
 #variables for lib
 TARGET_FILE = project1
 PRINT = KL25Z
-PLATFORM = HOST #default platform if no platform is defined
+PLATFORM=HOST#default platform if no platform is defined
 LINKER_FILE = ../platform/MKL25Z128xxx4_flash.ld
 CPU_KL25Z = cortex-m0plus
 ARCH_KL25Z = armv6-m
@@ -16,41 +16,25 @@ INCLUDES_KL25Z = -I ../inc/common/ \
 	     -I ../inc/CMSIS/ \
 	     -I ../inc/KL25Z/
 
-##default platform host
-#ifeq ($(PLATFORM), HOST)
-CC= gcc
-CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
-CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
-LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
-OBJFILES += $(SOURCES_COMMOM:.c=.o)
-#endif
 
-##default platform host
-#ifeq ($(PLATFORM), HOST)
-#CC= gcc
-#CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
-#CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
-#LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
-#OBJFILES += $(SOURCES_COMMOM:.c=.o)
-#
-##if platform is Beaglebone
-#else ifeq ($(PLATFORM),BBB)
-#CC = arm-linux-gnueabihf-gcc
-#CFLAGS = -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
-#CPPFLAGS = -DBBB -DPROJECT1 -D VERBOSE
-#LDFLAGS = -Wl,-Map=$(TARGET_FILE).map
-#OBJFILES = $(SOURCES:.c=.o)
-#
-##if platform is KL25Z
-#else ifeq ($(PLATFORM),KL25Z)
-#CC = arm-none-eabihf-gcc
-#CFLAGS = -Wall -Werror -g -O0 -std=c99 -mcpu=$(CPU_KL25Z) \
-#		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
-#		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
-#CPPFLAGS = -DKL25Z -DPROJECT1 -D$(PRINT)
-#LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
-#OBJFILES = $(SOURCES_KL25Z:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
-#endif
+#if platform is KL25Z
+ifeq ($(PLATFORM),KL25Z)
+$(warning KL25Z platform)
+  CC = arm-none-eabi-gcc
+  CFLAGS = -Wall -Werror -g -O0 -std=c99 -mcpu=$(CPU_KL25Z) \
+  		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
+  		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
+  CPPFLAGS = -DKL25Z -DPROJECT1 -D$(PRINT)
+  LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
+  OBJFILES = $(SOURCES_KL25Z:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
+else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
+  $(warning HOST or BBB platform)
+  CC= gcc
+  CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
+  CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
+  LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
+  OBJFILES += $(SOURCES_COMMOM:.c=.o)
+endif
 
 %.o : %.c
 	@echo "SOURCES_COMMOM $(SOURCES_COMMOM)\n"
