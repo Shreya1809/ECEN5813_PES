@@ -29,7 +29,11 @@ $(warning KL25Z platform)
   OBJFILES = $(SOURCES_COMMON:.c=.o) $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   $(warning HOST or BBB platform)
-  CC= gcc
+  ifeq ($(PLATFORM),HOST)
+    CC= gcc
+  else ifeq ($(PLATFORM),BBB)
+    CC= arm-linux-gnueabihf-gcc
+  endif
   CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
   CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
   LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
@@ -65,5 +69,4 @@ clean :
 
 upload:
 	scp $(TARGET_FILE).elf root@192.168.7.2:/home/debian/bin
-	ssh root@192.168.7.2
-	cd /home/debian/bin
+	ssh -o LocalCommand="cd /home/debian/bin" root@192.168.7.2
