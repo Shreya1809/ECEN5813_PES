@@ -33,7 +33,7 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   CFLAGS += -Wall -Werror -g -O0 -std=c99 $(INCLUDES)
   CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
   LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
-  OBJFILES += $(SOURCES_COMMOM:.c=.o)
+  OBJFILES += $(SOURCES_COMMON:.c=.o)
 endif
 
 %.o : %.c

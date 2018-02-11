@@ -1,6 +1,6 @@
 
 
-SOURCES_COMMOM = debug.c \
+SOURCES_COMMON = debug.c \
 		data.c\
 	     	memory.c \
 	     	conversion.c \
