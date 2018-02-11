@@ -1,11 +1,12 @@
-/************************************************************
-Authors:
- Miles Frain & Shreya Chakraborty
-Description:
- header files for conversion.h for the following conversion functions
-- my_itoa
-- my_atoi
-**************************************************************/
+/**
+ * @file conversion.h
+ * @brief  header files for conversion.h conversion functions
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-02-10
+ */
+
 #ifndef CONVERSION_H
 #define CONVERSION_H
 
@@ -14,21 +15,23 @@ Description:
 
 
 
+/**
+ * @brief :function to convert ascii string back to 32 bit integer and copy to the pointer address. 
+ * @param ptr: pointer to location where the output will be copied
+ * @param digits: input ascii string
+ * @param base: base for conversion 
+ * @return :length of data converted
+ */
 int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base);
 
-/*
-@description:function to convert ascii string back to 32 bit integer and copy to the pointer address. 
-@parameters: input ascii string, base for conversion and pointer to location where the output will be copied
-@return:length of data converted
-*/
-
-
+/**
+ * @brief :function to convert 32 bit integer data to ascii string and copy to the pointer address
+ * @param data:32 bit integer to be converted,
+ * @param ptr: pointer to the location where output will be copied
+ * @param base: base for conversion 
+ * @return :length of data converted
+ */
 uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base);
 
-/*
-@description:function to convert 32 bit integer data to ascii string and copy to the pointer address
-@parameters:32 bit integer to be converted, base for conversion  and pointer to the location where output will be copied
-@return:length of data converted
-*/
 
 #endif /*CONVERSION_H*/

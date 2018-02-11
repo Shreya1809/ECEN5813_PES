@@ -1,11 +1,11 @@
-/************************************************************
-Authors:
-Miles Frain & Shreya Chakraborty
-Description:
-source files for conversion.c for the following conversion functions
-- my_itoa
-- my_atoi
- **************************************************************/
+/**
+ * @file conversion.c
+ * @brief source files for conversion.c functions
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-02-10
+ */
 
 #include "conversion.h"
 #include "memory.h"

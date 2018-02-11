@@ -1,10 +1,12 @@
-/************************************************************
-Authors:
-Miles Frain & Shreya Chakraborty
-Description:
-source files for debug.c for the following conversion function
-- print_array
- **************************************************************/
+/**
+ * @file debug.c
+ * @brief source files for debug.c 
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-02-10
+ */
+
 #include "debug.h"
 #ifdef VERBOSE
 

@@ -1,3 +1,12 @@
+/**
+ * @file arch_arm32.c
+ * @brief source file for arch_arm.c
+ * @author Miles Frain
+ * @author Shreya Chakraborty 
+ * @version 1
+ * @date 2018-02-10
+ */
+
 #define __SCB_ADDRESS			0xE000ED00
 #define __AIRCR_ADDRESS_OFFSET	        0xC
 #define __AIRCR		*(uint32_t *)(__SCB_ADDRESS+__AIRCR_ADDRESS_OFFSET)

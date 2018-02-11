@@ -1,14 +1,12 @@
-/************************************************************
-Authors:
-Miles Frain & Shreya Chakraborty
-Description:
-source files for data.c for the following data functions
-- print_cstd_type_sizes
-- print_stdint_type_sizes
-- print_pointer_sizes
-- swap_data_endianness
-- determine endianness
- **************************************************************/
+/**
+ * @file data.c
+ * @brief source files for data.c 
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-02-10
+ */
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
