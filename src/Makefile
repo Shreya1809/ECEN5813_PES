@@ -26,7 +26,7 @@ $(warning KL25Z platform)
   		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
   CPPFLAGS = -DKL25Z -DPROJECT1 -D$(PRINT)
   LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
-  OBJFILES = $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
+  OBJFILES = $(SOURCES_COMMON:.c=.o) $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   $(warning HOST or BBB platform)
   CC= gcc
