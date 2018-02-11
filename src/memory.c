@@ -126,13 +126,16 @@ uint8_t *my_reverse(uint8_t *src, size_t length)
 {
     if(src != NULL && (length > 0))
     {
-        uint8_t a,temp, i = 0;
+        uint8_t a, temp, i = 0;
 
         if(length%2 == 0) //check is length is even
         {
             a = length/2;//for even string length
         }
-        else a = (length-1)/2;//for odd string length
+        else
+	   {
+		  a = (length-1)/2;//for odd string length
+	   }
         for(i=0;i<a;i++)
         {//swapping to reverse the order of bytes
             temp = *(src+i);

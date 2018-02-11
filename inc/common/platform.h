@@ -10,9 +10,11 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+
 #ifdef KL25Z
   #define PRINTF(...)
 #else
+  #include <stdio.h>
   #define PRINTF(...) printf( __VA_ARGS__ )
 #endif
 

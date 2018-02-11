@@ -7,10 +7,20 @@
  * @date 2018-02-10
  */
 #include "project1.h"
+#include "data.h"
+#include "platform.h"
 
-#ifdef PROJECT1
 int main()
 {
-project1();
-}
+#ifdef PROJECT1
+    project1();
+    print_cstd_type_sizes();
+    print_stdint_type_sizes();
+    print_pointer_sizes();
+    uint32_t i = 0x12345678;
+    PRINTF("pre swap 0x%x\n", i);
+    determine_endianness();
+    swap_data_endianness((uint8_t*)&i, sizeof(i));
+    PRINTF("post swap 0x%x\n", i);
 #endif
+}

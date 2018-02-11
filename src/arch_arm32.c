@@ -2,10 +2,15 @@
  * @file arch_arm32.c
  * @brief source file for arch_arm.c
  * @author Miles Frain
- * @author Shreya Chakraborty 
+ * @author Shreya Chakraborty
  * @version 1
  * @date 2018-02-10
  */
+
+/*
+
+// Cannot set always inline in .c file
+#include <stdint.h>
 
 #define __SCB_ADDRESS			0xE000ED00
 #define __AIRCR_ADDRESS_OFFSET	        0xC
@@ -17,3 +22,4 @@ __attribute__((always_inline)) uint32_t ARM32_AIRCR_get_endianness_setting()
 {
 	return ((__AIRCR & __AIRCR_ENDIANNESS_MASK)>>__AIRCR_ENDIANNESS_OFFSET);
 }
+*/
