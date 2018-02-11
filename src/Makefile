@@ -37,7 +37,6 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
 endif
 
 %.o : %.c
-	@echo "SOURCES_COMMOM $(SOURCES_COMMOM)\n"
 	@echo "Building $@ file from $?\n"
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $? -o $@
 
@@ -48,12 +47,15 @@ endif
 	$(CC) $(CFLAGS) $(CPPFLAGS) -E $< -o $@
 
 build : $(OBJFILES)
-	@echo "Building $< file and linking it\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $(OBJFILES) -o $(TARGET_FILE).elf
+	@echo "Linking together $^\n"
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ -o $(TARGET_FILE).elf
+
+.PHONY: compile-all
+compile-all: $(OBJFILES)
 
 clean :
 	rm -f *.o
-	rm -f project1.elf
+	rm -f *.elf
 	rm -f *.i
 	rm -f *.map
 	rm -f *.asm
