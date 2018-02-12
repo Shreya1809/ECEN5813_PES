@@ -56,11 +56,19 @@ build : $(OBJFILES)
 	@echo "Linking together $^\n"
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ -o $(TARGET_FILE).elf
 
+.PHONY: library
+library : $(TARGET_FILE).a
+
+$(TARGET_FILE).a : $(OBJFILES)
+	@echo "creating static library $@ from $^\n"
+	ar rcs $@ $^
+
 .PHONY: compile-all
 compile-all: $(OBJFILES)
 
 clean :
 	rm -f *.o
+	rm -f *.a
 	rm -f *.d
 	rm -f *.elf
 	rm -f *.i
