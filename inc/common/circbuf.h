@@ -31,14 +31,26 @@ typedef struct
 /**
  * @brief Status return codes for circular buffer functions
  */
+
 typedef enum
 {
-    CB_SUCCESS, // no error
-    CB_NULL_ERROR, // if any pointer parameter is null
-    CB_LENGTH_ERROR, // if attempting to initialize with zero length
-    CB_FULL_ERROR, // if attempting to add to full buffer
-    CB_EMPTY_ERROR, // if attempting to remove from empty buffer
-    CB_POSITION_ERROR, // if attempting to peek at invalid position
+    NULL_POINTER_ERROR,
+    ALLOCATION_SUCCESS,
+    ALLOCATION_FAILURE,
+    DEALLOCATED,
+    NO_LENGTH_ERROR,
+    BUFFER_FULL,  //1
+    BUFFER_FULL_ERROR,
+    BUFFER_EMPTY, //1
+    BUFFER_EMPTY_ERROR,
+    BUFFER_NOT_EMPTY, //0
+    BUFFER_NOT_FULL, //0
+    WRAP_ADDITION,
+    ADDITION_SUCCESSFUL,
+    WRAP_REMOVAL,
+    REMOVAL_SUCCESSFUL,
+    POSITION_ERROR,
+    SUCCESS,
 }cb_enum;
 
 /**
@@ -83,7 +95,7 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add);
  *
  * @return CB status code
  */
-cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t* data_remove);
+cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t data_remove);
 
 /**
  * @brief Checks if circular buffer is full
@@ -93,11 +105,22 @@ cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t* data_remove);
  * @return 1 if full, 0 if not full
  * Todo - what should we return if ptr is null?
  */
-inline uint8_t cb_is_full(cb_struct *ptr)
+inline cb_enum cb_is_full(cb_struct *ptr)
 {
-    // Todo
-    return 1;
+   cb_enum status;
+    if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
+    {
+        status = NULL_POINTER_ERROR;
+    }
+    else if((ptr->tail == ptr->head + 1) ||(ptr->head == ptr->tail + (ptr->size -1)) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full
+    {
+        status = BUFFER_FULL; //status = 1
+    }
+    else status = BUFFER_NOT_FULL ; //status = 0
+    return status;
+
 }
+
 
 /**
  * @brief Checks if circular buffer is empty
@@ -106,12 +129,20 @@ inline uint8_t cb_is_full(cb_struct *ptr)
  *
  * @return 1 if empty, 0 if not empty
  */
-inline uint8_t cb_is_empty(cb_struct *ptr)
+inline cb_enum cb_is_empty(cb_struct *ptr)
 {
-    // Todo
-    return 1;
+    cb_enum status;
+    if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
+    {
+        status = NULL_POINTER_ERROR;
+    }
+    else if((ptr->count == 0) || (ptr ->tail == ptr->head)) //current item count in the buffer is 0 if buffer is empty
+    {
+        status = BUFFER_EMPTY ; //status = 1
+    }
+    else status = BUFFER_NOT_EMPTY ; // status = 0
+    return status;
 }
-
 /**
  * @brief Shows an item at any position in circular buffer
  * without removing item from buffer. If position is not populated,
@@ -123,6 +154,6 @@ inline uint8_t cb_is_empty(cb_struct *ptr)
  *
  * @return CB status code
  */
-cb_enum cb_peek(cb_struct *ptr, int8_t position, int8_t* holder);
+cb_enum cb_peek(cb_struct *ptr, int8_t position, int8_t *data);
 
 #endif // __CIRCBUF_H__

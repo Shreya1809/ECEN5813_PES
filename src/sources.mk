@@ -2,6 +2,7 @@ SOURCES_COMMON = debug.c \
 			  data.c\
 			  memory.c \
 			  conversion.c \
+			  circbuf.c\
 			  project1.c \
 			  main.c
 
