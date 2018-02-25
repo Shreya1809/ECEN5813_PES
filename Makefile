@@ -4,17 +4,18 @@ include sources.mk
 TARGET_FILE = project1
 PRINT = KL25Z
 PLATFORM=HOST#default platform if no platform is defined
-LINKER_FILE = ../platform/MKL25Z128xxx4_flash.ld
+LINKER_FILE = platform/MKL25Z128xxx4_flash.ld
 CPU_KL25Z = cortex-m0plus
 ARCH_KL25Z = armv6-m
 FPU = fpv4-sp-d16
 SPECS_KL25Z = nosys.specs
 
-INCLUDES := -I ../inc/common/
+INCLUDES := -I inc/common/
 
-INCLUDES_KL25Z = -I ../inc/common/ \
-	     -I ../inc/CMSIS/ \
-	     -I ../inc/KL25Z/
+INCLUDES_KL25Z := \
+	-I inc/common/ \
+	-I inc/CMSIS/ \
+	-I inc/KL25Z/
 
 TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
 TEST_EXE := run_test
@@ -81,13 +82,17 @@ $(TARGET_FILE).a : $(OBJFILES) $(SOURCES_MAIN:.c=.o)
 compile-all: $(OBJFILES)
 
 clean :
-	rm -f *.o
-	rm -f *.a
-	rm -f *.d
-	rm -f *.elf
-	rm -f *.i
-	rm -f *.map
-	rm -f *.asm
+# Can enable capturing all matches with **/*.ext in bash with
+#  shopt -s globstar
+# Fish prefers **.ext, otherwise it misses files in current directory
+# Can compromise with some redundancy
+	rm -f **/*.o *.o
+	rm -f **/*.a *.a
+	rm -f **/*.d *.d
+	rm -f **/*.elf *.elf
+	rm -f **/*.i *.i
+	rm -f **/*.map *.map
+	rm -f **/*.asm *.asm
 
 upload:
 	scp $(TARGET_FILE).elf root@192.168.7.2:/home/debian/bin

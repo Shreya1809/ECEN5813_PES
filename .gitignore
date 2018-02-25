@@ -1,1 +1,6 @@
 cscope.out
+*.elf
+*.map
+*.o
+*.map
+*.d
