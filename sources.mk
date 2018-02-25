@@ -12,5 +12,5 @@ SOURCES_KL25Z_C = src/system_MKL25Z4.c
 
 SOURCES_KL25Z_S = src/startup_MKL25Z4.S
 
-SOURCES_TEST = test/simple_test.c
+SOURCES_TEST = test/project1_test.c
 
