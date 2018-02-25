@@ -16,6 +16,9 @@ INCLUDES_KL25Z = -I ../inc/common/ \
 	     -I ../inc/CMSIS/ \
 	     -I ../inc/KL25Z/
 
+TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
+TEST_EXE := run_test
+TEST_LIB := -lcmocka
 
 #if platform is KL25Z
 ifeq ($(PLATFORM),KL25Z)
@@ -52,14 +55,25 @@ endif
 	@echo "Building $@ preprocessed file from $?\n"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -E $< -o $@
 
-build : $(OBJFILES)
+$(TARGET_FILE).elf : $(OBJFILES) $(SOURCES_MAIN:.c=.o)
 	@echo "Linking together $^\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ -o $(TARGET_FILE).elf
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ -o $@
+
+.PHONY: build
+build : $(TARGET_FILE).elf
+
+.PHONY: test
+test : $(TEST_EXE)
+	./$(TEST_EXE)
+
+$(TEST_EXE) : $(OBJFILES) $(TEST_OBJFILES)
+	@echo "Creating test $@ by linking together $^\n"
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ $(TEST_LIB) -o $@
 
 .PHONY: library
 library : $(TARGET_FILE).a
 
-$(TARGET_FILE).a : $(OBJFILES)
+$(TARGET_FILE).a : $(OBJFILES) $(SOURCES_MAIN:.c=.o)
 	@echo "creating static library $@ from $^\n"
 	ar rcs $@ $^
 
