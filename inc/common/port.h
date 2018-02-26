@@ -18,9 +18,9 @@
 #ifndef __PORT_H__
 #define __PORT_H__
 
-#define RGB_RED_PIN (???)
-#define RGB_GREEN_PIN (???)
-#define RGB_BLUE_PIN (???)
+#define RGB_RED_PIN (18)
+#define RGB_GREEN_PIN (19)
+#define RGB_BLUE_PIN (1)
 
 #define RGB_GREEN_ON() (PORTB_Set( RGB_GREEN_PIN ))
 #define RGB_GREEN_OFF() (PORTB_Clear( RGB_GREEN_PIN ))

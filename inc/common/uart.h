@@ -7,6 +7,9 @@
  * @date 2018-02-21
  */
 
+#include"MKL25Z4.h"
+#include "circbuf.h"
+
 #ifndef __UART_H__
 #define __UART_H__
 
@@ -20,11 +23,30 @@
  */
 
 
-void UART_configure();
+#define OSR 0x0F
+#define BAUDRATE_ERROR  (-1)
+#define NULL_POINTER_ERROR (-1)
+#define UART_S1_TDRE_MASK (0x80)
+#define UART_S1_RDRF_MASK (0x20)
+#define UART_S1_TC_MASK    (0x40)
+
+typedef enum BAUD_RATE
+{
+	BAUD_115200 = 115200,
+	BAUD_38400 	= 38400,
+	BAUD_57200	= 57200,
+	BAUD_9600	= 9600,
+
+}BAUDRATE;
+
+cb_struct *rx_buffer = NULL;
+cb_struct *tx_buffer = NULL;
+
+int8_t UART_configure(BAUDRATE baudselect);
 void UART_send(uint8_t* data);
-void UART_send_n(uint8_t* data, uint8_t length);
+void UART_send_n(uint8_t* data, size_t length);
 void UART_receive(uint8_t* data);
-void UART_receive_n(uint8_t* data, uint8_t length);
+void UART_receive_n(uint8_t* data, size_t length);
 void UART0_IRQHandler();
 
 #endif //__UART_H__

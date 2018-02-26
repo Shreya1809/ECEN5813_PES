@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "malloc.h"
 
 /**
  * @brief Structure for maintaining handle to circular buffer.
