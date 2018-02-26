@@ -224,31 +224,28 @@ static void test_circbuf_init(void **state){
 
     cb_enum cb_status = cb_init(&my_cb, 100);
 
-    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
+    assert_int_equal(cb_status, CB_SUCCESS);
 }
 
 static void test_circbuf_is_full1(void **state){
     cb_struct my_cb;
 
     cb_enum cb_status = cb_init(&my_cb, 100);
+    assert_int_equal(cb_status, CB_SUCCESS);
 
-    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
-
-    cb_status = cb_is_full(&my_cb);
-    assert_int_equal(cb_status, BUFFER_NOT_FULL);
+    assert_false(cb_is_full(&my_cb));
 }
 
 static void test_circbuf_is_full2(void **state){
     cb_struct my_cb;
 
     cb_enum cb_status = cb_init(&my_cb, 100);
-    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
+    assert_int_equal(cb_status, CB_SUCCESS);
 
     cb_status = cb_buffer_add_item(&my_cb, 'a');
-    assert_int_equal(cb_status, ADDITION_SUCCESSFUL);
+    assert_int_equal(cb_status, CB_SUCCESS);
 
-    cb_status = cb_is_full(&my_cb);
-    assert_int_equal(cb_status, BUFFER_NOT_FULL);
+    assert_false(cb_is_full(&my_cb));
 }
 
 int main(void) {

@@ -35,23 +35,13 @@ typedef struct
 
 typedef enum
 {
-    NULL_POINTER_ERROR,
-    ALLOCATION_SUCCESS,
-    ALLOCATION_FAILURE,
-    DEALLOCATED,
-    NO_LENGTH_ERROR,
-    BUFFER_FULL,  //1
-    BUFFER_FULL_ERROR,
-    BUFFER_EMPTY, //1
-    BUFFER_EMPTY_ERROR,
-    BUFFER_NOT_EMPTY, //0
-    BUFFER_NOT_FULL, //0
-    WRAP_ADDITION,
-    ADDITION_SUCCESSFUL,
-    WRAP_REMOVAL,
-    REMOVAL_SUCCESSFUL,
-    POSITION_ERROR,
-    SUCCESS,
+    CB_SUCCESS, // no error
+    CB_NULL_ERROR, // if any pointer parameter is null
+    CB_LENGTH_ERROR, // if attempting to initialize with zero length
+    CB_FULL_ERROR, // if attempting to add to full buffer
+    CB_EMPTY_ERROR, // if attempting to remove from empty buffer
+    CB_POSITION_ERROR, // if attempting to peek at invalid position
+    CB_ALLOCATION_FAILURE, // if malloc fails
 }cb_enum;
 
 /**
@@ -106,20 +96,18 @@ cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t data_remove);
  * @return 1 if full, 0 if not full
  * Todo - what should we return if ptr is null?
  */
-static inline cb_enum cb_is_full(cb_struct *ptr)
+static inline int cb_is_full(cb_struct *ptr)
 {
-   cb_enum status;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
-        status = NULL_POINTER_ERROR;
+        // TODO
+        return -1; // Evaluates to True / Full
     }
     else if((ptr->tail == ptr->head + 1) ||(ptr->head == ptr->tail + (ptr->size -1)) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full
     {
-        status = BUFFER_FULL; //status = 1
+        return 1; // Full
     }
-    else status = BUFFER_NOT_FULL ; //status = 0
-    return status;
-
+    return 0; // Not Full
 }
 
 
@@ -130,19 +118,17 @@ static inline cb_enum cb_is_full(cb_struct *ptr)
  *
  * @return 1 if empty, 0 if not empty
  */
-static inline cb_enum cb_is_empty(cb_struct *ptr)
+static inline int cb_is_empty(cb_struct *ptr)
 {
-    cb_enum status;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
-        status = NULL_POINTER_ERROR;
+        return -1; // Evaluates to True / Empty
     }
     else if((ptr->count == 0) || (ptr ->tail == ptr->head)) //current item count in the buffer is 0 if buffer is empty
     {
-        status = BUFFER_EMPTY ; //status = 1
+        return 1; // Empty
     }
-    else status = BUFFER_NOT_EMPTY ; // status = 0
-    return status;
+    return 0; // Not empty
 }
 /**
  * @brief Shows an item at any position in circular buffer
