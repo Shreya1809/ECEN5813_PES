@@ -6,6 +6,7 @@
 
 #include "memory.h"
 #include "conversion.h"
+#include "circbuf.h"
 
 #define BASE_16 (16)
 #define BASE_10 (10)
@@ -218,6 +219,38 @@ static void test_reverse(void **state){
   free_words( (uint32_t*)copy );
 }
 
+static void test_circbuf_init(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb, 100);
+
+    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
+}
+
+static void test_circbuf_is_full1(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb, 100);
+
+    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
+
+    cb_status = cb_is_full(&my_cb);
+    assert_int_equal(cb_status, BUFFER_NOT_FULL);
+}
+
+static void test_circbuf_is_full2(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb, 100);
+    assert_int_equal(cb_status, ALLOCATION_SUCCESS);
+
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, ADDITION_SUCCESSFUL);
+
+    cb_status = cb_is_full(&my_cb);
+    assert_int_equal(cb_status, BUFFER_NOT_FULL);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_data1),
@@ -228,6 +261,9 @@ int main(void) {
         cmocka_unit_test(test_memcpy),
         cmocka_unit_test(test_memset),
         cmocka_unit_test(test_reverse),
+        cmocka_unit_test(test_circbuf_init),
+        cmocka_unit_test(test_circbuf_is_full1),
+        cmocka_unit_test(test_circbuf_is_full2),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

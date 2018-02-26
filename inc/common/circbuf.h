@@ -106,7 +106,7 @@ cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t data_remove);
  * @return 1 if full, 0 if not full
  * Todo - what should we return if ptr is null?
  */
-inline cb_enum cb_is_full(cb_struct *ptr)
+static inline cb_enum cb_is_full(cb_struct *ptr)
 {
    cb_enum status;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
@@ -130,7 +130,7 @@ inline cb_enum cb_is_full(cb_struct *ptr)
  *
  * @return 1 if empty, 0 if not empty
  */
-inline cb_enum cb_is_empty(cb_struct *ptr)
+static inline cb_enum cb_is_empty(cb_struct *ptr)
 {
     cb_enum status;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
