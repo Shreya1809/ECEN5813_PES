@@ -103,7 +103,7 @@ static inline int cb_is_full(cb_struct *ptr)
         // TODO
         return -1; // Evaluates to True / Full
     }
-    else if((ptr->tail == ptr->head + 1) ||(ptr->head == ptr->tail + (ptr->size -1)) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full
+    else if((ptr->tail == ptr->head + 1) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full
     {
         return 1; // Full
     }
@@ -124,7 +124,7 @@ static inline int cb_is_empty(cb_struct *ptr)
     {
         return -1; // Evaluates to True / Empty
     }
-    else if((ptr->count == 0) || (ptr ->tail == ptr->head)) //current item count in the buffer is 0 if buffer is empty
+    else if((ptr->count == 0) && (ptr ->tail == ptr->head)) //current item count in the buffer is 0 if buffer is empty
     {
         return 1; // Empty
     }

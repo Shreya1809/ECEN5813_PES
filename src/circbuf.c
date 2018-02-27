@@ -81,7 +81,7 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
     {
         status = CB_FULL_ERROR;
     }
-    else if(ptr->head == ptr->buffer + ptr->size -1) //wrap around situation, head to wrap around to base when at the end
+    else if(ptr->head == ptr->buffer + ptr->size -1 ) //wrap around situation, head to wrap around to base when at the end
     {
         *(ptr->head) = data_add;
         ptr->head = ptr->buffer;
@@ -107,10 +107,7 @@ cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t data_remove)
     {
         status = CB_NULL_ERROR;
     }
-    else if (status == CB_SUCCESS || status == CB_EMPTY_ERROR)
-    {
-        status = CB_EMPTY_ERROR;
-    }
+    
     else if(ptr->tail == ptr->buffer + ptr->size -1) //wrap around situation, tail to wrap around to base when at the end
     {
         *(ptr->tail) = data_remove;

@@ -247,7 +247,102 @@ static void test_circbuf_is_full2(void **state){
 
     assert_false(cb_is_full(&my_cb));
 }
+ static void test_circbuf_destroy(void **state){
+     cb_struct my_cb;
+    
+     cb_enum cb_status = cb_init(&my_cb,100);
+     assert_int_equal(cb_status,CB_SUCCESS);
+   
+     cb_status = cb_destroy(&my_cb);
+     assert_int_equal(cb_status, CB_SUCCESS);
+ }
+static void test_circbuf_empty1(void **state){
+    cb_struct my_cb;
 
+    cb_enum cb_status =  cb_init(&my_cb,100);
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_false(cb_is_empty(&my_cb));
+}
+
+static void test_circbuf_empty2(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb,100);
+    assert_int_equal(cb_status, CB_SUCCESS);
+    
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_remove_item(&my_cb,'a');
+    assert_int_equal(cb_status,CB_SUCCESS);
+
+    assert_true(cb_is_empty(&my_cb));
+}
+
+static void test_circbuf_add_remove(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb,100);
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_remove_item(&my_cb,'a');
+    assert_int_equal(cb_status,CB_SUCCESS);
+	
+    assert_int_equal(cb_status,CB_SUCCESS);
+ 
+}
+
+static void test_circbuf_add_item(void **state){
+    cb_struct my_cb;
+
+    cb_enum cb_status = cb_init(&my_cb,100);
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_is_empty(&my_cb);
+    assert_int_not_equal(cb_status, CB_EMPTY_ERROR);
+}
+
+static void test_circbuf_wrap_add(void **state){
+    cb_struct my_cb;
+	assert_true(cb_is_empty(&my_cb));
+
+    cb_enum cb_status = cb_init(&my_cb,3);
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_false(cb_is_full(&my_cb));
+
+    cb_status = cb_buffer_add_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_false(cb_is_full(&my_cb));
+
+    cb_status = cb_buffer_add_item(&my_cb, 'b');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_false(cb_is_full(&my_cb));
+
+    cb_status = cb_buffer_add_item(&my_cb, 'c');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_true(cb_is_full(&my_cb));
+	
+    cb_status = cb_buffer_add_item(&my_cb, 'd');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    assert_true(cb_is_full(&my_cb));
+}
+
+	
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_data1),
@@ -261,6 +356,14 @@ int main(void) {
         cmocka_unit_test(test_circbuf_init),
         cmocka_unit_test(test_circbuf_is_full1),
         cmocka_unit_test(test_circbuf_is_full2),
+        cmocka_unit_test(test_circbuf_destroy),
+        cmocka_unit_test(test_circbuf_empty1),
+        cmocka_unit_test(test_circbuf_empty2),
+	cmocka_unit_test(test_circbuf_add_remove),
+	cmocka_unit_test(test_circbuf_add_item),
+	cmocka_unit_test(test_circbuf_wrap_add),
+
+
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
