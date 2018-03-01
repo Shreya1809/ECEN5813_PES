@@ -1,36 +1,57 @@
 include sources.mk
 
-#variables for lib
-TARGET_FILE = project1
-PRINT = KL25Z
-PLATFORM=HOST#default platform if no platform is defined
-LINKER_FILE = platform/MKL25Z128xxx4_flash.ld
+TARGET_FILE := project1
+#default platform if no platform is defined
+PLATFORM := HOST
+
+#LINKER_FILE := platform/MKL25Z128xxx4_flash.ld
+LINKER_FILE := link.ld
 CPU_KL25Z = cortex-m0plus
 ARCH_KL25Z = armv6-m
 FPU = fpv4-sp-d16
 SPECS_KL25Z = nosys.specs
 
+CFLAGS := -Wall -Werror -g -O0 -std=c99 -MMD -DPROJECT1 -DVERBOSE
+
 INCLUDES := -I inc/common/
 
 INCLUDES_KL25Z := \
-	-I inc/common/ \
 	-I inc/CMSIS/ \
 	-I inc/KL25Z/
+
+OBJFILES := $(SOURCES_COMMON:.c=.o)
 
 TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
 TEST_EXE := run_test
 TEST_LIB := -lcmocka
 
+#LDFLAGS=--specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET).map,-Tlink.ld
+#
+#%.o: %.c
+#	$(CC) -c $(ARCHFLAGS) -o $@ $<
+#
+#$(TARGET).elf: $(OBJ)
+#	$(LD) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJ)
+
 #if platform is KL25Z
 ifeq ($(PLATFORM),KL25Z)
 $(warning KL25Z platform)
-  CC = arm-none-eabi-gcc
-  CFLAGS = -Wall -Werror -g -O0 -std=c99 -MMD -mcpu=$(CPU_KL25Z) \
-  		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
-  		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
-  CPPFLAGS = -DKL25Z -DPROJECT1 -D$(PRINT)
-  LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
-  OBJFILES = $(SOURCES_COMMON:.c=.o) $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
+  CC := arm-none-eabi-gcc
+  OBJCOPY := arm-none-eabi-objcopy
+  #OBJFILES += $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
+  OBJFILES += $(SOURCES_KL25Z_C:.c=.o)
+  INCLUDES += $(INCLUDES_KL25Z)
+  ARCHFLAGS := -mthumb -mcpu=cortex-m0plus
+  #ARCHFLAGS := -mthumb -mcpu=$(CPU_KL25Z) \
+  #		 -march=$(ARCH_KL25Z) -mfloat-abi=soft \
+  #		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z)
+  CFLAGS += -DKL25Z $(ARCHFLAGS)
+  #CFLAGS = -Wall -Werror -g -O0 -std=c99 -MMD -mcpu=$(CPU_KL25Z) \
+  #		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
+  #		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
+  #CPPFLAGS = -DKL25Z -DPROJECT1
+  #LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
+  LDFLAGS := --specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET).map,-T$(LINKER_FILE)
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   $(warning HOST or BBB platform)
   ifeq ($(PLATFORM),HOST)
@@ -38,10 +59,9 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   else ifeq ($(PLATFORM),BBB)
     CC= arm-linux-gnueabihf-gcc
   endif
-  CFLAGS += -Wall -Werror -g -O0 -std=c99 -MMD $(INCLUDES)
-  CPPFLAGS += -DHOST -DPROJECT1 -DVERBOSE
+  # Not using HOST flag anywhere yet
+  #CFLAGS += -DHOST
   LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
-  OBJFILES += $(SOURCES_COMMON:.c=.o)
 endif
 
 %.o : %.c
@@ -93,7 +113,22 @@ clean :
 	rm -f **/*.i *.i
 	rm -f **/*.map *.map
 	rm -f **/*.asm *.asm
+	rm -f **/*.srec *.srec
 
-upload:
+$(TARGET_FILE).srec : $(TARGET_FILE).elf
+
+%.srec: %.elf
+	$(OBJCOPY) -O srec $< $@
+
+upload: $(TARGET_FILE).srec
+ifeq ($(PLATFORM),KL25Z)
+	$(warning KL25Z platform upload)
+	echo uploading $^
+	cp $^ /media/$(USER)/FRDM-KL25Z
+else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
+	$(warning HOST or BBB platform)
 	scp $(TARGET_FILE).elf root@192.168.7.2:/home/debian/bin
 	ssh -o LocalCommand="cd /home/debian/bin" root@192.168.7.2
+endif
+
+

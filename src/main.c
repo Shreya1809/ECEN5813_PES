@@ -9,9 +9,18 @@
 #include "project1.h"
 #include "data.h"
 #include "platform.h"
+#include "blink.h"
 
 int main()
 {
+    blink();
+}
+#if 0
+int main()
+{
+#ifdef KL25Z
+    blink();
+#endif
 #ifdef PROJECT1
     project1();
     print_cstd_type_sizes();
@@ -24,3 +33,5 @@ int main()
     PRINTF("post swap 0x%x\n", i);
 #endif
 }
+#endif
+

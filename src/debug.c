@@ -18,7 +18,7 @@ void print_array(uint8_t* start, uint32_t length)
 {
 #ifdef VERBOSE
     int i = 0;
-    if(start != NULL)
+    if (start)
     {
         while(length != 0)
         {
