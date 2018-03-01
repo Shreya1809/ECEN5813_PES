@@ -164,7 +164,7 @@ Reset_Handler:
 .LC3:
 #endif
 #ifndef __START
-#define __START _start
+#define __START main
 #endif
     bl    __START
     .pool

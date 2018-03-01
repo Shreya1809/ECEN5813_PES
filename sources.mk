@@ -15,10 +15,10 @@ SOURCES_MAIN = src/main.c
 
 SOURCES_TEST = test/project1_test.c
 
-SOURCES_KL25Z_C = src/startup.c
+#SOURCES_KL25Z_C = src/startup.c
 
 #SOURCES_KL25Z_C = src/system_MKL25Z4.c
 #
-#SOURCES_KL25Z_S = src/startup_MKL25Z4.S
+SOURCES_KL25Z_S = src/startup_MKL25Z4.S
 
 

@@ -4,8 +4,8 @@ TARGET_FILE := project1
 #default platform if no platform is defined
 PLATFORM := HOST
 
-#LINKER_FILE := platform/MKL25Z128xxx4_flash.ld
-LINKER_FILE := link.ld
+LINKER_FILE := platform/MKL25Z128xxx4_flash.ld
+#LINKER_FILE := link.ld
 CPU_KL25Z = cortex-m0plus
 ARCH_KL25Z = armv6-m
 FPU = fpv4-sp-d16
