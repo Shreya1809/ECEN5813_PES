@@ -13,7 +13,7 @@
 **
 **     Reference manual:    KL25P80M48SF0RM, Rev.3, Sep 2012
 **     Version:             rev. 2.5, 2015-02-19
-**     Build:               b150220
+**     Build:               b150224
 **
 **     Abstract:
 **         Provides a system configuration function and a global variable that
@@ -97,7 +97,7 @@
  */
 
 #include <stdint.h>
-#include "MKL25Z4.h"
+#include "fsl_device_registers.h"
 
 
 

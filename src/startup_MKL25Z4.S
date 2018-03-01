@@ -4,7 +4,7 @@
 /*            MKL25Z4                                                                     */
 /*  @version: 2.5                                                                         */
 /*  @date:    2015-2-19                                                                   */
-/*  @build:   b150220                                                                     */
+/*  @build:   b150224                                                                     */
 /* ---------------------------------------------------------------------------------------*/
 /*                                                                                        */
 /* Copyright (c) 1997 - 2015 , Freescale Semiconductor, Inc.                              */
@@ -119,54 +119,17 @@ Reset_Handler:
 #ifndef __NO_SYSTEM_INIT
     bl SystemInit
 #endif
+    bl init_data_bss
     cpsie   i               /* Unmask interrupts */
-/*     Loop to copy data from read only memory to RAM. The ranges
- *      of copy from/to are specified by following symbols evaluated in
- *      linker script.
- *      __etext: End of code section, i.e., begin of data sections to copy from.
- *      __data_start__/__data_end__: RAM address range that data should be
- *      copied to. Both must be aligned to 4 bytes boundary.  */
-
-    ldr    r1, =__etext
-    ldr    r2, =__data_start__
-    ldr    r3, =__data_end__
-
-    subs    r3, r2
-    ble     .LC0
-
-.LC1:
-    subs    r3, 4
-    ldr    r0, [r1,r3]
-    str    r0, [r2,r3]
-    bgt    .LC1
-.LC0:
-
-#ifdef __STARTUP_CLEAR_BSS
-/*     This part of work usually is done in C library startup code. Otherwise,
- *     define this macro to enable it in this startup.
- *
- *     Loop to zero out BSS section, which uses following symbols
- *     in linker script:
- *      __bss_start__: start of BSS section. Must align to 4
- *      __bss_end__: end of BSS section. Must align to 4
- */
-    ldr r1, =__bss_start__
-    ldr r2, =__bss_end__
-
-    subs    r2, r1
-    ble .LC3
-
-    movs    r0, 0
-.LC2:
-    str r0, [r1, r2]
-    subs    r2, 4
-    bge .LC2
-.LC3:
-#endif
 #ifndef __START
-#define __START main
+#define __START _start
 #endif
+#ifndef __ATOLLIC__
     bl    __START
+#else
+    bl    __libc_init_array
+    bl    main
+#endif
     .pool
     .size Reset_Handler, . - Reset_Handler
 
