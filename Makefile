@@ -1,9 +1,21 @@
 include sources.mk
 
-TARGET_FILE := project1
 #default platform if no platform is defined
 PLATFORM := HOST
 
+# Common settings
+TARGET_FILE := project1
+CFLAGS := -Wall -Werror -g -O0 -std=c99 -MMD -DPROJECT1 -DVERBOSE
+INCLUDES := -I inc/common/
+OBJFILES := $(SOURCES_COMMON:.c=.o)
+LDFLAGS := -Wl,-Map=$(TARGET_FILE).map
+
+# Test Settings
+TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
+TEST_EXE := run_test
+TEST_LIB := -lcmocka
+
+# KL25Z settings
 LINKER_FILE := platform/MKL25Z128xxx4_flash.ld
 #LINKER_FILE := link.ld
 CPU_KL25Z = cortex-m0plus
@@ -11,19 +23,12 @@ ARCH_KL25Z = armv6-m
 FPU = fpv4-sp-d16
 SPECS_KL25Z = nosys.specs
 
-CFLAGS := -Wall -Werror -g -O0 -std=c99 -MMD -DPROJECT1 -DVERBOSE
-
-INCLUDES := -I inc/common/
 
 INCLUDES_KL25Z := \
 	-I inc/CMSIS/ \
 	-I inc/KL25Z/
 
-OBJFILES := $(SOURCES_COMMON:.c=.o)
 
-TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
-TEST_EXE := run_test
-TEST_LIB := -lcmocka
 
 #LDFLAGS=--specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET).map,-Tlink.ld
 #
@@ -51,7 +56,7 @@ $(warning KL25Z platform)
   #		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
   #CPPFLAGS = -DKL25Z -DPROJECT1
   #LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
-  LDFLAGS := --specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET).map,-T$(LINKER_FILE)
+  LDFLAGS += --specs=nano.specs --gc-sections,-T$(LINKER_FILE)
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   $(warning HOST or BBB platform)
   ifeq ($(PLATFORM),HOST)
@@ -61,7 +66,6 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
   endif
   # Not using HOST flag anywhere yet
   #CFLAGS += -DHOST
-  LDFLAGS += -Wl,-Map=$(TARGET_FILE).map
 endif
 
 %.o : %.c
