@@ -673,11 +673,11 @@
     #define KL25Z4_SERIES
 
     /* CMSIS-style register definitions */
-    #include "MKL25Z4/include/MKL25Z4.h"
+    #include "MKL25Z4.h"
     /* Extension register definitions */
-    #include "MKL25Z4/include/MKL25Z4_extension.h"
+    #include "MKL25Z4_extension.h"
     /* CPU specific feature definitions */
-    #include "MKL25Z4/include/MKL25Z4_features.h"
+    #include "MKL25Z4_features.h"
 
 
 #elif (defined(CPU_MKL26Z128CAL4) || defined(CPU_MKL26Z32VFM4) || defined(CPU_MKL26Z64VFM4) || \
