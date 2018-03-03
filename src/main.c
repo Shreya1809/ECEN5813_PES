@@ -9,13 +9,10 @@
 #include "project1.h"
 #include "data.h"
 #include "platform.h"
+#ifdef KL25Z
 #include "blink.h"
+#endif
 
-int main()
-{
-    blink();
-}
-#if 0
 int main()
 {
 #ifdef KL25Z
@@ -32,6 +29,6 @@ int main()
     swap_data_endianness((uint8_t*)&i, sizeof(i));
     PRINTF("post swap 0x%x\n", i);
 #endif
+    return 0;
 }
-#endif
 

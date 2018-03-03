@@ -5,7 +5,8 @@ PLATFORM := HOST
 
 # Common settings
 TARGET_FILE := project1
-CFLAGS := -Wall -Werror -g -O0 -std=c99 -MMD -DPROJECT1 -DVERBOSE
+# Kinetis likes gnu99 instead of c99
+CFLAGS := -Wall -Werror -g -O0 -std=gnu99 -MMD -DPROJECT1 -DVERBOSE
 INCLUDES := -I inc/common/
 OBJFILES := $(SOURCES_COMMON:.c=.o)
 LDFLAGS := -Wl,-Map=$(TARGET_FILE).map
@@ -15,74 +16,79 @@ TEST_OBJFILES := $(SOURCES_TEST:.c=.o)
 TEST_EXE := run_test
 TEST_LIB := -lcmocka
 
-# KL25Z settings
-LINKER_FILE := platform/MKL25Z128xxx4_flash.ld
-#LINKER_FILE := link.ld
-CPU_KL25Z = cortex-m0plus
-ARCH_KL25Z = armv6-m
-FPU = fpv4-sp-d16
-SPECS_KL25Z = nosys.specs
+# Only using variables if value used more than once in makefile
 
-
-INCLUDES_KL25Z := \
-	-I inc/CMSIS/ \
-	-I inc/KL25Z/
-
-
-
-#LDFLAGS=--specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET).map,-Tlink.ld
-#
-#%.o: %.c
-#	$(CC) -c $(ARCHFLAGS) -o $@ $<
-#
-#$(TARGET).elf: $(OBJ)
-#	$(LD) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJ)
+# Old original KL25Z settings
+# Some settings different than kinetis, so not using these
+#CPU_KL25Z = cortex-m0plus
+#ARCH_KL25Z = armv6-m
+#FPU = fpv4-sp-d16
+#SPECS_KL25Z = nosys.specs
 
 #if platform is KL25Z
 ifeq ($(PLATFORM),KL25Z)
 $(warning KL25Z platform)
   CC := arm-none-eabi-gcc
   OBJCOPY := arm-none-eabi-objcopy
-  #OBJFILES += $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
-  OBJFILES += $(SOURCES_KL25Z_C:.c=.o)
-  INCLUDES += $(INCLUDES_KL25Z)
-  ARCHFLAGS := -mthumb -mcpu=cortex-m0plus
-  #ARCHFLAGS := -mthumb -mcpu=$(CPU_KL25Z) \
-  #		 -march=$(ARCH_KL25Z) -mfloat-abi=soft \
-  #		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z)
-  CFLAGS += -DKL25Z $(ARCHFLAGS)
-  #CFLAGS = -Wall -Werror -g -O0 -std=c99 -MMD -mcpu=$(CPU_KL25Z) \
-  #		 -mthumb -march=$(ARCH_KL25Z) -mfloat-abi=soft \
-  #		 -mfpu=$(FPU) --specs=$(SPECS_KL25Z) $(INCLUDES_KL25Z)
-  #CPPFLAGS = -DKL25Z -DPROJECT1
-  #LDFLAGS = -Wl,-Map=$(TARGET_FILE).map -T $(LINKER_FILE)
-  LDFLAGS += --specs=nano.specs --gc-sections,-T$(LINKER_FILE)
-else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
+  OBJFILES += $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)
+  INCLUDES += \
+	-I inc/CMSIS/ \
+	-I inc/KL25Z/
+# Probably don't need all of these, but not removing yet, since produces different .elf
+  CFLAGS += \
+    -DCPU_MKL25Z128VLK4 \
+	-DKL25Z \
+	-mcpu=cortex-m0plus \
+	-mthumb \
+	-O0 \
+	-fmessage-length=0 \
+	-fsigned-char \
+	-ffunction-sections \
+	-fdata-sections \
+	-fno-common \
+	-ffreestanding \
+	-fno-builtin \
+	-mapcs
+  LDFLAGS += \
+	-T platform/MKL25Z128xxx4_flash.ld \
+    --specs=nano.specs \
+    -Xlinker --gc-sections \
+    -Xlinker --defsym=__stack_size__=0x0400 \
+    -Xlinker --defsym=__heap_size__=0x0200
+# Note -lg points to libg.a which is the debugging version of libc.a from arm.
+# -lg and -nosys both needed together to find _exit symbol
+  LDLIBS := -lg -lnosys
+else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))
   $(warning HOST or BBB platform)
   ifeq ($(PLATFORM),HOST)
-    CC= gcc
+    CC := gcc
   else ifeq ($(PLATFORM),BBB)
-    CC= arm-linux-gnueabihf-gcc
+    CC := arm-linux-gnueabihf-gcc
   endif
-  # Not using HOST flag anywhere yet
-  #CFLAGS += -DHOST
 endif
 
 %.o : %.c
-	@echo "Building $@ object file from $?\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $? -o $@
+	@echo "Building $@ object file from $^\n"
+	$(CC) $(CFLAGS) $(INCLUDES) -MF$(^:.c=.d) -c $^ -o $@
+
+# This rule is not required, since automatic processing of .S file
+# produces a (sometimes)identical .elf
+# Although now we're seeing some differences with latest $(CFLAGS)
+%.o : %.S
+	@echo "Building $@ object file from $^\n"
+	$(CC) $(CFLAGS) -MF$(^:.S=.d) -c $^ -o $@
 
 %.asm : %.c
-	@echo "Building $@ assembly file from $?\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) -S $< -o $@
+	@echo "Building $@ assembly file from $^\n"
+	$(CC) $(CFLAGS) -S $< -o $@
 
 %.i : %.c
-	@echo "Building $@ preprocessed file from $?\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) -E $< -o $@
+	@echo "Building $@ preprocessed file from $^\n"
+	$(CC) $(CFLAGS) -E $< -o $@
 
 $(TARGET_FILE).elf : $(OBJFILES) $(SOURCES_MAIN:.c=.o)
 	@echo "Linking together $^\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDES) $^ $(LDLIBS) -o $@
 
 .PHONY: build
 build : $(TARGET_FILE).elf
@@ -91,9 +97,10 @@ build : $(TARGET_FILE).elf
 test : $(TEST_EXE)
 	./$(TEST_EXE)
 
+# Todo - can probably remove includes from linker command
 $(TEST_EXE) : $(OBJFILES) $(TEST_OBJFILES)
 	@echo "Creating test $@ by linking together $^\n"
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDES) $^ $(TEST_LIB) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDES) $^ $(TEST_LIB) -o $@
 
 .PHONY: library
 library : $(TARGET_FILE).a
@@ -134,5 +141,4 @@ else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
 	scp $(TARGET_FILE).elf root@192.168.7.2:/home/debian/bin
 	ssh -o LocalCommand="cd /home/debian/bin" root@192.168.7.2
 endif
-
 
