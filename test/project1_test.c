@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "conversion.h"
 #include "circbuf.h"
+#include "data.h"
 
 #define BASE_16 (16)
 #define BASE_10 (10)
@@ -17,6 +18,7 @@
 #define MEM_ZERO_LENGTH (16)
 
 #define TEST_MEMMOVE_LENGTH (16)
+#define BUFFER_LENGTH    (8)
 
 
 static void test_data1(void **state) {
@@ -219,6 +221,51 @@ static void test_reverse(void **state){
   free_words( (uint32_t*)copy );
 }
 
+static void test_big_to_little_valid_Ptr(void **state) {
+	uint32_t * data = NULL;
+	//uint32_t length =4;
+	int8_t status =  big_to_little(data); //check for null pointer
+	assert_int_equal(status,1); //status = 1 , null pointer passed
+}
+
+static void test_big_to_little_valid_Conv(void **state) {
+	int8_t status;
+	uint32_t data = {0x9ABCDEF0};
+	//uint32_t length = sizeof(data);	
+	uint32_t * temp = (uint32_t *)malloc(sizeof(uint32_t)); // temp variable to store original copy 
+	my_memcpy((uint8_t*)&data,(uint8_t*)temp,4); //length*4);
+	status =  big_to_little(&data);
+	assert_int_equal(status,0);
+	for(int8_t i =0; i<2;i++)
+{
+	assert_int_equal(*(((uint8_t *)temp)+i),*(((uint8_t *)&data)+3-i)); //checking byte wise for data conversion
+}
+	
+}
+
+static void test_little_to_big_valid_Ptr(void **state) {
+	//uint32_t length =4;
+	uint32_t * data = NULL;
+	int8_t status =  little_to_big(data);
+	assert_int_equal(status,1); // return value is 1 if null pointer is passed
+}
+
+static void test_little_to_big_valid_Conv(void **state) {
+	int8_t status;
+	uint32_t data = {0x9ABCDEF0};
+	//uint32_t length = sizeof(data);	
+	uint32_t * temp = (uint32_t *)malloc(sizeof(uint32_t)); // temp variable to store original copy 
+	my_memcpy((uint8_t*)&data,(uint8_t*)temp,4); //length*4);
+	status =  big_to_little(&data);
+	assert_int_equal(status,0);
+	for(int8_t i =0; i<2;i++)
+{
+	assert_int_equal(*(((uint8_t *)temp)+i),*(((uint8_t *)&data)+3-i)); //checking byte wise for data conversion
+}
+}
+
+
+
 static void test_circbuf_init(void **state){
     cb_struct my_cb;
 
@@ -270,6 +317,7 @@ static void test_circbuf_empty1(void **state){
 
 static void test_circbuf_empty2(void **state){
     cb_struct my_cb;
+    int8_t j;
 
     cb_enum cb_status = cb_init(&my_cb,100);
     assert_int_equal(cb_status, CB_SUCCESS);
@@ -277,23 +325,25 @@ static void test_circbuf_empty2(void **state){
     cb_status = cb_buffer_add_item(&my_cb, 'a');
     assert_int_equal(cb_status, CB_SUCCESS);
 
-    cb_status = cb_buffer_remove_item(&my_cb,'a');
+    cb_status = cb_buffer_remove_item(&my_cb, &j);
     assert_int_equal(cb_status,CB_SUCCESS);
 
     assert_true(cb_is_empty(&my_cb));
 }
 
+
 static void test_circbuf_add_remove(void **state){
     cb_struct my_cb;
-
-    cb_enum cb_status = cb_init(&my_cb,100);
+    int8_t j;
+    cb_enum cb_status = cb_init(&my_cb,BUFFER_LENGTH);
     assert_int_equal(cb_status, CB_SUCCESS);
 
-    cb_status = cb_buffer_add_item(&my_cb, 'a');
-    assert_int_equal(cb_status, CB_SUCCESS);
-
-    cb_status = cb_buffer_remove_item(&my_cb,'a');
-    assert_int_equal(cb_status,CB_SUCCESS);
+for (uint8_t i=0; i<BUFFER_LENGTH+2; i++) 
+	{
+	cb_status = cb_buffer_add_item(&my_cb,i);
+	cb_status = cb_buffer_remove_item(&my_cb, &j);
+	assert_int_equal(i,(uint8_t)j);
+	}
 	
     assert_int_equal(cb_status,CB_SUCCESS);
  
@@ -309,12 +359,25 @@ static void test_circbuf_add_item(void **state){
     assert_int_equal(cb_status, CB_SUCCESS);
 
     cb_status = cb_is_empty(&my_cb);
-    assert_int_not_equal(cb_status, CB_EMPTY_ERROR);
+    assert_false(cb_status);
 }
 
-static void test_circbuf_wrap_add(void **state){
+/*static void test_circbuf_remove_item(void **state){
     cb_struct my_cb;
-	assert_true(cb_is_empty(&my_cb));
+
+    cb_enum cb_status = cb_init(&my_cb,100);
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_buffer_remove_item(&my_cb, 'a');
+    assert_int_equal(cb_status, CB_SUCCESS);
+
+    cb_status = cb_is_empty(&my_cb);
+    assert_true(cb_status);
+}*/
+
+/*static void test_circbuf_wrap_add(void **state){
+    cb_struct my_cb;
+	assert_false(cb_is_empty(&my_cb));
 
     cb_enum cb_status = cb_init(&my_cb,3);
     assert_int_equal(cb_status, CB_SUCCESS);
@@ -340,7 +403,25 @@ static void test_circbuf_wrap_add(void **state){
     assert_int_equal(cb_status, CB_SUCCESS);
 
     assert_true(cb_is_full(&my_cb));
+}*/
+static void test_circbuf_wrap_add(void **state){
+    //cb_struct my_cb;
+    cb_struct *ptr = (cb_struct*)malloc(sizeof(cb_struct));
+    int8_t j;
+    cb_enum cb_status = cb_init(ptr,BUFFER_LENGTH);
+    assert_int_equal(cb_status, CB_SUCCESS);
+for (uint8_t i=0; i<BUFFER_LENGTH; i++) 
+	{
+	cb_status = cb_buffer_add_item(ptr,i);
+	assert_int_equal(cb_status,CB_SUCCESS);
+	}
+	
+cb_status = cb_buffer_remove_item(ptr, &j); //remove first item
+cb_status = cb_buffer_add_item(ptr,j);//add it again to the end for wrap add
+assert_ptr_equal((ptr->head),(ptr->tail));
 }
+
+
 
 	
 int main(void) {
@@ -353,6 +434,10 @@ int main(void) {
         cmocka_unit_test(test_memcpy),
         cmocka_unit_test(test_memset),
         cmocka_unit_test(test_reverse),
+	cmocka_unit_test(test_big_to_little_valid_Ptr),
+ 	cmocka_unit_test(test_big_to_little_valid_Conv),
+	cmocka_unit_test(test_little_to_big_valid_Ptr),
+	cmocka_unit_test(test_little_to_big_valid_Conv),
         cmocka_unit_test(test_circbuf_init),
         cmocka_unit_test(test_circbuf_is_full1),
         cmocka_unit_test(test_circbuf_is_full2),
@@ -361,7 +446,9 @@ int main(void) {
         cmocka_unit_test(test_circbuf_empty2),
 	cmocka_unit_test(test_circbuf_add_remove),
 	cmocka_unit_test(test_circbuf_add_item),
+	//cmocka_unit_test(test_circbuf_remove_item),
 	cmocka_unit_test(test_circbuf_wrap_add),
+	
 
 
     };

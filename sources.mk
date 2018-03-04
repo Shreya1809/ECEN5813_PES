@@ -4,7 +4,8 @@ SOURCES_COMMON = \
 	src/memory.c \
 	src/conversion.c \
 	src/circbuf.c \
-	src/project1.c
+	src/project1.c \
+	src/data_processing.c
 
 # Must keep main() functions separate between main.c and test
 SOURCES_MAIN = src/main.c

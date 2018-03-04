@@ -54,4 +54,10 @@ uint32_t determine_endianness();
  */
 int32_t  swap_data_endianness(uint8_t * data, size_t type_length);
 
+/*function to change from little to big*/
+int8_t little_to_big(uint32_t * data);
+
+/*function to change from big to little*/
+int8_t big_to_little(uint32_t * data);
+
 #endif /*data.h*/

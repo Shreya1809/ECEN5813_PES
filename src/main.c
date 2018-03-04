@@ -9,8 +9,11 @@
 #include "project1.h"
 #include "data.h"
 #include "platform.h"
+#include "data_processing.h"
+#include <unistd.h>
 #ifdef KL25Z
 #include "blink.h"
+
 #endif
 
 int main()
@@ -29,6 +32,20 @@ int main()
     swap_data_endianness((uint8_t*)&i, sizeof(i));
     PRINTF("post swap 0x%x\n", i);
 #endif
+    char string[2000];
+    printf("Enter String");
+    scanf("%s",string);
+    int j;
+    cb_struct my_cb;
+    cb_init(&my_cb,100);
+    for (j = 0; string[j] != '\0'; j++) 
+    {
+        cb_buffer_add_item(&my_cb,string[j]);
+    }
+	data_process(&my_cb);
+    
+   
+
     return 0;
 }
 

@@ -100,29 +100,37 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
 }
 
 /*function to remove items from buffer*/
-cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t data_remove)
+cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t *data_remove)
 {
     cb_enum status = CB_SUCCESS;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
         status = CB_NULL_ERROR;
     }
-    
-    else if(ptr->tail == ptr->buffer + ptr->size -1) //wrap around situation, tail to wrap around to base when at the end
+	
+    status = cb_is_empty(ptr);
+    if (status == 0)
     {
-        *(ptr->tail) = data_remove;
-        ptr->tail = ptr-> buffer;
-        ptr->count--;
-        status = CB_SUCCESS;
-    }
-    else
-    {// buffer has full spaces, hence increment the tail to the next buffer location
-        *ptr-> tail = data_remove;
-        ptr->tail++;
-        ptr->count--;
-        status = CB_SUCCESS;
-    }
+    
+    	 if(ptr->tail == ptr->buffer + ptr->size -1) //wrap around situation, tail to wrap around to base when at the end
+    	 {	
+		*data_remove = *(ptr->tail);
+		*(ptr->tail) = 0;
+		ptr->tail = ptr-> buffer;
+		ptr->count--;
+		status = CB_SUCCESS;
+	 }
+	 else
+	 {// buffer has full spaces, hence increment the tail to the next buffer location
+		*data_remove = *(ptr->tail);
+		*(ptr->tail) = 0;
+		ptr->tail++;
+		ptr->count--;
+		status = CB_SUCCESS;
+	 }
     return status;
+    }
+    else return CB_EMPTY_ERROR;
 }
 
 /*function to peek into buffer*/

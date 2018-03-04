@@ -193,3 +193,30 @@ int32_t swap_data_endianness(uint8_t * data, size_t type_length)
         return SWAP_ERROR;
     }
 }
+
+
+/*function to change from little to big*/
+int8_t little_to_big(uint32_t * data)
+{
+	int8_t *a= NULL;
+	int8_t result = 1;	
+	a = (int8_t*)my_reverse((uint8_t*)data, 4);
+	if(a)
+	{
+	result = 0;
+	}
+	return result;
+}
+
+/*function to change from big to little*/
+int8_t big_to_little(uint32_t * data)
+{
+	int8_t *a= NULL;
+	int8_t result = 1;	
+	a = (int8_t*)my_reverse((uint8_t*)data, 4);
+	if(a)
+	{
+	result = 0;
+	}
+	return result;
+}
