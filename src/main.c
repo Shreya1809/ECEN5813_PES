@@ -14,7 +14,6 @@
 #include <unistd.h>
 #ifdef KL25Z
 #include "uart.h"
-#include "blink.h"
 #include "clock.h"
 #include "port.h"
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
@@ -25,19 +24,17 @@
 int main()
 {
 #ifdef KL25Z
-    // blink();
     clock_setup();
     GPIO_Configure();
-    //while(1) RGB_RED_TOGGLE();
-    //UART_configure(BAUD_9600);
-    cb_enum status;
     rx_buffer = malloc(sizeof(cb_struct));
-    status = cb_init(rx_buffer, 32);
     UART_configure(BAUD_115200);
-    //char prefix[] = "Prefix: ";
-    //char fmt[100];
-    //int8_t data;
-    printf("\n\rhi\n\r");
+    cb_enum status = cb_init(rx_buffer, 32);
+    if (status != CB_SUCCESS)
+    {
+	   PRINTF("Error initializing uart receive buffer\n");
+
+    }
+    PRINTF("\nStarting Project 2\n");
     print_data_process_header();
     while(1)
     {
@@ -45,18 +42,9 @@ int main()
 	   {
 		  data_process(rx_buffer);
 
-		  //status = cb_buffer_remove_item(rx_buffer, &data);
-		  //size_t len = sprintf(fmt, "letter %c yo\n\r", data);
-		  //UART_send_n((uint8_t*)fmt, len);
-
-		  //UART_send_n((uint8_t*)prefix, sizeof(prefix));
-		  //UART_send(data);
 		  RGB_RED_TOGGLE();
-		  if (status);
 	   }
     }
-
-    //while(1) {UART_send('1');}
 #endif
 #ifdef PROJECT1
     project1();

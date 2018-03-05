@@ -13,7 +13,6 @@ SOURCES_MAIN = src/main.c
 SOURCES_TEST = test/project1_test.c
 
 SOURCES_KL25Z_C = \
-	src/blink.c \
 	src/port.c \
 	src/uart.c \
 	src/clock.c \

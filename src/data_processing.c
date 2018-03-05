@@ -37,7 +37,7 @@ uint8_t punctuation(uint8_t value) // to check if punctuation
 
 void print_data_process_header(void)
 {
-    PRINTF("-----------------Character Statistics-----------------\n");
+    PRINTF("----------------- Character Statistics -----------------\n");
     PRINTF("--------------------------------------------------------\n");
     PRINTF("Letter\t | Number\t | Punctuation\t | Misc\t | Total\n");
     PRINTF("--------------------------------------------------------\n");
