@@ -48,29 +48,15 @@ int8_t UART_configure(BAUDRATE baudselect)
     return 0;
 }
 
-void polling_tx(const uint8_t *txBuff, uint32_t txSize)
-{
-    while (txSize--)
-    {
-        // Wait until ready to transmit
-        while (!UART0_BRD_S1_TDRE(UART0))
-        {}
-
-        // Transmit character
-        UART0_WR_D(UART0, *txBuff++);
-    }
-}
-
-
 void UART_send(uint8_t data)
 {
-    polling_tx(&data, 1);
-    return;
-
     __disable_irq();
-    while(!(UART0->S1 & UART_S1_TDRE_MASK)); //Waiting for the buffer to get empty ie bit TDRE = 1
+    while(!UART0_BRD_S1_TDRE(UART0)); //Waiting for the buffer to get empty ie bit TDRE = 1
     UART0->D = data; //write data
-    while(!(UART0->S1 & UART_S1_TC_MASK)); //Waiting for transmission to get complete
+    // Alternate data write macro
+	//UART0_WR_D(UART0, data);
+	// Probably don't need to wait for transmit to complete
+    //while(!(UART0->S1 & UART_S1_TC_MASK)); //Waiting for transmission to get complete
     __enable_irq();
 }
 
