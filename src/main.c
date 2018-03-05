@@ -15,6 +15,9 @@
 #ifdef KL25Z
 #include "uart.h"
 #include "blink.h"
+#include "clock.h"
+// Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
+// TODO - check register differences
 #define CLOCK_SETUP 1
 #endif
 
@@ -22,6 +25,7 @@ int main()
 {
 #ifdef KL25Z
    // blink();
+    clock_setup();
 	GPIO_Configure();
 	//UART_configure(BAUD_9600);
 	UART_configure(BAUD_115200);

@@ -16,6 +16,7 @@ SOURCES_KL25Z_C = \
 	src/blink.c \
 	src/port.c \
 	src/uart.c \
+	src/clock.c \
 	src/startup.c \
 	src/system_MKL25Z4.c
 
