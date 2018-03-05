@@ -1,5 +1,6 @@
 
 #include "data_processing.h"
+#include "platform.h"
 
 
 
@@ -34,7 +35,7 @@ uint8_t punctuation(uint8_t value) // to check if punctuation
     }
 }
 
-void data_process(cb_struct *rx_buffer)
+void data_process(cb_struct *buf)
 {
     //variables to keep count
     static uint8_t alphabet= 0;
@@ -43,45 +44,38 @@ void data_process(cb_struct *rx_buffer)
     static uint8_t miscell= 0;
     static uint8_t current_data= 0;
     static uint8_t count = 0;
-    int16_t a = 2000;
+    cb_enum status;
+    while (!cb_is_empty(buf))
     {
-
-
-        cb_enum status;
-	while (a--)
-	{
-        status = cb_buffer_remove_item(rx_buffer, (int8_t*)&current_data);
+        status = cb_buffer_remove_item(buf, (int8_t*)&current_data);
         if (status == CB_SUCCESS)
-	
         {
-
             if(alphabetical(current_data))
             {
-                alphabet++; count++;
+                alphabet++;
 
             }
             else if(numerical(current_data))
             {
-                number++;count++;
+                number++;
             }
             else if(punctuation(current_data))
             {
-                punctuations++;count++;
+                punctuations++;
             }
             else
             {
-                miscell++;count++;
+                miscell++;
             }
-		
-        }}
-
+            count++;
+        }
     }
 
-    printf("---------statistics---------\n");
-    printf("Number of alphabets = %d\n" , alphabet);
-    printf("Number of numbers = %d\n" , number);
-    printf("Number of punctuations = %d\n" , punctuations);
-    printf("Number of miscell char = %d\n" , miscell);
-    printf("Number of char passed = %d\n" , count);
+    PRINTF("---------statistics---------\n");
+    PRINTF("Number of alphabets = %d\n" , alphabet);
+    PRINTF("Number of numbers = %d\n" , number);
+    PRINTF("Number of punctuations = %d\n" , punctuations);
+    PRINTF("Number of miscell char = %d\n" , miscell);
+    PRINTF("Number of char passed = %d\n" , count);
 
 }

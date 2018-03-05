@@ -2,6 +2,7 @@
 #include "MKL25Z4.h"
 #include "MKL25Z4_extension.h"
 #include "circbuf.h"
+#include "port.h"
 
 
 cb_struct *rx_buffer = NULL;
@@ -32,6 +33,7 @@ int8_t UART_configure(BAUDRATE baudselect)
 
     //Enabling RIE Interrupt and the TCIE interrupt now.
     //UART0->C2 |= UART_C2_RIE(1) | UART_C2_TCIE(1);
+    UART0->C2 |= UART_C2_RIE(1);
 
     // Enable UART transmitter and receiver
     UART0_BWR_C2_TE(UART0, 1);
@@ -40,7 +42,7 @@ int8_t UART_configure(BAUDRATE baudselect)
     SIM_BWR_SCGC5_PORTA(SIM, 1); // Enable clock on PORTA for UART
 
     //Enabling the NVIC Interrupt for UART0
-    //NVIC_EnableIRQ(UART0_IRQn);
+    NVIC_EnableIRQ(UART0_IRQn);
 
     PORT_BWR_PCR_MUX(PORTA, 1, 2); // Alternate function 2, UART0_RX
     PORT_BWR_PCR_MUX(PORTA, 2, 2); // Alternate function 2, UART0_TX
@@ -58,6 +60,16 @@ void UART_send(uint8_t data)
 	// Probably don't need to wait for transmit to complete
     //while(!(UART0->S1 & UART_S1_TC_MASK)); //Waiting for transmission to get complete
     __enable_irq();
+    //RGB_BLUE_TOGGLE();
+}
+
+int _write(int fd, const void *buf, size_t count)
+{
+	(void)fd;
+
+    UART_send_n((uint8_t*)buf, count);
+
+	return count;
 }
 
 void UART_send_n(uint8_t* data, size_t length)
@@ -92,6 +104,9 @@ void UART_receive(uint8_t* data)
     }
     __enable_irq();
 }
+
+// Todo - probably best for interrupt receive and polling transmit
+
 void UART_receive_n(uint8_t* data, size_t length)
 {
     __disable_irq();
@@ -110,15 +125,26 @@ void UART_receive_n(uint8_t* data, size_t length)
 void UART0_IRQHandler()
 {
     cb_enum status;
-    if((UART0->S1 & UART_S1_RDRF_MASK)&&(UART0->C2 & UART_C2_RIE_MASK))
-    {                       //Interrupt caused by receiver
+    //if((UART0->S1 & UART_S1_RDRF_MASK)&&(UART0->C2 & UART_C2_RIE_MASK))
+    // Don't need to check UART_C2_RIE, this is a configuration reg that we set once
+    //if (UART0->S1 & UART_S1_RDRF_MASK)
+    if (UART0_BRD_S1_RDRF(UART0))
+    {
+        RGB_BLUE_TOGGLE();
+        // Can probably directly check what triggered interrupt another way
+        //Interrupt caused by receiver
         int8_t data = UART0->D;
+
+        //UART_send(data);
+
         cb_enum status = cb_buffer_add_item(rx_buffer, data);
 
-        if (status == CB_SUCCESS)
-        {
-            //UART0->D = data;
-        }
+        if (status);
+
+        //if (status == CB_SUCCESS)
+        //{
+        //    //UART0->D = data;
+        //}
     }
     else if ((UART0->S1 & UART_S1_TC_MASK)&& (UART0->C2 & UART_C2_TCIE_MASK))
     {                 //Interrupt caused by transmitter

@@ -10,6 +10,7 @@
 #include "data.h"
 #include "platform.h"
 #include "data_processing.h"
+#include "circbuf.h"
 #include <unistd.h>
 #ifdef KL25Z
 #include "uart.h"
@@ -24,12 +25,37 @@
 int main()
 {
 #ifdef KL25Z
-   // blink();
+    // blink();
     clock_setup();
-	GPIO_Configure();
-	//UART_configure(BAUD_9600);
-	UART_configure(BAUD_115200);
-	while(1) {UART_send('1');}
+    GPIO_Configure();
+    //while(1) RGB_RED_TOGGLE();
+    //UART_configure(BAUD_9600);
+    cb_enum status;
+    rx_buffer = malloc(sizeof(cb_struct));
+    status = cb_init(rx_buffer, 32);
+    UART_configure(BAUD_115200);
+    //char prefix[] = "Prefix: ";
+    //char fmt[100];
+    //int8_t data;
+    printf("hi\n\r");
+    while(1)
+    {
+	   if (!cb_is_empty(rx_buffer))
+	   {
+		  data_process(rx_buffer);
+
+		  //status = cb_buffer_remove_item(rx_buffer, &data);
+		  //size_t len = sprintf(fmt, "letter %c yo\n\r", data);
+		  //UART_send_n((uint8_t*)fmt, len);
+
+		  //UART_send_n((uint8_t*)prefix, sizeof(prefix));
+		  //UART_send(data);
+		  RGB_RED_TOGGLE();
+		  if (status);
+	   }
+    }
+
+    //while(1) {UART_send('1');}
 #endif
 #ifdef PROJECT1
     project1();
@@ -37,10 +63,10 @@ int main()
     print_stdint_type_sizes();
     print_pointer_sizes();
     uint32_t i = 0x12345678;
-    PRINTF("pre swap 0x%x\n", i);
+    PRINTF("pre swap 0x%lx\n", i);
     determine_endianness();
     swap_data_endianness((uint8_t*)&i, sizeof(i));
-    PRINTF("post swap 0x%x\n", i);
+    PRINTF("post swap 0x%lx\n", i);
 #endif
     /*char string[2000];
     printf("Enter String");

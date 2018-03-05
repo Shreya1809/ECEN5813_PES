@@ -12,7 +12,10 @@
 
 
 #ifdef KL25Z
-  #define PRINTF(...)
+  // overwrote _write() to give KL25Z printf
+  #include <stdio.h>
+  #define PRINTF(...) printf( __VA_ARGS__ )
+  //#define PRINTF(...)
 #else
   #include <stdio.h>
   #define PRINTF(...) printf( __VA_ARGS__ )

@@ -48,5 +48,6 @@ void UART_send_n(uint8_t* data, size_t length);
 void UART_receive(uint8_t* data);
 void UART_receive_n(uint8_t* data, size_t length);
 void UART0_IRQHandler();
+int _write(int fd, const void *buf, size_t count);
 
 #endif //__UART_H__
