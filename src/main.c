@@ -23,7 +23,8 @@ int main()
 #ifdef KL25Z
    // blink();
 	GPIO_Configure();
-	UART_configure(BAUD_9600);
+	//UART_configure(BAUD_9600);
+	UART_configure(BAUD_115200);
 	while(1) {UART_send('1');}
 #endif
 #ifdef PROJECT1
@@ -43,13 +44,11 @@ int main()
     int j;
     cb_struct my_cb;
     cb_init(&my_cb,100);
-    for (j = 0; string[j] != '\0'; j++) 
+    for (j = 0; string[j] != '\0'; j++)
     {
         cb_buffer_add_item(&my_cb,string[j]);
     }
 	data_process(&my_cb);*/
-    
-   
 
     return 0;
 }

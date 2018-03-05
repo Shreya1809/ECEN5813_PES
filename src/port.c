@@ -18,38 +18,3 @@ void GPIO_Configure()
 	RGB_BLUE_OFF();
 }
 
-
-//Toggle the Red LED state. On to Off, or Off to on.
-void Toggle_Red_LED()
-{
-	PTB->PTOR |= (1 << 18);
-}
-
-//These two functions should use the appropriate GPIO function to toggle the output (PSOR)
-void PORTB_Set(uint8_t bit_num)
-{
-	PTB->PSOR |= (1 << bit_num); //port set output register for portB the given pin number
-}
-void PORTD_Set(uint8_t bit_num)
-{
-	PTD->PSOR |= (1 << bit_num);//port set output register for portD for the given pin number
-}
-//These two functions should use the appropriate GPIO function to toggle the output (PCOR)
-void PORTB_Clear(uint8_t bit_num)
-{
-	PTB->PCOR  |= (1 << bit_num); //pin out clear for corresponding pin in port b
-}
-void PORTD_Clear(uint8_t bit_num)
-{
-	PTD->PCOR  |= (1 << bit_num); //pin out clear for corresponding pin in port d
-}
-
-//These two functions should use the appropriate GPIO function to toggle the output (PTOR)
-void PORTB_Toggle(uint8_t bit_num)
-{
-	PTB->PTOR |= (1 << bit_num); //toggle port b pin bit_num
-}
-void PORTD_Toggle(uint8_t bit_num)
-{
-	PTD->PTOR |= (1 << bit_num);//toggle port b pin bit_num
-}

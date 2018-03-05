@@ -26,9 +26,9 @@
 #define OSR 0x0F
 #define BAUDRATE_ERROR  (-1)
 #define NULL_POINTER_ERROR (-1)
-#define UART_S1_TDRE_MASK (0x80)
-#define UART_S1_RDRF_MASK (0x20)
-#define UART_S1_TC_MASK    (0x40)
+//#define UART_S1_TDRE_MASK (0x80)
+//#define UART_S1_RDRF_MASK (0x20)
+//#define UART_S1_TC_MASK    (0x40)
 
 typedef enum BAUD_RATE
 {
@@ -39,8 +39,8 @@ typedef enum BAUD_RATE
 
 }BAUDRATE;
 
-cb_struct *rx_buffer;
-cb_struct *tx_buffer;
+extern cb_struct *rx_buffer;
+extern cb_struct *tx_buffer;
 
 int8_t UART_configure(BAUDRATE baudselect);
 void UART_send(uint8_t data);
