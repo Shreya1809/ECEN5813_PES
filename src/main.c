@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief source file for main.c
+ * @brief Main program entry point
  * @author Miles Frain
  * @author Shreya Chakraborty
  * @version 1
@@ -26,17 +26,20 @@ int main()
 #ifdef KL25Z
     clock_setup();
     GPIO_Configure();
-    rx_buffer = malloc(sizeof(cb_struct));
     UART_configure(BAUD_115200);
-    cb_enum status = cb_init(rx_buffer, 32);
+#endif
+
+    rx_buffer = malloc(sizeof(cb_struct));
+    cb_enum status = cb_init(rx_buffer, 256);
     if (status != CB_SUCCESS)
     {
-	   PRINTF("Error initializing uart receive buffer\n");
-
+	   PRINTF("Error initializing rx buffer\n");
     }
     PRINTF("\nStarting Project 2\n");
     print_data_process_header();
-    while(1)
+
+#ifdef KL25Z
+    while (1)
     {
 	   if (!cb_is_empty(rx_buffer))
 	   {
@@ -45,7 +48,21 @@ int main()
 		  RGB_RED_TOGGLE();
 	   }
     }
+#else // HOST or BBB
+    char string[2000];
+    while (1)
+    {
+	   printf("Enter String: ");
+	   scanf("%s",string);
+	   for (int j = 0; string[j] != '\0'; j++)
+	   {
+		  cb_buffer_add_item(rx_buffer, string[j]);
+	   }
+	   data_process(rx_buffer);
+    }
 #endif
+
+
 #ifdef PROJECT1
     project1();
     print_cstd_type_sizes();
@@ -57,17 +74,6 @@ int main()
     swap_data_endianness((uint8_t*)&i, sizeof(i));
     PRINTF("post swap 0x%lx\n", i);
 #endif
-    /*char string[2000];
-    printf("Enter String");
-    scanf("%s",string);
-    int j;
-    cb_struct my_cb;
-    cb_init(&my_cb,100);
-    for (j = 0; string[j] != '\0'; j++)
-    {
-        cb_buffer_add_item(&my_cb,string[j]);
-    }
-	data_process(&my_cb);*/
 
     return 0;
 }
