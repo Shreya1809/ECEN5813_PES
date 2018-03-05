@@ -1,0 +1,5 @@
+target remote localhost:7224
+monitor _reset
+load project1.elf
+quit
+
