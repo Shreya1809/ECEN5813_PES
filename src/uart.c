@@ -18,8 +18,8 @@ int8_t UART_configure(BAUDRATE baudselect)
     }
     //selecting the FLL clock source for UART0
     //	/SIM_SOPT2 |= 0x04000000;            // MCGFLLCLK clock
-    SIM->SOPT2 |= SIM_SOPT2_UART0SRC(1);
-    //SIM_BWR_SOPT2_UART0SRC(SIM, 1); // UART0 clock source as MCGFLLCLK clock or MCGPLLCLK/2 clock (div2 in our case from PLLFLLSEL = 1)
+    //SIM->SOPT2 |= SIM_SOPT2_UART0SRC(1);
+    SIM_BWR_SOPT2_UART0SRC(SIM, 1); // UART0 clock source as MCGFLLCLK clock or MCGPLLCLK/2 clock (div2 in our case from PLLFLLSEL = 1)
 
     // TODO This section is different
 #if 0
@@ -32,9 +32,10 @@ int8_t UART_configure(BAUDRATE baudselect)
 #endif
 
     //uart0 clock gate enable
-    SIM->SCGC4 |= SIM_SCGC4_UART0(1); //set bit 10 for uart0
-    //SIM_BWR_SCGC4_UART0(SIM, 1); // enable uart 0 clock in system clock gating control reg
+    //SIM->SCGC4 |= SIM_SCGC4_UART0(1); //set bit 10 for uart0
+    SIM_BWR_SCGC4_UART0(SIM, 1); // enable uart0 clock in system clock gating control reg
 
+#if 0
     // These are probably the default values
     SIM->SOPT5 |= SIM_SOPT5_UART0ODE(0);
     SIM->SOPT5 |= SIM_SOPT5_UART0RXSRC(0);
@@ -46,14 +47,19 @@ int8_t UART_configure(BAUDRATE baudselect)
     UART0->C2 = 0;						//disabling uart 0 before configuration
     UART0->C1 |= UART_C1_M(0) | UART_C1_PE(0); //8 bit data, no parity
     UART0->BDH |= UART_BDH_SBNS(0);   //1 stop bit
+#endif
 
 
 #if 1
-    UART0->C4 |= UART0_C4_OSR(OSR); //setting OSR bit to 15
+    //UART0->C4 |= UART0_C4_OSR(UART_OVERSAMPLING - 1); // Write one less than oversampling value to OSR
+    UART0_BWR_C4_OSR(UART0, UART_OVERSAMPLING - 1); // Write one less than oversampling value to OSR
     //calculation for baud rate selection
-    uint16_t SBR_val = (uint16_t)((((uint32_t)47939584)/(baudselect*16)) & 0x1FFF);
-    UART0->BDL = UART_BDL_SBR(SBR_val);
-    UART0->BDH |= UART_BDH_SBR(SBR_val>>8);
+    //uint16_t SBR_val = (uint16_t)((((uint32_t)47939584)/(baudselect * UART_OVERSAMPLING)) & 0x1FFF);
+    uint16_t baud_rate_divider = 47939584 / (baudselect * UART_OVERSAMPLING);
+    //UART0->BDL = UART_BDL_SBR(SBR_val);
+    //UART0->BDH |= UART_BDH_SBR(SBR_val>>8);
+    UART0_WR_BDL(UART0, baud_rate_divider); // LSB of SBR in BDL reg
+    UART0_BWR_BDH_SBR(UART0, baud_rate_divider >> 8); // Set remaining 4 high bits of SBR
 #else
 
     // Assuming clock source is MCGPLLCLK at 48MHz
@@ -71,28 +77,25 @@ int8_t UART_configure(BAUDRATE baudselect)
     UART0_WR_BDL(UART0, 13); // Just set entire single LSB of SBR in BDL reg
 #endif
 
-
     //Enabling RIE Interrupt and the TCIE interrupt now.
     //UART0->C2 |= UART_C2_RIE(1) | UART_C2_TCIE(1);
 
     //Enabling Rx and TX
-    UART0->C2 |= UART_C2_RE(1) | UART_C2_TE(1);
+    //UART0->C2 |= UART_C2_RE(1) | UART_C2_TE(1);
     // Enable UART transmitter and receiver
-    //UART0_BWR_C2_TE(UART0, 1);
-    //UART0_BWR_C2_RE(UART0, 1);
+    UART0_BWR_C2_TE(UART0, 1);
+    UART0_BWR_C2_RE(UART0, 1);
 
-    SIM_SCGC5 |= 0x00000200;            // enable clock for PORTA
-    //SIM_BWR_SCGC5_PORTA(SIM, 1); // Enable clock on PORTA for UART
-
+    //SIM_SCGC5 |= 0x00000200;            // enable clock for PORTA
+    SIM_BWR_SCGC5_PORTA(SIM, 1); // Enable clock on PORTA for UART
 
     //Enabling the NVIC Interrupt for UART0
     //NVIC_EnableIRQ(UART0_IRQn);
 
-    PORTA_PCR1 |= 0x00000200;            // Select PTA1 as Receive pin
-    PORTA_PCR2 |= 0x00000200;            // Select PTA2 as Transmit pin
-    //PORT_BWR_PCR_MUX(PORTA, 1, 2); // Alternate function 2, UART0_RX
-    //PORT_BWR_PCR_MUX(PORTA, 2, 2); // Alternate function 2, UART0_TX
-
+    //PORTA_PCR1 |= 0x00000200;            // Select PTA1 as Receive pin
+    //PORTA_PCR2 |= 0x00000200;            // Select PTA2 as Transmit pin
+    PORT_BWR_PCR_MUX(PORTA, 1, 2); // Alternate function 2, UART0_RX
+    PORT_BWR_PCR_MUX(PORTA, 2, 2); // Alternate function 2, UART0_TX
 
     return 0;
 }

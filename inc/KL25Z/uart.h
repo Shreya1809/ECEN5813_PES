@@ -23,7 +23,7 @@
  */
 
 
-#define OSR 0x0F
+#define UART_OVERSAMPLING 16
 #define BAUDRATE_ERROR  (-1)
 #define NULL_POINTER_ERROR (-1)
 //#define UART_S1_TDRE_MASK (0x80)
