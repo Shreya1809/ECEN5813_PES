@@ -15,6 +15,7 @@
  * "static" inline not necessary, since we aren't using local static vars in these functions
  */
 
+#include <stdint.h>
 #ifndef __PORT_H__
 #define __PORT_H__
 
@@ -22,17 +23,17 @@
 #define RGB_GREEN_PIN (19)
 #define RGB_BLUE_PIN (1)
 
-#define RGB_GREEN_ON() (PORTB_Set( RGB_GREEN_PIN ))
-#define RGB_GREEN_OFF() (PORTB_Clear( RGB_GREEN_PIN ))
+#define RGB_GREEN_ON() (PORTB_Clear( RGB_GREEN_PIN ))
+#define RGB_GREEN_OFF() (PORTB_Set( RGB_GREEN_PIN ))
 #define RGB_GREEN_TOGGLE() (PORTB_Toggle( RGB_GREEN_PIN ))
 
-#define RGB_RED_ON() (PORTB_Set( RGB_RED_PIN ))
-#define RGB_RED_OFF() (PORTB_Clear( RGB_RED_PIN ))
+#define RGB_RED_ON() (PORTB_Clear( RGB_RED_PIN ))
+#define RGB_RED_OFF() (PORTB_Set( RGB_RED_PIN ))
 #define RGB_RED_TOGGLE() (PORTB_Toggle( RGB_RED_PIN ))
 
-#define RGB_BLUE_ON() (PORTB_Set( RGB_BLUE_PIN ))
-#define RGB_BLUE_OFF() (PORTB_Clear( RGB_BLUE_PIN ))
-#define RGB_BLUE_TOGGLE() (PORTB_Toggle( RGB_BLUE_PIN ))
+#define RGB_BLUE_ON() (PORTD_Clear( RGB_BLUE_PIN ))
+#define RGB_BLUE_OFF() (PORTD_Set( RGB_BLUE_PIN ))
+#define RGB_BLUE_TOGGLE() (PORTD_Toggle( RGB_BLUE_PIN ))
 
 inline void GPIO_Configure();
 inline void Toggle_Red_LED(); // Todo redundant compared to macro?

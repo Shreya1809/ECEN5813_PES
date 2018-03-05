@@ -11,15 +11,20 @@
 #include "platform.h"
 #include "data_processing.h"
 #include <unistd.h>
+#include "port.h"
 #ifdef KL25Z
+#include "uart.h"
 #include "blink.h"
-
+#define CLOCK_SETUP 1
 #endif
 
 int main()
 {
 #ifdef KL25Z
-    blink();
+   // blink();
+	GPIO_Configure();
+	UART_configure(BAUD_9600);
+	while(1) {UART_send('1');}
 #endif
 #ifdef PROJECT1
     project1();
@@ -32,7 +37,7 @@ int main()
     swap_data_endianness((uint8_t*)&i, sizeof(i));
     PRINTF("post swap 0x%x\n", i);
 #endif
-    char string[2000];
+    /*char string[2000];
     printf("Enter String");
     scanf("%s",string);
     int j;
@@ -42,7 +47,7 @@ int main()
     {
         cb_buffer_add_item(&my_cb,string[j]);
     }
-	data_process(&my_cb);
+	data_process(&my_cb);*/
     
    
 
