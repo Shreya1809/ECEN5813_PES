@@ -77,7 +77,7 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
     {
         status = CB_NULL_ERROR;
     }
-    else if (status == CB_ALLOCATION_FAILURE || status == CB_FULL_ERROR)
+    else if (cb_is_full(ptr) == 1)
     {
         status = CB_FULL_ERROR;
     }

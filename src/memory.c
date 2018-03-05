@@ -76,11 +76,12 @@ uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)
 {
     if((src != NULL) && (dst != NULL) && (length > 0))
     {
+	uint8_t * dst_copy = dst;
         while(length--)
         {
             *dst++ = *src++;
         }
-        return dst;
+        return dst_copy;
     }
     else return 0;
 }
@@ -92,13 +93,14 @@ uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)
 
     if(src != NULL && (length >0))
     {
+	uint8_t *src_copy = src;
         while(length!=0)
         {
             *src = value;
             src++;
             length--;
         }
-        return src;
+        return src_copy;
     }
     else return 0;
 }
@@ -109,13 +111,14 @@ uint8_t *my_memzero(uint8_t *src, size_t length)
 {
     if(src != NULL &&  (length > 0))
     {
+	uint8_t *src_copy = src;
         while(length!=0) //while length is not zero, execute loop
         {
             *src = 0;
             src++;
             length--;
         }
-        return src;
+        return src_copy;
     }
     else return 0;
 }

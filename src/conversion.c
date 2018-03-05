@@ -14,13 +14,14 @@
 int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base)
 {
     int32_t sign = 0, i = 0, result = 0;
-    if(*ptr == '-')
+    
+    if (ptr != NULL && digits >= 0 && base != 0)
+    {
+	if(*ptr == '-')
     {
         sign = 1; //set sign flag
         i++;
     }
-    if (ptr != NULL && digits >= 0 && base != 0)
-    {
         while((*(ptr+i)!= '\0') && (i < digits))
         {
             if((*(ptr+i)>= '0') && (*(ptr+i) <= '9')) //if the character is within 0 to 9
@@ -49,12 +50,13 @@ uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)
     uint32_t sign = 0, i = 0, remainder = 0; // flag for sign
     uint8_t length = 0;
 
+
     if (data < 0) //data is negative
     {
         data = data * -1; // takes the absolute value of data
         sign = 1; // set sign flag
     }
-    if (ptr != 0 && data >= 0 && base != 0)
+    if (ptr != 0 && data > 0 && base != 0)
     {
         while(data)
         {
@@ -70,9 +72,16 @@ uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)
         // the reversal of string to get the final ouput as the loop gives us values from the last ie from lsb
         ptr = my_reverse(ptr,length);
         *(ptr+i) ='\0'; //null character for the end of string
-        return length;//returns length of array
+        //return length;//returns length of array
     }
-    else return 0;
+    else if(data == 0)
+{ 
+	remainder = data % base; //stores the remainder
+            *(ptr+i) = (remainder > 9)?(remainder -10) + 'A' : remainder + '0';
+            data = data/base; //stores the quotient
+            i++;length++;	
+}
+    return length;
 }
 
 

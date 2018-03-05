@@ -18,7 +18,7 @@
 /**
  * @brief :function to convert ascii string back to 32 bit integer and copy to the pointer address. 
  * @param ptr: pointer to location where the output will be copied
- * @param digits: input ascii string
+ * @param digits: size of input ascii string
  * @param base: base for conversion 
  * @return :length of data converted
  */
