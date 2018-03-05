@@ -63,11 +63,25 @@ void UART_send(uint8_t data)
     //RGB_BLUE_TOGGLE();
 }
 
-int _write(int fd, const void *buf, size_t count)
+int _write(int fd, const void *buf, size_t len)
 {
 	(void)fd;
 
-    UART_send_n((uint8_t*)buf, count);
+    // Don't think interrupts need to be disabled for this
+    //UART_send_n((uint8_t*)buf, len);
+
+    // Improved version where carriage return added to every newline
+    size_t count = 0; // actual number of transmitted chars
+    while (len--)
+    {
+        if (*(uint8_t*)buf == '\n')
+        {
+            UART_send('\r');
+            count++;
+        }
+        UART_send(*(uint8_t*)buf++);
+        count++;
+    }
 
 	return count;
 }
