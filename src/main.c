@@ -37,7 +37,8 @@ int main()
     //char prefix[] = "Prefix: ";
     //char fmt[100];
     //int8_t data;
-    printf("hi\n\r");
+    printf("\n\rhi\n\r");
+    print_data_process_header();
     while(1)
     {
 	   if (!cb_is_empty(rx_buffer))
