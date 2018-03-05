@@ -1,3 +1,12 @@
+/**
+ * @file project_test.c
+ * @brief CMocka unit tests
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

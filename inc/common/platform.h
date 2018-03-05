@@ -10,15 +10,18 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+#include <stdio.h>
 
 #ifdef KL25Z
+  #include "MKL25Z4.h"
   // overwrote _write() to give KL25Z printf
-  #include <stdio.h>
   #define PRINTF(...) printf( __VA_ARGS__ )
-  //#define PRINTF(...)
+  #define BEGIN_CRITICAL __disable_irq()
+  #define END_CRITICAL __disable_irq()
 #else
-  #include <stdio.h>
   #define PRINTF(...) printf( __VA_ARGS__ )
+  #define BEGIN_CRITICAL
+  #define END_CRITICAL
 #endif
 
 #endif

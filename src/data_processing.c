@@ -1,7 +1,18 @@
+/**
+ * @file data_processing.c
+ * @brief Character counting and statistics functions
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #include <stdint.h>
 #include "circbuf.h"
 #include "platform.h"
+#ifdef KL25Z
 #include "uart.h"
+#endif
 
 uint8_t alphabetical(uint8_t value) // to check if alphabet
 {

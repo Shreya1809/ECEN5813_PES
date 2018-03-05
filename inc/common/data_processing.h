@@ -1,3 +1,12 @@
+/**
+ * @file data_processing.h
+ * @brief Shows character statistics
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #ifndef __DATA_PROCESSING_H__
 #define __DATA_PROCESSING_H__
 

@@ -10,7 +10,7 @@ SOURCES_COMMON = \
 # Must keep main() functions separate between main.c and test
 SOURCES_MAIN = src/main.c
 
-SOURCES_TEST = test/project1_test.c
+SOURCES_TEST = test/project_test.c
 
 SOURCES_KL25Z_C = \
 	src/port.c \

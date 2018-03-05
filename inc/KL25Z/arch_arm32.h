@@ -57,8 +57,9 @@ __attribute__((always_inline)) uint32_t ARM32_CCR_enable_unaligned_access_trap()
 
 static inline void ARM32_create_unaligned_access_trap()
 {
-    //TO DO 
     /* Perform an unaligned read/access */
+    uint32_t data[2];
+    uint32_t element = *((uint32_t*)(((uint8_t*)data) + 1))
 }
 
 static inline void ARM32_create_divide_by_zero_trap()

@@ -1,3 +1,12 @@
+/**
+ * @file clock.c
+ * @brief Clock setup functions
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #include "MKL25Z4.h"
 #include "MKL25Z4_extension.h"
 

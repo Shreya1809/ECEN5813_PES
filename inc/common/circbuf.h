@@ -100,7 +100,6 @@ static inline int cb_is_full(cb_struct *ptr)
 {
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
-        // TODO
         return -1; // Evaluates to True / Full
     }
     else if ((ptr->tail == ptr->head + 1) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full

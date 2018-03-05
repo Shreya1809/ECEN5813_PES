@@ -1,3 +1,12 @@
+/**
+ * @file uart.c
+ * @brief UART functions for transmit and receive
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #include "uart.h"
 #include "MKL25Z4.h"
 #include "MKL25Z4_extension.h"

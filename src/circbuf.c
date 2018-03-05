@@ -1,11 +1,17 @@
+/**
+ * @file circbuf.c
+ * @brief Circular buffer functions
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
 
 #include <circbuf.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "memory.h"
-
-#define START_CRITICAL()
-#define END_CRITICAL()
+#include "platform.h"
 
 /*initialisation and allocation of dynamic memory*/
 cb_enum cb_init(cb_struct *ptr, size_t length)
@@ -47,6 +53,7 @@ cb_enum cb_init(cb_struct *ptr, size_t length)
 /*The functions takes in a pointer to the circular buffer to be destroyed by deallocating using free*/
 cb_enum cb_destroy(cb_struct *ptr)
 {
+    BEGIN_CRITICAL;
     cb_enum status;
     if (ptr == NULL) //check for null pointer
     {
@@ -65,6 +72,7 @@ cb_enum cb_destroy(cb_struct *ptr)
         ptr->count = 0;
         status = CB_SUCCESS;
     }
+    END_CRITICAL;
     return status;
 
 }
@@ -72,6 +80,7 @@ cb_enum cb_destroy(cb_struct *ptr)
 /*function to add items to the buffer*/
 cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
 {
+    BEGIN_CRITICAL;
     cb_enum status = CB_SUCCESS;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
@@ -95,6 +104,7 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
         ptr->count++;
         status = CB_SUCCESS;
     }
+    END_CRITICAL;
     return status;
 
 }
@@ -102,35 +112,38 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
 /*function to remove items from buffer*/
 cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t *data_remove)
 {
+    BEGIN_CRITICAL;
     cb_enum status = CB_SUCCESS;
     if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
     {
         status = CB_NULL_ERROR;
     }
-	
-    status = cb_is_empty(ptr);
-    if (status == 0)
+
+    if (cb_is_empty(ptr))
     {
-    
-    	 if(ptr->tail == ptr->buffer + ptr->size -1) //wrap around situation, tail to wrap around to base when at the end
-    	 {	
-		*data_remove = *(ptr->tail);
-		*(ptr->tail) = 0;
-		ptr->tail = ptr-> buffer;
-		ptr->count--;
-		status = CB_SUCCESS;
-	 }
-	 else
-	 {// buffer has full spaces, hence increment the tail to the next buffer location
-		*data_remove = *(ptr->tail);
-		*(ptr->tail) = 0;
-		ptr->tail++;
-		ptr->count--;
-		status = CB_SUCCESS;
-	 }
-    return status;
+        status = CB_EMPTY_ERROR;
     }
-    else return CB_EMPTY_ERROR;
+    else
+    {
+        if(ptr->tail == ptr->buffer + ptr->size -1) //wrap around situation, tail to wrap around to base when at the end
+        {
+            *data_remove = *(ptr->tail);
+            *(ptr->tail) = 0;
+            ptr->tail = ptr-> buffer;
+            ptr->count--;
+            status = CB_SUCCESS;
+        }
+        else
+        {// buffer has full spaces, hence increment the tail to the next buffer location
+            *data_remove = *(ptr->tail);
+            *(ptr->tail) = 0;
+            ptr->tail++;
+            ptr->count--;
+            status = CB_SUCCESS;
+        }
+    }
+    END_CRITICAL;
+    return status;
 }
 
 /*function to peek into buffer*/
@@ -157,16 +170,4 @@ cb_enum cb_peek(cb_struct *ptr, int8_t position, int8_t *data)
     }
     return status;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 

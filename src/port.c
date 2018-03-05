@@ -1,3 +1,12 @@
+/**
+ * @file port.c
+ * @brief GPIO management
+ * @author Miles Frain
+ * @author Shreya Chakraborty
+ * @version 1
+ * @date 2018-03-04
+ */
+
 #include "port.h"
 #include"MKL25Z4.h"
 

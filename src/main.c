@@ -23,10 +23,13 @@
 
 int main()
 {
+#ifdef PROJECT2
 #ifdef KL25Z
     clock_setup();
     GPIO_Configure();
     UART_configure(BAUD_115200);
+#else
+    cb_struct* rx_buffer; // defined by uart otherwise
 #endif
 
     rx_buffer = malloc(sizeof(cb_struct));
@@ -52,7 +55,7 @@ int main()
     char string[2000];
     while (1)
     {
-	   printf("Enter String: ");
+	   printf("\nEnter String: ");
 	   scanf("%s",string);
 	   for (int j = 0; string[j] != '\0'; j++)
 	   {
@@ -60,7 +63,8 @@ int main()
 	   }
 	   data_process(rx_buffer);
     }
-#endif
+#endif // platform
+#endif // PROJECT2
 
 
 #ifdef PROJECT1
