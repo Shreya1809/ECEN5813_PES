@@ -135,14 +135,21 @@ $(TARGET_FILE).srec : $(TARGET_FILE).elf
 %.srec: %.elf
 	$(OBJCOPY) -O srec $< $@
 
-upload: $(TARGET_FILE).srec
 ifeq ($(PLATFORM),KL25Z)
+upload: $(TARGET_FILE).srec
 	$(warning KL25Z platform upload)
 	echo uploading $^
 	cp $^ /media/$(USER)/FRDM-KL25Z
 else ifeq ($(PLATFORM),$(filter $(PLATFORM),HOST BBB))# HOST or BBB
+upload: $(TARGET_FILE).elf
 	$(warning HOST or BBB platform)
-	scp $(TARGET_FILE).elf root@192.168.7.2:/home/debian/bin
+	# If this doesn't work, try the following command
+	# sudo dhclient enx544a16e6786e
+	# https://groups.google.com/forum/#!topic/beagleboard/a6PiVmnL_OU
+
+	# Having trouble CD-ing to directory after SSH connection,
+	# so just copying to /root instead of /home/debian/bin
+	scp $(TARGET_FILE).elf root@192.168.7.2:/root
 	ssh -o LocalCommand="cd /home/debian/bin" root@192.168.7.2
 endif
 
