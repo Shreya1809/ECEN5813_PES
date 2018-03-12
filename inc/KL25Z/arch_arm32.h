@@ -35,44 +35,41 @@
 #define __CCR_DIVIDE_BY_ZERO_TRAP_MASK   (0x10)
 
 
-static inline uint32_t ARM32_CCR_get_stack_alignment()
+__attribute__((always_inline)) uint32_t ARM32_CCR_get_stack_alignment()
 {
     return (uint32_t)(((*CCR)&(__CCR_STK_ALIGNMENT_MASK))>>(__CCR_STK_ALIGNMENT_OFFSET));
 }
 
-static inline uint32_t ARM32_CPUID_get_part_number()
+__attribute__((always_inline)) uint32_t ARM32_CPUID_get_part_number()
 {
-    //return (uint32_t)(((*CPUID)&(__CPUID_PART_NO_MASK))>>(__CPUID_PART_NO_OFFSET));
-    return (uint32_t)(((*CPUID)&(SCB_CPUID_PARTNO_Msk))>>(SCB_CPUID_PARTNO_Pos));
+    return (uint32_t)(((*CPUID)&(__CPUID_PART_NO_MASK))>>(__CPUID_PART_NO_OFFSET));
 }
 
-static inline void ARM32_CCR_enable_divide_by_zero_trap()
+__attribute__((always_inline)) uint32_t ARM32_CCR_enable_divide_by_zero_trap()
 {
-    *CCR |= (1)<<__CCR_DIVIDE_BY_ZERO_TRAP_OFFSET;
+    CCR |= (1)<<__CCR_DIVIDE_BY_ZERO_TRAP_OFFSET;
 }
 
-static inline void ARM32_CCR_enable_unaligned_access_trap()
+__attribute__((always_inline)) uint32_t ARM32_CCR_enable_unaligned_access_trap()
 {
-    *CCR |= (1)<<__CCR_STK_ALIGNMENT_OFFSET;
+    CCR |= (1)<<__CCR_STK_ALIGNMENT_OFFSET;
 }
 
 static inline void ARM32_create_unaligned_access_trap()
 {
     /* Perform an unaligned read/access */
     uint32_t data[2];
-    uint32_t element = *((uint32_t*)(((uint8_t*)data) + 1));
-    if(element);
+    uint32_t element = *((uint32_t*)(((uint8_t*)data) + 1))
 }
 
 static inline void ARM32_create_divide_by_zero_trap()
 {
     uint8_t div = 1;
-    uint8_t zero = 0;
-    div = div / zero;
+    div = div/0;
 }
-static inline uint32_t ARM32_AIRCR_get_endianness_setting()
+__attribute__((always_inline)) uint32_t ARM32_AIRCR_get_endianness_setting()
 {
 	return ((__AIRCR & __AIRCR_ENDIANNESS_MASK)>>__AIRCR_ENDIANNESS_OFFSET);
 }
 
-//static inline uint32_t ARM32_AIRCR_get_endianness_setting();
+//__attribute__((always_inline)) uint32_t ARM32_AIRCR_get_endianness_setting();

@@ -153,7 +153,7 @@ void UART0_IRQHandler()
     //if (UART0->S1 & UART_S1_RDRF_MASK)
     if (UART0_BRD_S1_RDRF(UART0))
     {
-        //RGB_BLUE_TOGGLE();
+        RGB_BLUE_TOGGLE();
         // Can probably directly check what triggered interrupt another way
         //Interrupt caused by receiver
         int8_t data = UART0->D;

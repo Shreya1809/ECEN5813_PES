@@ -48,7 +48,7 @@ int main()
 	   {
 		  data_process(rx_buffer);
 
-		  //RGB_RED_TOGGLE();
+		  RGB_RED_TOGGLE();
 	   }
     }
 #else // HOST or BBB

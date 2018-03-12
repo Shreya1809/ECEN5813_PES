@@ -12,8 +12,6 @@
 #include "platform.h"
 #ifdef KL25Z
 #include "uart.h"
-#include "port.h"
-#include "arch_arm32.h"
 #endif
 
 uint8_t alphabetical(uint8_t value) // to check if alphabet
@@ -56,27 +54,6 @@ void print_data_process_header(void)
     PRINTF("--------------------------------------------------------\n");
 }
 
-
-/*
-#define NUM_LEDS 3
-uint8_t LED_PINS[] = {
-    RGB_GREEN_PIN,
-    RGB_RED_PIN,
-    RGB_BLUE_PIN
-};
-__O  uint32_t led_off[] = {
-    PTB->PSOR,
-    PTB->PSOR,
-    PTD->PSOR,
-};
-
-__O  uint32_t led_on[] = {
-    PTB->PSOR,
-    PTB->PSOR,
-    PTD->PSOR,
-};
-*/
-
 void data_process(cb_struct *buf)
 {
     //variables to keep count
@@ -91,77 +68,6 @@ void data_process(cb_struct *buf)
         cb_enum status = cb_buffer_remove_item(buf, (int8_t*)&current_data);
         if (status == CB_SUCCESS)
         {
-
-#ifdef KL25Z
-            static uint8_t current_led_index = 0;
-            static uint8_t current_led_on = 0;
-            switch (current_data)
-            {
-                case 'a':
-                {
-                    // LED on
-                    current_led_on = 1;
-                    switch (current_led_index)
-                    {
-                        case 0: RGB_RED_ON(); break;
-                        case 1: RGB_GREEN_ON(); break;
-                        case 2: RGB_BLUE_ON(); break;
-                    }
-                    break;
-                }
-                case 'b':
-                {
-                    // LED off
-                    current_led_on = 0;
-                    switch (current_led_index)
-                    {
-                        case 0: RGB_RED_OFF(); break;
-                        case 1: RGB_GREEN_OFF(); break;
-                        case 2: RGB_BLUE_OFF(); break;
-                    }
-                    break;
-                }
-                case 'c':
-                {
-                    // turn off existing LED if it is on
-                    if (current_led_on)
-                    {
-                        switch (current_led_index)
-                        {
-                            case 0: RGB_RED_OFF(); break;
-                            case 1: RGB_GREEN_OFF(); break;
-                            case 2: RGB_BLUE_OFF(); break;
-                        }
-                    }
-
-                    // change LED
-                    current_led_index++;
-                    if (current_led_index >= 3)
-                    {
-                        current_led_index = 0;
-                    }
-
-                    // Turn on new led if necessary
-                    if (current_led_on)
-                    {
-                        switch (current_led_index)
-                        {
-                            case 0: RGB_RED_ON(); break;
-                            case 1: RGB_GREEN_ON(); break;
-                            case 2: RGB_BLUE_ON(); break;
-                        }
-                    }
-                    break;
-                }
-
-                case 'g':
-                {
-                    // Print part number
-                    PRINTF("\nPart number %d\n", ARM32_CPUID_get_part_number());
-                }
-#endif // KL25Z
-
-            }
             if(alphabetical(current_data))
             {
                 alphabet++;
