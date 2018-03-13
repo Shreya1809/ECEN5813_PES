@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build host test"
+            "preLaunchTask": "build host project"
         },
         {
             "name": "(gdb) host test",
