@@ -7,6 +7,7 @@
  * @date 2018-02-10
  */
 #include "project1.h"
+#include "profiler.h"
 #include "data.h"
 #include "platform.h"
 #include "data_processing.h"
@@ -23,6 +24,10 @@
 
 int main()
 {
+#ifdef PROJECT3
+    bbb_profile_option(1);
+#endif
+
 #ifdef PROJECT2
 #ifdef KL25Z
     clock_setup();

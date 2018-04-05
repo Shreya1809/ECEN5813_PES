@@ -5,6 +5,7 @@ SOURCES_COMMON = \
 	src/conversion.c \
 	src/circbuf.c \
 	src/project1.c \
+	src/profiler.c \
 	src/data_processing.c
 
 # Must keep main() functions separate between main.c and test
