@@ -8,7 +8,7 @@
 void SPI_init();
 
 /*Reads a single byte from the SPI bus*/ 
-void SPI_read_byte(uint8_t byte);
+void SPI_read_byte(uint8_t *byte);
 
 /*Sends a single byte on the SPI bus*/
 void SPI_write_byte(uint8_t byte);

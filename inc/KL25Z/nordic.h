@@ -34,11 +34,15 @@
 #define nrf_CHANNEL_FREQ_MASK   (0x03)
 #define nrf_SET_LAN_GAIN_MASK   (0x01)
 
+//read write register
+#define READ_INST 0x00
+#define WRITE_INST 0x20
+
 /*Read the register and return the value*/
-uint8_t nrf_read_register(uint8_t register);
+uint8_t nrf_read_register(uint8_t reg);
 
 /*Write to the given register with the data.*/
-void nrf_write_register(uint8_t register, uint8_t value);
+void nrf_write_register(uint8_t reg, uint8_t value);
 
 /*Reads the STATUS register*/
 uint8_t nrf_read_status();

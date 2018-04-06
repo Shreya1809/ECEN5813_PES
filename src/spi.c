@@ -19,25 +19,24 @@ SPI0_BR |= SPI_BR_SPPR(0) | SPI_BR_SPR(2);//Baud Rate Prescalar as 1 and the Bau
 }
 
 /*Reads a single byte from the SPI bus*/ 
-uint8_t SPI_read_byte(uint8_t byte)
+void SPI_read_byte(uint8_t *byte)
 {
-	// Wait until receive data buffer is full
+	if(byte !=NULL)
+	{	// Wait until receive data buffer is full
         	while ((SPI0_S & SPI_S_SPRF_MASK) == 0);
-		byte = SPI0_D; // Read data from SPI Data register
-		return byte;
+		*byte = SPI0_D; // Read data from SPI Data register
+	}
 }
 
 /*Sends a single byte on the SPI bus*/
 void SPI_write_byte(uint8_t byte)
 {
 
-	
 	      while((SPI0_S & SPI_S_SPTEF_MASK)== 0);// Wait untill data buffer is full
 	      SPI0_D = byte; // Write data to SPI Data register 
 	
 
 }
-
 /*Sends numerous SPI Bytes given a pointer to a byte array and a length of how many
 bytes to send.*/
 void SPI_send_packet(uint8_* p, size_t length)
@@ -48,8 +47,7 @@ int i=0;
 		
 		for(i=0;i<length;i++)
 		{
-			 while((SPI0_S & SPI_S_SPTEF_MASK)== 0);// Wait untill data buffer is full
-			SPI0_D = *p++;	
+			SPI_write_byte((p+i)); 
 		}
 
 	}
