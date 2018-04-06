@@ -40,8 +40,8 @@ void kl25z_profile_option( uint8_t number)
 		x[k]= 2;
 	}
 
-	source = &a[0];
-	dest =&a[4999];
+	source = &x[0];
+	dest =&x[4999];
 
 	if(number == 1)
 	{
