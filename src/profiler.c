@@ -1,6 +1,6 @@
 
 #include "profiler.h"
-
+#include "uart.h"
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
@@ -9,7 +9,7 @@
 
 const size_t byte_length[4]={10,100,1000,5000};
 const size_t size[3] = {1,2,4};
-//size_t start, end, diff;
+size_t start, end, diff;
 #ifdef KL25Z
 
 #include "dma.h"
@@ -23,6 +23,7 @@ SysTick-> LOAD |= SysTick_LOAD_RELOAD_Msk; //load value is 0X00FFFFFF which is t
 SysTick-> CTRL |= (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk); //counter enabled, processor clock
 SysTick -> VAL = 0;
 //begin = SysTick->VAL;
+
 }
 
 
@@ -111,6 +112,7 @@ void kl25z_profile_option( uint8_t number)
 
 		//get statistics for all kl25z execution times
 	}
+}
 #else
 
 void bbb_profile_option( uint8_t number)

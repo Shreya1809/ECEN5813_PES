@@ -5,7 +5,7 @@
 #include "MKL25Z4.h"
 #include <stdint.h>
 
-mem_enum memmove(uint8_t * src, uint8_t * dst, size_t length)
+/*mem_enum memmove(uint8_t * src, uint8_t * dst, size_t length)
 {
     mem_enum return_status = NO_ERROR;
     int8_t i;
@@ -75,7 +75,7 @@ mem_enum memmove_overlap(uint8_t * src, uint8_t * dst, size_t length)
     }
     return return_status;
 }
-
+*/
 mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
 {
     __disable_irq();

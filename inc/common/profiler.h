@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #ifdef KL25Z
-extern const size_t byte_lengths[4];
+//extern const size_t byte_lengths[4];
 
 void systick();
 void kl25z_profile_option( uint8_t number);
