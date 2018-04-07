@@ -29,6 +29,7 @@ int main()
 #ifdef PROJECT3
 #ifdef KL25Z
     kl25z_profile_option(1);
+    SPI_write_byte(10);
     nrf_read_rf_setup();
 #else 
     bbb_profile_option(1);
