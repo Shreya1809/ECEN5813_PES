@@ -1,11 +1,11 @@
 
 #include "profiler.h"
-#include "uart.h"
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <sys/time.h>
 #include "memory.h"
+
 
 const size_t byte_length[4]={10,100,1000,5000};
 const size_t size[3] = {1,2,4};
@@ -15,7 +15,7 @@ size_t start, end, diff;
 #include "dma.h"
 #include "memory_dma.h"
 #include "MKL25Z4.h"
-
+#include "uart.h"
 
 void systick()
 {

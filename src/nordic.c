@@ -67,10 +67,10 @@ void nrf_read_TX_ADDR(uint8_t * address)
 	nrf_chip_enable();
 	SPI_write_byte(nrf_TX_ADDR | READ_INST);
 	SPI_read_byte(p);
-	for (i=0; i<6; i++)                          // Writes to the 5 byte TX_ADDR register
+	for (int i=0; i<6; i++)                          // Writes to the 5 byte TX_ADDR register
 		for (i = 0; i<6; i++)                          // Reads the 5 bytes of the TX_ADDR register
 		{
-		SPI_write_byte(NOP);
+		SPI_write_byte(nrf_NOP);
 		SPI_read_byte(address);
 		address++;
 		}
@@ -80,11 +80,12 @@ void nrf_read_TX_ADDR(uint8_t * address)
 /* Writes the 5 byte TX_ADDR register*/
 void nrf_write_TX_ADDR(uint8_t * tx_addr)
 {
+	int i = 0;
 	uint8_t *p = (uint8_t *)malloc(sizeof(uint8_t));
 	nrf_chip_enable();
 	SPI_write_byte(nrf_TX_ADDR | WRITE_INST);
 	SPI_read_byte(p);
-	for (i=0; i<6; i++)                          // Writes to the 5 byte TX_ADDR register
+	while (i<6)                          // Writes to the 5 byte TX_ADDR register
 		{
 		SPI_write_byte(*tx_addr);
 		tx_addr++;

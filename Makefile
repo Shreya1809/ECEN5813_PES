@@ -13,7 +13,7 @@ CFLAGS := -Wall -Werror -g -O0 -std=gnu99 -MMD -DPROJECT3 -DVERBOSE
 CFLAGS += -Wno-format
 INCLUDES := -I inc/common/
 OBJFILES := $(SOURCES_COMMON:.c=.o)
-LDFLAGS := -Wl,-Map=$(TARGET_FILE).map
+LDFLAGS := -Wl,-no-wchar-size-warning,-Map=$(TARGET_FILE).map
 
 # Test Settings
 TEST_OBJFILES := $(SOURCES_TEST:.c=.o)

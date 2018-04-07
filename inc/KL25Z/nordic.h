@@ -3,8 +3,8 @@
 
 
 #include "MKL25Z4.h"
-#include "gpio.h"
-#unclude "spi.h"
+#include "port.h"
+#include "spi.h"
 
 #define  nrf_chip_enable()      GPIOD_PCOR |= (1 << 0);   // Enable NRF chip
 #define  nrf_chip_disable()     GPIOD_PSOR |= (1 << 0);   // Disable NRF chip

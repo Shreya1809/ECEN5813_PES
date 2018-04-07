@@ -2,7 +2,7 @@
 #define __PROFILER_H__
 
 #include <stdint.h>
-
+#define CLOCK_REALTIME     (0)
 #ifdef KL25Z
 //extern const size_t byte_lengths[4];
 

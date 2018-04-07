@@ -94,9 +94,9 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     {
 
         //set source address
-        DMA_SAR0 = src;
+        DMA_SAR0 = (intptr_t) src;
         // Set Destination Address
-        DMA_DAR0 = dst;
+        DMA_DAR0 = (intptr_t) dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
@@ -119,9 +119,9 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
 
         int overlap = src + length - dst; // overlap
         //memmove_overlap(dst, dst + length - overlap, overlap ); //memmove of overlap data
-        DMA_SAR0 = dst;
+        DMA_SAR0 = (intptr_t) dst;
         // Set Destination Address
-        DMA_DAR0 = dst + length - overlap;
+        DMA_DAR0 = (intptr_t) (dst + length - overlap);
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(overlap);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
@@ -130,9 +130,9 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
         DMA_DCR0 |= DMA_DCR_START_MASK;
 
         //memmove_overlap(src, dst, length-overlap ); //memmove of the remaining data
-        DMA_SAR0 = src;
+        DMA_SAR0 = (intptr_t) src;
         // Set Destination Address
-        DMA_DAR0 = dst;
+        DMA_DAR0 =(intptr_t) dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length-overlap );
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
@@ -146,9 +146,9 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     {
 
         //set source address
-        DMA_SAR0 = src;
+        DMA_SAR0 = (intptr_t) src;
         // Set Destination Address
-        DMA_DAR0 = dst;
+        DMA_DAR0 = (intptr_t) dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
@@ -191,9 +191,9 @@ mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
     {	
 
         // Source Address
-        DMA_SAR0 = b;
+        DMA_SAR0 = (intptr_t) b;
         // Destination Address
-        DMA_DAR0 = dst;
+        DMA_DAR0 = (intptr_t) dst;
         // BCR for the length of bytes to transfer
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
@@ -210,9 +210,9 @@ mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
                 *((dst + (length - length%size ))+ i) = data;
             }
         }
-        //else return_status = ERROR;
-        return return_status;
+        //else return_status = ERROR;   
     }
+    return return_status;
 }
 
 

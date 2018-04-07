@@ -18,6 +18,7 @@
 #include "clock.h"
 #include "port.h"
 #include "profiler.h"
+#include "nordic.h"
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
 // TODO - check register differences
 #define CLOCK_SETUP 1
@@ -26,7 +27,12 @@
 int main()
 {
 #ifdef PROJECT3
+#ifdef KL25Z
+    kl25z_profile_option(1);
+    nrf_read_rf_setup();
+#else 
     bbb_profile_option(1);
+#endif
 #endif
 
 #ifdef PROJECT2

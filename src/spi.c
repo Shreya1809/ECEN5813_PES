@@ -4,11 +4,11 @@
 
 
 /*Initializes the SPI controller*/
-void SPI_init();
+void SPI_init()
 {
   SIM->SCGC4 |=  SIM_SCGC4_SPI0_MASK; // clock gate enable for spi
-  SIM->SCGC5 |=  SIM_SCGC5_PORTD_MASK //gpio port d enable
-  SIM->SCGC5 |=  SIM_SCGC5_PORTA_MASK //gpio port a enable
+  SIM->SCGC5 |=  SIM_SCGC5_PORTD_MASK; //gpio port d enable
+  SIM->SCGC5 |=  SIM_SCGC5_PORTA_MASK; //gpio port a enable
 //selecting alternate pin functions for spi 
 PORTD_PCR0 = PORT_PCR_MUX(0x2); //Enable chip select
 PORTD_PCR1 = PORT_PCR_MUX(0x2); //Enable the SPI_SCK function on PTA15
@@ -22,7 +22,7 @@ SPI0_BR |= SPI_BR_SPPR(0) | SPI_BR_SPR(2);//Baud Rate Prescalar as 1 and the Bau
 /*Reads a single byte from the SPI bus*/ 
 void SPI_read_byte(uint8_t *byte)
 {
-	if(byte !=NULL)
+	if(byte != NULL)
 	{	// Wait until receive data buffer is full
         	while ((SPI0_S & SPI_S_SPRF_MASK) == 0);
 		*byte = SPI0_D; // Read data from SPI Data register
@@ -40,15 +40,16 @@ void SPI_write_byte(uint8_t byte)
 }
 /*Sends numerous SPI Bytes given a pointer to a byte array and a length of how many
 bytes to send.*/
-void SPI_send_packet(uint8_* p, size_t length)
+void SPI_send_packet(uint8_t* p, size_t length)
 {
 int i=0;
 	if(p !=NULL && length > 0)
 	{
 		
-		for(i=0;i<length;i++)
+		while(i<length)
 		{
-			SPI_write_byte((p+i)); 
+			SPI_write_byte((uint8_t)(*p)); 
+			p++;
 		}
 
 	}

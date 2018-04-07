@@ -16,13 +16,13 @@ typedef enum  {
   	DST_IN_SRC_OVERLAP,
 }mem_enum;
 
-typedef struct {
+/*typedef struct {
   	uint8_t *src;
   	uint8_t *dst;
   	size_t length;
   	int8_t value;
   	size_t size;
-}mem_struct;
+}mem_struct;*/
 
 
 //mem_enum memmove(uint8_t * src, uint8_t * dst, size_t length);
