@@ -7,12 +7,13 @@
 void SPI_init();
 {
   SIM->SCGC4 |=  SIM_SCGC4_SPI0_MASK; // clock gate enable for spi
+  SIM->SCGC5 |=  SIM_SCGC5_PORTD_MASK //gpio port d enable
   SIM->SCGC5 |=  SIM_SCGC5_PORTA_MASK //gpio port a enable
 //selecting alternate pin functions for spi 
-PORTA_PCR14 = PORT_PCR_MUX(0x2); //Enable chip select
-PORTA_PCR15 = PORT_PCR_MUX(0x2); //Enable the SPI_SCK function on PTA15
-PORTA_PCR16 = PORT_PCR_MUX(0x2); // Enable the SPI_MOSI function on PTA16
-PORTA_PCR17 = PORT_PCR_MUX(0x2);// Enable the SPI_MISO function on PTA17
+PORTD_PCR0 = PORT_PCR_MUX(0x2); //Enable chip select
+PORTD_PCR1 = PORT_PCR_MUX(0x2); //Enable the SPI_SCK function on PTA15
+PORTD_PCR2 = PORT_PCR_MUX(0x2); // Enable the SPI_MOSI function on PTA16
+PORTD_PCR3 = PORT_PCR_MUX(0x2);// Enable the SPI_MISO function on PTA17
 SPI0_C1=0X54;//configured device as master- MSTR=1, enabled spi SPE = 1, First edge on SPSCK at start of first data transfer cycle CPHA=1
 SPI0_C2=0X10;//SPI clocks operate in wait mode
 SPI0_BR |= SPI_BR_SPPR(0) | SPI_BR_SPR(2);//Baud Rate Prescalar as 1 and the Baud Rate Divisor as 4

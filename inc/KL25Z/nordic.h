@@ -4,11 +4,12 @@
 
 #include "MKL25Z4.h"
 #include "gpio.h"
+#unclude "spi.h"
 
-#define  nrf_chip_enable()      GPIOA_PCOR |= (1 << 12);   // Enable NRF chip
-#define  nrf_chip_disable()     GPIOA_PSOR |= (1 << 12);   // Disable NRF chip
-#define  nrf_transmit_enable()  GPIOA_PCOR |= (1 << 13);   // Enable NRF transmission
-#define  nrf_transmit_disable() GPIOA_PSOR |= (1 << 13);   // Disable NRF transmission
+#define  nrf_chip_enable()      GPIOD_PCOR |= (1 << 0);   // Enable NRF chip
+#define  nrf_chip_disable()     GPIOD_PSOR |= (1 << 0);   // Disable NRF chip
+#define  nrf_transmit_enable()  GPIOD_PCOR |= (1 << 5);   // Enable NRF transmission
+#define  nrf_transmit_disable() GPIOD_PSOR |= (1 << 5);   // Disable NRF transmission
 
 //register address map
 #define nrf_CONFIG 		(0x00)
