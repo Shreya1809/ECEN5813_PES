@@ -2,7 +2,7 @@
 
 /*Read the register and return the value*/
 uint8_t nrf_read_register(uint8_t reg)
-{	
+{
 	uint8_t *p = (uint8_t *)malloc(sizeof(uint8_t));
 	nrf_chip_enable();
 	SPI_write_byte(reg | READ_INST);
@@ -39,7 +39,7 @@ uint8_t nrf_read_config()
 {
 	return nrf_read_register(nrf_CONFIG);
 }
- 
+
 /* Reads RF_SETUP register*/
 uint8_t nrf_read_rf_setup()
 {
@@ -55,7 +55,7 @@ uint8_t nrf_read_rf_ch()
 {
 	return nrf_read_register(nrf_RF_chregister);
 }
-/*Writes to the RF_CH register*/ 
+/*Writes to the RF_CH register*/
 void nrf_write_rf_ch(uint8_t channel)
 {
 	nrf_write_register(nrf_RF_chregister, channel);
@@ -63,17 +63,17 @@ void nrf_write_rf_ch(uint8_t channel)
 /*Reads the 5 bytes of the TX_ADDR register*/
 void nrf_read_TX_ADDR(uint8_t * address)
 {
-	uint8_t *p = (uint8_t *)malloc(sizeof(uint8_t));
+	//uint8_t *p = (uint8_t *)malloc(sizeof(uint8_t));
 	nrf_chip_enable();
 	SPI_write_byte(nrf_TX_ADDR | READ_INST);
-	SPI_read_byte(p);
-	for (int i=0; i<6; i++)                          // Writes to the 5 byte TX_ADDR register
-		for (i = 0; i<6; i++)                          // Reads the 5 bytes of the TX_ADDR register
-		{
-		SPI_write_byte(nrf_NOP);
+	SPI_read_byte(address); // Read status byte returned from command
+	for (int i = 0; i < 5; i++)                          // Reads the 5 bytes of the TX_ADDR register
+	{
+		//SPI_write_byte(nrf_NOP);
+		SPI_write_byte(0xAA); // Must write a byte to receive a byte, but this written byte can be anything.
 		SPI_read_byte(address);
 		address++;
-		}
+	}
 	nrf_chip_disable();
 }
 
@@ -103,13 +103,13 @@ void nrf_flush_tx_fifo()
 {
       	nrf_chip_enable();
 	SPI_write_byte(nrf_TXFIFO_FLUSH_CMD);
-	nrf_chip_disable();                            
+	nrf_chip_disable();
 }
- 
+
 /*Sends the command FLUSH_RX*/
 void nrf_flush_rx_fifo()
 {
 	nrf_chip_enable();
 	SPI_write_byte(nrf_RXFIFO_FLUSH_CMD);
-	nrf_chip_disable();                            
+	nrf_chip_disable();
 }

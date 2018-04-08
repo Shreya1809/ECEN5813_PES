@@ -26,17 +26,27 @@
 
 int main()
 {
-
 #if defined PROJECT2 || defined PROJECT3
 #ifdef KL25Z
     clock_setup();
-    GPIO_Configure();
-    UART_configure(BAUD_115200);
-    systick_init();
+    //GPIO_Configure();
+    //UART_configure(BAUD_115200);
+    //systick_init();
+    //SPI_init();
+
+    while(0)
+    {
+        //nrf_chip_enable();
+        //nrf_chip_disable();
+    	for (int i = 0; i < 4000; i++);
+        RGB_BLUE_TOGGLE();
+    }
+
 #else // platform not KL25Z
     cb_struct* rx_buffer; // defined by uart otherwise
 #endif // platform
 
+#if 0
     rx_buffer = malloc(sizeof(cb_struct));
     cb_enum status = cb_init(rx_buffer, 256);
     if (status != CB_SUCCESS)
@@ -44,13 +54,31 @@ int main()
 	   PRINTF("Error initializing rx buffer\n");
     }
     PRINTF("\nStarting Project 2 or 3\n");
+#endif
 
 #ifdef PROJECT3
-    PRINTF("\nProject 3 print\n");
+    //PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
-    kl25z_profile_option(1);
+    //kl25z_profile_option(1);
+    SPI_init();
+
+    GPIOD_PDDR |= (1 << 0); // Set as output
+    while (1)
+    {
+    	//GPIOD_PCOR |= (1 << 0);   // Enable NRF chip
+    	//GPIOD_PSOR |= (1 << 0);   // Disable NRF chip
+    	//PTD->PTOR |= (1 << 0); //toggle
+    	//GPIOD_PTOR |= (1 << 0); // toggle
+    	//GPIOD_PSOR |= (1 << 0); // Set
+    	//GPIOD_PCOR |= (1 << 0); // Clear
+    	nrf_chip_enable();
+    	nrf_chip_disable();
+
+    	uint8_t spi_data[5];
+    	nrf_read_TX_ADDR(spi_data);
+    }
     //SPI_write_byte(10);
-    //nrf_read_rf_setup();
+    nrf_read_rf_setup();
 #else
     bbb_profile_option(1);
 #endif // platform
