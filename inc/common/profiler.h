@@ -6,7 +6,7 @@
 #ifdef KL25Z
 //extern const size_t byte_lengths[4];
 
-void systick();
+void systick_init();
 void kl25z_profile_option( uint8_t number);
 #else
 

@@ -174,7 +174,7 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
 
 mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
 {
-    uint8_t *b = (uint8_t *)malloc(sizeof(uint8_t)); //temp pointer to store src address 
+    uint8_t *b = (uint8_t *)malloc(sizeof(uint8_t)); //temp pointer to store src address
     *b = data;
     mem_enum return_status = NO_ERROR;
     int8_t i;
@@ -187,8 +187,8 @@ mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
     {
         return_status = ERROR;
     }
-    else 
-    {	
+    else
+    {
 
         // Source Address
         DMA_SAR0 = (intptr_t) b;
@@ -210,31 +210,7 @@ mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
                 *((dst + (length - length%size ))+ i) = data;
             }
         }
-        //else return_status = ERROR;   
+        //else return_status = ERROR;
     }
     return return_status;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -16,8 +16,9 @@ size_t start, end, diff;
 #include "memory_dma.h"
 #include "MKL25Z4.h"
 #include "uart.h"
+#include "platform.h"
 
-void systick()
+void systick_init()
 {
 SysTick-> LOAD |= SysTick_LOAD_RELOAD_Msk; //load value is 0X00FFFFFF which is the maximum
 SysTick-> CTRL |= (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk); //counter enabled, processor clock
@@ -56,7 +57,7 @@ void kl25z_profile_option( uint8_t number)
 			end = SysTick -> VAL;
 			diff = start - end;
 			// print report on sizes
-			UART_send(diff);
+			PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
 			}
 		}
 	}
@@ -72,7 +73,7 @@ void kl25z_profile_option( uint8_t number)
 			end = SysTick -> VAL;
 			diff = start - end;
 			// print report on sizes
-			UART_send(diff);
+			PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
 			}
 		}
 	}
@@ -88,7 +89,7 @@ void kl25z_profile_option( uint8_t number)
 			end = SysTick -> VAL;
 			diff = start - end;
 			// print report on sizes
-			UART_send(diff);
+			PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
 
 		}
 	}
@@ -103,7 +104,7 @@ void kl25z_profile_option( uint8_t number)
 			end = SysTick -> VAL;
 			diff = start - end;
 			// print report on sizes
-			UART_send(diff);
+			PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
 
 		}
 	}

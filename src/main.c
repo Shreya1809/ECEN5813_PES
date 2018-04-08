@@ -26,24 +26,16 @@
 
 int main()
 {
-#ifdef PROJECT3
-#ifdef KL25Z
-    kl25z_profile_option(1);
-    SPI_write_byte(10);
-    nrf_read_rf_setup();
-#else 
-    bbb_profile_option(1);
-#endif
-#endif
 
-#ifdef PROJECT2
+#if defined PROJECT2 || defined PROJECT3
 #ifdef KL25Z
     clock_setup();
     GPIO_Configure();
     UART_configure(BAUD_115200);
-#else
+    systick_init();
+#else // platform not KL25Z
     cb_struct* rx_buffer; // defined by uart otherwise
-#endif
+#endif // platform
 
     rx_buffer = malloc(sizeof(cb_struct));
     cb_enum status = cb_init(rx_buffer, 256);
@@ -51,7 +43,21 @@ int main()
     {
 	   PRINTF("Error initializing rx buffer\n");
     }
-    PRINTF("\nStarting Project 2\n");
+    PRINTF("\nStarting Project 2 or 3\n");
+
+#ifdef PROJECT3
+    PRINTF("\nProject 3 print\n");
+#ifdef KL25Z
+    kl25z_profile_option(1);
+    //SPI_write_byte(10);
+    //nrf_read_rf_setup();
+#else
+    bbb_profile_option(1);
+#endif // platform
+#endif // project 3
+
+
+#ifdef PROJECT2
     print_data_process_header();
 
 #ifdef KL25Z
@@ -79,6 +85,8 @@ int main()
 #endif // platform
 #endif // PROJECT2
 
+#endif // project 2 or 3
+
 
 #ifdef PROJECT1
     project1();
@@ -94,4 +102,3 @@ int main()
 
     return 0;
 }
-
