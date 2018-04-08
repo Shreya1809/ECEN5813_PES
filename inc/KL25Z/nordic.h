@@ -82,4 +82,7 @@ void nrf_flush_tx_fifo();
 /*Sends the command FLUSH_RX*/
 void nrf_flush_rx_fifo();
 
+/* Tests reads and writes to some registers over SPI */
+void nordic_test();
+
 #endif

@@ -30,20 +30,21 @@ int main()
 #ifdef KL25Z
     clock_setup();
     //GPIO_Configure();
-    //UART_configure(BAUD_115200);
+    UART_configure(BAUD_115200);
     //systick_init();
     //SPI_init();
 
-    while(0)
+    while (0)
     {
         //nrf_chip_enable();
         //nrf_chip_disable();
-    	for (int i = 0; i < 4000; i++);
+        for (int i = 0; i < 4000; i++)
+            ;
         RGB_BLUE_TOGGLE();
     }
 
-#else // platform not KL25Z
-    cb_struct* rx_buffer; // defined by uart otherwise
+#else  // platform not KL25Z
+    cb_struct *rx_buffer; // defined by uart otherwise
 #endif // platform
 
 #if 0
@@ -57,33 +58,19 @@ int main()
 #endif
 
 #ifdef PROJECT3
-    //PRINTF("\nProject 3 print\n");
+    PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
     //kl25z_profile_option(1);
     SPI_init();
 
     GPIOD_PDDR |= (1 << 0); // Set as output
-    while (1)
-    {
-    	//GPIOD_PCOR |= (1 << 0);   // Enable NRF chip
-    	//GPIOD_PSOR |= (1 << 0);   // Disable NRF chip
-    	//PTD->PTOR |= (1 << 0); //toggle
-    	//GPIOD_PTOR |= (1 << 0); // toggle
-    	//GPIOD_PSOR |= (1 << 0); // Set
-    	//GPIOD_PCOR |= (1 << 0); // Clear
-    	nrf_chip_enable();
-    	nrf_chip_disable();
 
-    	uint8_t spi_data[5];
-    	nrf_read_TX_ADDR(spi_data);
-    }
-    //SPI_write_byte(10);
-    nrf_read_rf_setup();
+    nordic_test();
+
 #else
     bbb_profile_option(1);
 #endif // platform
 #endif // project 3
-
 
 #ifdef PROJECT2
     print_data_process_header();
@@ -91,30 +78,29 @@ int main()
 #ifdef KL25Z
     while (1)
     {
-	   if (!cb_is_empty(rx_buffer))
-	   {
-		  data_process(rx_buffer);
+        if (!cb_is_empty(rx_buffer))
+        {
+            data_process(rx_buffer);
 
-		  RGB_RED_TOGGLE();
-	   }
+            RGB_RED_TOGGLE();
+        }
     }
-#else // HOST or BBB
+#else  // HOST or BBB
     char string[2000];
     while (1)
     {
-	   printf("\nEnter String: ");
-	   scanf("%s",string);
-	   for (int j = 0; string[j] != '\0'; j++)
-	   {
-		  cb_buffer_add_item(rx_buffer, string[j]);
-	   }
-	   data_process(rx_buffer);
+        printf("\nEnter String: ");
+        scanf("%s", string);
+        for (int j = 0; string[j] != '\0'; j++)
+        {
+            cb_buffer_add_item(rx_buffer, string[j]);
+        }
+        data_process(rx_buffer);
     }
 #endif // platform
 #endif // PROJECT2
 
 #endif // project 2 or 3
-
 
 #ifdef PROJECT1
     project1();
@@ -124,7 +110,7 @@ int main()
     uint32_t i = 0x12345678;
     PRINTF("pre swap 0x%lx\n", i);
     determine_endianness();
-    swap_data_endianness((uint8_t*)&i, sizeof(i));
+    swap_data_endianness((uint8_t *)&i, sizeof(i));
     PRINTF("post swap 0x%lx\n", i);
 #endif
 
