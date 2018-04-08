@@ -11,11 +11,10 @@ void SPI_init()
     PORTD_PCR1 = PORT_PCR_MUX(0x2); //Enable the SPI_SCK function on PTA15
     PORTD_PCR2 = PORT_PCR_MUX(0x2); // Enable the SPI_MOSI function on PTA16
     PORTD_PCR3 = PORT_PCR_MUX(0x2); // Enable the SPI_MISO function on PTA17
-    //SPI0_C1=0X50;//configured device as master- MSTR=1, enabled spi SPE = 1, First edge on SPSCK at start of first data transfer cycle CPHA=1
-    //SPI0_C1 = 0X54;//configured device as master- MSTR=1, enabled spi SPE = 1, First edge on SPSCK at start of first data transfer cycle CPHA=1
-    // Should do phase (CPHA) of zero - according to tutorial
-    SPI0_C1 = SPI_C1_MSTR(1) | SPI_C1_SPE(1) | SPI_C1_CPHA(0); //configured device as master- MSTR=1, enabled spi SPE = 1
-    //SPI0_C2 = SPI_C2_SPISWAI(1);//SPI clocks operate in wait mode
+
+    GPIOD_PDDR |= (1 << 0); // Set csn (PORTD.0) as output
+
+    SPI0_C1 = SPI_C1_MSTR(1) | SPI_C1_SPE(1); //configured device as master- MSTR=1, enabled spi SPE = 1
     SPI0_BR |= SPI_BR_SPPR(0) | SPI_BR_SPR(2); //Baud Rate Prescalar as 1 and the Baud Rate Divisor as 4
 }
 

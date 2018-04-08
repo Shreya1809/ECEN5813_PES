@@ -29,19 +29,10 @@ int main()
 #if defined PROJECT2 || defined PROJECT3
 #ifdef KL25Z
     clock_setup();
-    //GPIO_Configure();
+    GPIO_Configure();
     UART_configure(BAUD_115200);
-    //systick_init();
-    //SPI_init();
-
-    while (0)
-    {
-        //nrf_chip_enable();
-        //nrf_chip_disable();
-        for (int i = 0; i < 4000; i++)
-            ;
-        RGB_BLUE_TOGGLE();
-    }
+    systick_init();
+    SPI_init();
 
 #else  // platform not KL25Z
     cb_struct *rx_buffer; // defined by uart otherwise
@@ -60,10 +51,9 @@ int main()
 #ifdef PROJECT3
     PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
-    //kl25z_profile_option(1);
-    SPI_init();
+    kl25z_profile_option(1);
 
-    GPIOD_PDDR |= (1 << 0); // Set as output
+    //GPIOD_PDDR |= (1 << 0); // Set as output
 
     nordic_test();
 
