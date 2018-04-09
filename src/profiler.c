@@ -7,7 +7,6 @@
 #include "memory.h"
 
 const size_t byte_length[4] = {10, 100, 1000, 5000};
-const size_t size[3] = {1, 2, 4};
 uint32_t start, end, diff;
 #ifdef KL25Z
 
@@ -17,6 +16,7 @@ uint32_t start, end, diff;
 #include "MKL25Z4_extension.h"
 #include "uart.h"
 #include "platform.h"
+const dma_block_size size[3] = {ONE_BYTE, TWO_BYTE, FOUR_BYTE};
 
 void systick_init()
 {
@@ -25,16 +25,6 @@ void systick_init()
     SysTick->VAL = 0;
     //begin = SysTick->VAL;
 }
-
-typedef enum
-{
-    MEMMOVE_DMA,
-    MEMSET_DMA,
-    MY_MEMMOVE,
-    MY_MEMSET,
-    MEMMOVE,
-    MEMSET,
-} profile_test;
 
 void kl25z_profile_option(profile_test test_type)
 {
@@ -52,10 +42,6 @@ void kl25z_profile_option(profile_test test_type)
     source = &x[0];
     dest = &x[4999];
 
-    uint8_t *src = &x[0];
-    uint8_t *dst = &x[1000];
-    size_t length = 3;
-
     // DMA clock setup
     SIM_BWR_SCGC7_DMA(SIM, 1);
     SIM_BWR_SCGC6_DMAMUX(SIM, 1);
@@ -63,6 +49,11 @@ void kl25z_profile_option(profile_test test_type)
     // Enables the DMA channel and select the DMA Channel Source
     DMAMUX0->CHCFG[0] |= DMAMUX_CHCFG_ENBL_MASK | DMAMUX_CHCFG_SOURCE(2);
 
+    uint8_t *src = &x[0];
+    uint8_t *dst = &x[1000];
+    size_t length = 3;
+
+    #if 1
     for (int j = 1; j < 7; j++)
     {
         length = 16 * j;
@@ -75,10 +66,11 @@ void kl25z_profile_option(profile_test test_type)
         }
 
         start = SysTick->VAL;
+        // For reference, this works fine, not sure why later version does not work.
         memmove_dma(src, dst, length, FOUR_BYTE);
         end = SysTick->VAL;
         diff = start - end;
-        //while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK) ;
+        while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK) ;
         uint32_t diff2 = start - SysTick->VAL;
         // print report on sizes
         PRINTF("Time taken for std memmove for transfer is %lu %lu\n", diff, diff2);
@@ -97,19 +89,36 @@ void kl25z_profile_option(profile_test test_type)
     }
 
     return;
+    #endif
 
     if (test_type == MEMMOVE_DMA)
     {
+        PRINTF("trying memmove_dma\n");
         for (int j = 0; j < 4; j++)
         {
             for (int m = 0; m < 3; m++)
             {
+                #if 0
                 start = SysTick->VAL;
-                memmove_dma(source, dest, byte_length[j], size[m]);
+                //memmove_dma(src, dst, length, FOUR_BYTE);
+                //memmove_dma(source, dest, byte_length[j], size[m]);
+                //memmove_dma(source, dest, 16, FOUR_BYTE);
+                memmove_dma(src, dst, length, FOUR_BYTE);
                 end = SysTick->VAL;
                 diff = start - end;
                 while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK)
                     ;
+                #endif
+
+                start = SysTick->VAL;
+                /* No idea why this version does not work, but the above "for reference" version works fine.
+                */
+                memmove_dma(src, dst, length, FOUR_BYTE);
+                end = SysTick->VAL;
+                diff = start - end;
+                while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK)
+                    ;
+
                 uint32_t diff2 = start - SysTick->VAL;
                 // print report on sizes
                 PRINTF("memmove_dma %d bytes, %d block, call %ld, complete %ld\n", byte_length[j], size[m], diff, diff2);

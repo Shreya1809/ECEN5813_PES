@@ -14,5 +14,16 @@ void kl25z_profile_option( uint8_t number);
 void bbb_profile_option( uint8_t number);
 
 
-#endif
-#endif
+#endif // platform
+
+typedef enum
+{
+    MEMMOVE_DMA,
+    MEMSET_DMA,
+    MY_MEMMOVE,
+    MY_MEMSET,
+    MEMMOVE,
+    MEMSET,
+} profile_test;
+
+#endif // profiler_h

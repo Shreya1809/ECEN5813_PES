@@ -51,9 +51,7 @@ int main()
 #ifdef PROJECT3
     PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
-    kl25z_profile_option(1);
-
-    //GPIOD_PDDR |= (1 << 0); // Set as output
+    kl25z_profile_option(MEMMOVE_DMA);
 
     nordic_test();
 
