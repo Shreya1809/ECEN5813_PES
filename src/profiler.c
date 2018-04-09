@@ -53,7 +53,7 @@ void kl25z_profile_option(profile_test test_type)
     uint8_t *dst = &x[1000];
     size_t length = 3;
 
-    #if 1
+    #if 0
     for (int j = 1; j < 7; j++)
     {
         length = 16 * j;
@@ -112,6 +112,7 @@ void kl25z_profile_option(profile_test test_type)
 
                 start = SysTick->VAL;
                 /* No idea why this version does not work, but the above "for reference" version works fine.
+                What is different between the two calls?
                 */
                 memmove_dma(src, dst, length, FOUR_BYTE);
                 end = SysTick->VAL;
