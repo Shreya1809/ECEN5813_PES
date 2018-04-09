@@ -31,7 +31,7 @@ TEST_LIB := -lcmocka
 
 #if platform is KL25Z
 ifeq ($(PLATFORM),KL25Z)
-$(warning KL25Z platform)
+#$(warning KL25Z platform)
   CC := arm-none-eabi-gcc
   OBJCOPY := arm-none-eabi-objcopy
   OBJFILES += $(SOURCES_KL25Z_C:.c=.o) $(SOURCES_KL25Z_S:.S=.o)

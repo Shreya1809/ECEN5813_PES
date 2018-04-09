@@ -21,6 +21,7 @@ SOURCES_KL25Z_C = \
 	src/system_MKL25Z4.c\
 	src/spi.c\
 	src/nordic.c\
+	src/dma.c\
 	src/memory_dma.c
 
 SOURCES_KL25Z_S = src/startup_MKL25Z4.S

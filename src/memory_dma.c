@@ -77,20 +77,20 @@ mem_enum memmove_overlap(uint8_t * src, uint8_t * dst, size_t length)
 }
 */
 
-mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size size)
+mem_enum memmove_dma(uint8_t * src, uint8_t * dst, uint32_t length, dma_block_size size)
 {
-    #if 1
+    #if 0
     // Working
 
     //set source address
-    DMA_SAR0 = (intptr_t)src;
+    DMA_SAR0 = (uint32_t)src;
     // Set Destination Address
-    DMA_DAR0 = (intptr_t)dst;
+    DMA_DAR0 = (uint32_t)dst;
     // Set BCR for the no of bytes to be transfered
     DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
     // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
     //DMA_DCR0 |= (DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(1) | DMA_DCR_DSIZE(1));
-    DMA_DCR0 |= (DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+    DMA_DCR0 |= (DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
     //return NO_ERROR;
     // Start DMA transfer
     DMA_DCR0 |= DMA_DCR_START_MASK;
@@ -102,7 +102,7 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size
     mem_enum return_status;
     int8_t i;
 
-    if ( !src || !dst || !length || !size ) // NULL pointer or zero size
+    if ( !src || !dst || !length) // NULL pointer or zero size
     {
         return ERROR;
     }
@@ -112,49 +112,62 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size
         (src + length < dst))
     {
         //set source address
-        DMA_SAR0 = (intptr_t) src;
+        DMA_SAR0 =(uint32_t)src;
         // Set Destination Address
-        DMA_DAR0 = (intptr_t) dst;
+        DMA_DAR0 = (uint32_t)dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
+        DMA_DCR0 &= ~(DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        DMA_DCR0 |= ( DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+        DMA_DCR0 |= (DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
         // Start DMA transfer
-        DMA_DCR0 |= DMA_DCR_START_MASK;
+        DMA_DCR0 |= DMA_DCR_START(1);
 
-        if (length%size != 0)
+        if (length%2 != 0)
         {
-            for(i = 0; i<= length%size; i++)
+            for(i = 0; i<= length%2; i++)
             {
-                *((dst + (length - length%size))+i) = *((src + (length - length%size))+i);
+                *((dst + (length - length%2))+i) = *((src + (length - length%2))+i);
             }
 
             //return_status = NO_OVERLAP;
             return_status = NO_ERROR;
         }
+        if (length%4 != 0)
+		{
+			for(i = 0; i<= length%4; i++)
+			{
+				*((dst + (length - length%4))+i) = *((src + (length - length%4))+i);
+			}
+
+			//return_status = NO_OVERLAP;
+			return_status = NO_ERROR;
+		}
     }
     else if ((dst > src) && (src + length > dst))      // if source overlaps destination
     {
         int overlap = src + length - dst; // overlap
         //memmove_overlap(dst, dst + length - overlap, overlap ); //memmove of overlap data
-        DMA_SAR0 = (intptr_t) dst;
+        DMA_SAR0 = (uint32_t) dst;
         // Set Destination Address
-        DMA_DAR0 = (intptr_t) (dst + length - overlap);
+        DMA_DAR0 = (uint32_t)(dst + length - overlap);
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(overlap);
+        DMA_DCR0 &= ~(DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        DMA_DCR0 |= ( DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+        DMA_DCR0 |= (DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
         // Start DMA transfer
         DMA_DCR0 |= DMA_DCR_START_MASK;
 
         //memmove_overlap(src, dst, length-overlap ); //memmove of the remaining data
-        DMA_SAR0 = (intptr_t) src;
+        DMA_SAR0 = (uint32_t) src;
         // Set Destination Address
-        DMA_DAR0 =(intptr_t) dst;
+        DMA_DAR0 =(uint32_t)dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length-overlap );
+        DMA_DCR0 &= ~(DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        DMA_DCR0 |= ( DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+        DMA_DCR0 |= (DMA_DCR_AA(1) | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
         // Start DMA transfer
         DMA_DCR0 |= DMA_DCR_START_MASK;
 
@@ -164,34 +177,44 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size
     else                                                      //destination overlaps source
     {
         //set source address
-        DMA_SAR0 = (intptr_t) src;
+        DMA_SAR0 = (uint32_t)src;
         // Set Destination Address
-        DMA_DAR0 = (intptr_t) dst;
+        DMA_DAR0 = (uint32_t)dst;
         // Set BCR for the no of bytes to be transfered
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
+        DMA_DCR0 &= ~(DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        DMA_DCR0 |= ( DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+        DMA_DCR0 |= (DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
         // Start DMA transfer
         DMA_DCR0 |= DMA_DCR_START_MASK;
 
-        if (length%size != 0)
-        {
-            for(i = 0; i<= length%size; i++)
-            {
-                *((dst + (length - length%size))+i) = *((src + (length - length%size))+i);
-            }
+        if (length%2 != 0)
+		{
+			for(i = 0; i<= length%2; i++)
+			{
+				*((dst + (length - length%2))+i) = *((src + (length - length%2))+i);
+			}
 
-        }
+			//return_status = NO_OVERLAP;
+			return_status = NO_ERROR;
+		}
+		if (length%4 != 0)
+		{
+			for(i = 0; i<= length%4; i++)
+			{
+				*((dst + (length - length%4))+i) = *((src + (length - length%4))+i);
+			}
 
-        //return_status = DST_IN_SRC_OVERLAP;
-        return_status = NO_ERROR;
+			//return_status = NO_OVERLAP;
+			return_status = NO_ERROR;
+		}
     }
 
     __enable_irq();
     return return_status;
 }
 
-mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, dma_block_size size)
+mem_enum memset_dma(uint8_t * dst, uint32_t length, uint8_t data, dma_block_size size)
 {
     uint8_t * b; //temp pointer to store src address
     b = &data;
@@ -200,23 +223,21 @@ mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, dma_block_size s
 
     if (dst == NULL || length <= 0)                  //null pointer
     {
-        return_status = INVALID_POINTER;
+    	return_status = ERROR;
     }
-    else if ( size != 1 && size != 2 && size != 4)
-    {
-        return_status = ERROR;
-    }
+
     else
     {
 
         // Source Address
-        DMA_SAR0 =(intptr_t) b;
+        DMA_SAR0 =(uint32_t) b;
         // Destination Address
-        DMA_DAR0 = (intptr_t) dst;
+        DMA_DAR0 = (uint32_t) dst;
         // BCR for the length of bytes to transfer
         DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
+        DMA_DCR0 &= ~(DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
         // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        DMA_DCR0 |= ( DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_DSIZE(size));
+        DMA_DCR0 |= (DMA_DCR_AA(1) | DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_DSIZE(size));
         // Start DMA transfer
         DMA_DCR0 |= DMA_DCR_START_MASK;
 

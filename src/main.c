@@ -19,6 +19,7 @@
 #include "port.h"
 #include "profiler.h"
 #include "nordic.h"
+#include "dma.h"
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
 // TODO - check register differences
 #define CLOCK_SETUP 1
@@ -52,6 +53,7 @@ int main()
 #ifdef PROJECT3
     PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
+    DMA_config();
     kl25z_profile_option(MEMMOVE_DMA);
 	kl25z_profile_option(MEMSET_DMA);
 	kl25z_profile_option(MY_MEMMOVE);

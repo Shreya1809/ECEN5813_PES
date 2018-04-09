@@ -38,7 +38,7 @@ typedef enum
 //mem_enum memmove(uint8_t * src, uint8_t * dst, size_t length);
 //mem_enum memset(uint8_t * dst, size_t length, uint8_t value);
 //mem_enum memmove_overlap(uint8_t * src, uint8_t * dst, size_t length);
-mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size size);
-mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t value, dma_block_size size);
+mem_enum memmove_dma(uint8_t * src, uint8_t * dst, uint32_t length, dma_block_size size);
+mem_enum memset_dma(uint8_t * dst, uint32_t length, uint8_t value, dma_block_size size);
 
 #endif
