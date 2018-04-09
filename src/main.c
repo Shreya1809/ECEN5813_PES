@@ -52,11 +52,19 @@ int main()
     PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
     kl25z_profile_option(MEMMOVE_DMA);
+	kl25z_profile_option(MEMSET_DMA);
+	kl25z_profile_option(MY_MEMMOVE);
+	kl25z_profile_option(MY_MEMSET);
+	kl25z_profile_option(MEMMOVE);
+	kl25z_profile_option(MEMSET);
 
     nordic_test();
 
 #else
     bbb_profile_option(1);
+    bbb_profile_option(2);
+    bbb_profile_option(3);
+    bbb_profile_option(4);
 #endif // platform
 #endif // project 3
 

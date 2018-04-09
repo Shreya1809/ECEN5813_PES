@@ -49,9 +49,9 @@ void kl25z_profile_option(profile_test test_type)
     // Enables the DMA channel and select the DMA Channel Source
     DMAMUX0->CHCFG[0] |= DMAMUX_CHCFG_ENBL_MASK | DMAMUX_CHCFG_SOURCE(2);
 
-    uint8_t *src = &x[0];
-    uint8_t *dst = &x[1000];
-    size_t length = 3;
+   // uint8_t *src = &x[0];
+   // uint8_t *dst = &x[1000];
+   // size_t length = 3;
 
     #if 0
     for (int j = 1; j < 7; j++)
@@ -114,15 +114,13 @@ void kl25z_profile_option(profile_test test_type)
                 /* No idea why this version does not work, but the above "for reference" version works fine.
                 What is different between the two calls?
                 */
-                memmove_dma(src, dst, length, FOUR_BYTE);
+               // memmove_dma(src, dst, length, FOUR_BYTE);
+                memmove_dma(source, dest, byte_length[j], size[m]);
+                while(DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
                 end = SysTick->VAL;
                 diff = start - end;
-                while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK)
-                    ;
 
-                uint32_t diff2 = start - SysTick->VAL;
-                // print report on sizes
-                PRINTF("memmove_dma %d bytes, %d block, call %ld, complete %ld\n", byte_length[j], size[m], diff, diff2);
+                PRINTF("Time taken for  memmove dma for %d byte transfer is %ld\n", byte_length[j], diff);
             }
         }
     }
@@ -134,10 +132,11 @@ void kl25z_profile_option(profile_test test_type)
             {
                 start = SysTick->VAL;
                 memset_dma(dest, byte_length[j], 5, size[m]);
+                while(DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
                 end = SysTick->VAL;
                 diff = start - end;
                 // print report on sizes
-                PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
+                PRINTF("Time taken for  memset dma for %d byte transfer is %ld\n", byte_length[j], diff);
             }
         }
     }
@@ -151,7 +150,7 @@ void kl25z_profile_option(profile_test test_type)
             end = SysTick->VAL;
             diff = start - end;
             // print report on sizes
-            PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
+            PRINTF("Time taken for my memmove for %d byte transfer is %ld\n", byte_length[j], diff);
         }
     }
     if (test_type == MY_MEMSET)
@@ -165,14 +164,34 @@ void kl25z_profile_option(profile_test test_type)
             end = SysTick->VAL;
             diff = start - end;
             // print report on sizes
-            PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
+            PRINTF("Time taken for my memset for %d byte transfer is %ld\n", byte_length[j], diff);
         }
     }
     if (test_type == MEMMOVE)
     {
+    	for (int j = 0; j < 4; j++)
+		{
+
+			start = SysTick->VAL;
+			memmove(dest, source, byte_length[j]);
+			end = SysTick->VAL;
+			diff = start - end;
+			// print report on sizes
+			PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
+		}
     }
     if (test_type == MEMSET)
     {
+    	for (int j = 0; j < 4; j++)
+		{
+
+			start = SysTick->VAL;
+			memset(dest, 10, byte_length[j]);
+			end = SysTick->VAL;
+			diff = start - end;
+			// print report on sizes
+			PRINTF("Time taken for std memset for %d byte transfer is %ld\n", byte_length[j], diff);
+		}
     }
 }
 #else
