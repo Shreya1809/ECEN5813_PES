@@ -36,6 +36,7 @@ int main()
 
 #else  // platform not KL25Z
     cb_struct *rx_buffer; // defined by uart otherwise
+    if(rx_buffer); // Avoid unused build error for now
 #endif // platform
 
 #if 0
