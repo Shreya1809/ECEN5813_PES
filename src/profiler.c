@@ -26,7 +26,17 @@ void systick_init()
     //begin = SysTick->VAL;
 }
 
-void kl25z_profile_option(uint8_t number)
+typedef enum
+{
+    MEMMOVE_DMA,
+    MEMSET_DMA,
+    MY_MEMMOVE,
+    MY_MEMSET,
+    MEMMOVE,
+    MEMSET,
+} profile_test;
+
+void kl25z_profile_option(profile_test test_type)
 {
     uint8_t *source, *dest;
     uint8_t x[10000];
@@ -44,7 +54,7 @@ void kl25z_profile_option(uint8_t number)
 
     uint8_t *src = &x[0];
     uint8_t *dst = &x[1000];
-    size_t length = 16;
+    size_t length = 3;
 
     // DMA clock setup
     SIM_BWR_SCGC7_DMA(SIM, 1);
@@ -65,7 +75,7 @@ void kl25z_profile_option(uint8_t number)
         }
 
         start = SysTick->VAL;
-        memmove_dma(src, dst, length, 1);
+        memmove_dma(src, dst, length, FOUR_BYTE);
         end = SysTick->VAL;
         diff = start - end;
         //while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK) ;
@@ -88,9 +98,8 @@ void kl25z_profile_option(uint8_t number)
 
     return;
 
-    if (number == 1)
+    if (test_type == MEMMOVE_DMA)
     {
-
         for (int j = 0; j < 4; j++)
         {
             for (int m = 0; m < 3; m++)
@@ -99,19 +108,16 @@ void kl25z_profile_option(uint8_t number)
                 memmove_dma(source, dest, byte_length[j], size[m]);
                 end = SysTick->VAL;
                 diff = start - end;
-                //while (DMA_DSR_BCR0 & DMA_DSR_BCR_BSY_MASK);
-                //while (!(DMA_DSR_BCR0 & DMA_DSR_BCR_DONE_MASK));
                 while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK)
                     ;
                 uint32_t diff2 = start - SysTick->VAL;
                 // print report on sizes
-                PRINTF("Time taken for std memmove for %d byte transfer is %ld %ld\n", byte_length[j], diff, diff2);
+                PRINTF("memmove_dma %d bytes, %d block, call %ld, complete %ld\n", byte_length[j], size[m], diff, diff2);
             }
         }
     }
-    if (number == 2)
+    if (test_type == MEMSET_DMA)
     {
-
         for (int j = 0; j < 4; j++)
         {
             for (int m = 0; m < 3; m++)
@@ -126,12 +132,10 @@ void kl25z_profile_option(uint8_t number)
         }
     }
 
-    if (number == 3)
+    if (test_type == MY_MEMMOVE)
     {
-
         for (int j = 0; j < 4; j++)
         {
-
             start = SysTick->VAL;
             my_memmove(source, dest, byte_length[j]);
             end = SysTick->VAL;
@@ -140,7 +144,7 @@ void kl25z_profile_option(uint8_t number)
             PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
         }
     }
-    if (number == 4)
+    if (test_type == MY_MEMSET)
     {
 
         for (int j = 0; j < 4; j++)
@@ -154,9 +158,11 @@ void kl25z_profile_option(uint8_t number)
             PRINTF("Time taken for std memmove for %d byte transfer is %ld\n", byte_length[j], diff);
         }
     }
-    if (number == 5)
+    if (test_type == MEMMOVE)
     {
-        //get statistics for all kl25z execution times
+    }
+    if (test_type == MEMSET)
+    {
     }
 }
 #else

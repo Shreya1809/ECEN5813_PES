@@ -76,8 +76,12 @@ mem_enum memmove_overlap(uint8_t * src, uint8_t * dst, size_t length)
     return return_status;
 }
 */
-mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
+
+mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, dma_block_size size)
 {
+    #if 1
+    // Working
+
     //set source address
     DMA_SAR0 = (intptr_t)src;
     // Set Destination Address
@@ -92,13 +96,13 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     DMA_DCR0 |= DMA_DCR_START_MASK;
 
     return NO_ERROR;
+    #endif
 
     __disable_irq();
     mem_enum return_status;
     int8_t i;
 
-    if ( !src || !dst || !length || !size || // NULL pointer or zero size
-        (size != 1 && size != 2 && size != 4)) // Invalid size
+    if ( !src || !dst || !length || !size ) // NULL pointer or zero size
     {
         return ERROR;
     }
@@ -159,7 +163,6 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     }
     else                                                      //destination overlaps source
     {
-
         //set source address
         DMA_SAR0 = (intptr_t) src;
         // Set Destination Address
@@ -188,7 +191,7 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     return return_status;
 }
 
-mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, size_t size)
+mem_enum memset_dma(uint8_t * dst, size_t length, uint8_t data, dma_block_size size)
 {
     uint8_t *b = (uint8_t *)malloc(sizeof(uint8_t)); //temp pointer to store src address
     *b = data;
