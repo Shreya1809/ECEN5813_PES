@@ -82,17 +82,16 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
     mem_enum return_status;
     int8_t i;
 
-    if (src == NULL || dst == NULL || length <= 0 || size <= 0)          // if pointers are NULL
+    if ( !src || !dst || !length || !size || // NULL pointer or zero size
+        (size != 1 && size != 2 && size != 4)) // Invalid size
     {
-        return_status = INVALID_POINTER;
+        return ERROR;
     }
-    else if ( size != 1 || size != 2 || size != 4)
-    {
-        return_status = ERROR;
-    }
-    else if ((dst + length  < src) && (src + length  < dst))    //Should return a pass for a move
-    {
 
+    // No overlap case
+    if ((dst + length < src) ||
+        (src + length < dst))
+    {
         //set source address
         DMA_SAR0 = (intptr_t) src;
         // Set Destination Address
@@ -111,12 +110,12 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
                 *((dst + (length - length%size))+i) = *((src + (length - length%size))+i);
             }
 
-            return_status = NO_OVERLAP;
+            //return_status = NO_OVERLAP;
+            return_status = NO_ERROR;
         }
     }
-    else if ((dst > src) && (src + length  > dst))      // if source overlaps destination
+    else if ((dst > src) && (src + length > dst))      // if source overlaps destination
     {
-
         int overlap = src + length - dst; // overlap
         //memmove_overlap(dst, dst + length - overlap, overlap ); //memmove of overlap data
         DMA_SAR0 = (intptr_t) dst;
@@ -140,7 +139,8 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
         // Start DMA transfer
         DMA_DCR0 |= DMA_DCR_START_MASK;
 
-        return_status = SRC_IN_DST_OVERLAP;
+        //return_status = SRC_IN_DST_OVERLAP;
+        return_status = NO_ERROR;
     }
     else                                                      //destination overlaps source
     {
@@ -165,7 +165,8 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
 
         }
 
-        return_status = DST_IN_SRC_OVERLAP;
+        //return_status = DST_IN_SRC_OVERLAP;
+        return_status = NO_ERROR;
     }
 
     __enable_irq();
