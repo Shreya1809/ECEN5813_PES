@@ -8,7 +8,7 @@
 
 const size_t byte_length[4] = {10, 100, 1000, 5000};
 const size_t size[3] = {1, 2, 4};
-size_t start, end, diff;
+uint32_t start, end, diff;
 #ifdef KL25Z
 
 #include "dma.h"
@@ -42,61 +42,47 @@ void kl25z_profile_option(uint8_t number)
     source = &x[0];
     dest = &x[4999];
 
-    uint8_t *src = &x[20];
-    uint8_t *dst = &x[0];
+    uint8_t *src = &x[0];
+    uint8_t *dst = &x[1000];
     size_t length = 16;
 
-
-    //dma_clockenable();
-    //SIM->SCGC7 |= SIM_SCGC7_DMA(1);
-    //SIM->SCGC6 |= SIM_SCGC6_DMAMUX_MASK;
+    // DMA clock setup
     SIM_BWR_SCGC7_DMA(SIM, 1);
     SIM_BWR_SCGC6_DMAMUX(SIM, 1);
-    //SIM->SOPT2 |= SIM_SOPT2_MCGFLLCLK_MASK;
-    // Using below from clock setup
-    //SIM_BWR_SOPT2_PLLFLLSEL(SIM, 1); // MCGPLLCLK clock with fixed divide by two
-
-    //Clear the CHCFG[ENBL] and CHCFG[TRIG] fields of the DMA channel
-    //DMAMUX0->CHCFG[0] = DMAMUX_CHCFG_ENBL(0) | DMAMUX_CHCFG_TRIG(0);
-
-    // Clearing Source size and Destination size fields.
-    //DMA_DCR0 &= ~(DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK);
 
     // Enables the DMA channel and select the DMA Channel Source
     DMAMUX0->CHCFG[0] |= DMAMUX_CHCFG_ENBL_MASK | DMAMUX_CHCFG_SOURCE(2);
 
-    //NVIC_EnableIRQ(DMA2_IRQn);
-
-    //DMA_DCR0 |= DMA_DCR_EINT_MASK;
-
     for (int j = 1; j < 7; j++)
     {
+        length = 16 * j;
 
+        // Setup transfer before and after
         for (int i = 0; i < length; i++)
         {
             src[i] = i * j;
             dst[i] = 0;
         }
 
-        //set source address
-        DMA_SAR0 = (intptr_t)src;
-        // Set Destination Address
-        DMA_DAR0 = (intptr_t)dst;
-        // Set BCR for the no of bytes to be transfered
-        DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
-        // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
-        //DMA_DCR0 |= (DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(1) | DMA_DCR_DSIZE(1));
-        DMA_DCR0 |= (DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(1) | DMA_DCR_DSIZE(1));
-        // Start DMA transfer
-        DMA_DCR0 |= DMA_DCR_START_MASK;
+        start = SysTick->VAL;
+        memmove_dma(src, dst, length, 1);
+        end = SysTick->VAL;
+        diff = start - end;
+        //while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK) ;
+        uint32_t diff2 = start - SysTick->VAL;
+        // print report on sizes
+        PRINTF("Time taken for std memmove for transfer is %lu %lu\n", diff, diff2);
 
-        while (DMA_DSR_BCR0 & DMA_DSR_BCR_BCR_MASK)
-            ;
-
-        PRINTF("Transfer complete\n");
+        PRINTF("Transfer complete %d\n", dst[1]);
+        // Verify transfer successful
         for (int i = 0; i < length; i++)
         {
-            PRINTF("dst[%d] = %d\n", i, dst[i]);
+            if (dst[i] != src[i])
+            {
+                PRINTF("Bad transfer\n");
+                break;
+            }
+            //PRINTF("dst[%d] = %d\n", i, dst[i]);
         }
     }
 
@@ -109,7 +95,6 @@ void kl25z_profile_option(uint8_t number)
         {
             for (int m = 0; m < 3; m++)
             {
-                // Todo - may need to ensure this is reset to maximum value
                 start = SysTick->VAL;
                 memmove_dma(source, dest, byte_length[j], size[m]);
                 end = SysTick->VAL;

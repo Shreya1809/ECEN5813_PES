@@ -78,6 +78,21 @@ mem_enum memmove_overlap(uint8_t * src, uint8_t * dst, size_t length)
 */
 mem_enum memmove_dma(uint8_t * src, uint8_t * dst, size_t length, size_t size)
 {
+    //set source address
+    DMA_SAR0 = (intptr_t)src;
+    // Set Destination Address
+    DMA_DAR0 = (intptr_t)dst;
+    // Set BCR for the no of bytes to be transfered
+    DMA_DSR_BCR0 = DMA_DSR_BCR_BCR(length);
+    // Enable interrupt on completion of transfer, Source and destination address increment after every transfer & Set Source and Destination size as 8bit
+    //DMA_DCR0 |= (DMA_DCR_EINT_MASK | DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(1) | DMA_DCR_DSIZE(1));
+    DMA_DCR0 |= (DMA_DCR_DINC_MASK | DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(size) | DMA_DCR_DSIZE(size));
+    //return NO_ERROR;
+    // Start DMA transfer
+    DMA_DCR0 |= DMA_DCR_START_MASK;
+
+    return NO_ERROR;
+
     __disable_irq();
     mem_enum return_status;
     int8_t i;
