@@ -6,7 +6,7 @@ PLATFORM := HOST
 # Common settings
 TARGET_FILE := project
 # Kinetis likes gnu99 instead of c99
-CFLAGS := -Wall -Werror -g -O0 -std=gnu99 -MMD -DPROJECT3 -DVERBOSE
+CFLAGS := -Wall -Werror -g -O3 -std=gnu99 -MMD -DPROJECT3 -DVERBOSE
 # Need to follow this recommendation for portable specifier widths
 # https://stackoverflow.com/questions/1403074/printf-with-sizeof-on-32-vs-64-platforms-how-do-i-handle-format-code-in-platfor
 # But just disabling format warning/error as workaround for now
