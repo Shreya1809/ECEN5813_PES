@@ -429,25 +429,25 @@ void bbb_profile_option(uint8_t number)
         	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 5000 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 			printf("Time taken for std memmove for 5000 byte transfer is %lf\n", diff);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 1000 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 			printf("Time taken for std memmove for 1000 byte transfer is %lf\n", diff);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 100 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 			printf("Time taken for std memmove for 100 byte transfer is %lf\n", diff);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 10);
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 			printf("Time taken for std memmove for 10 byte transfer is %lf\n", diff);
 
 
@@ -458,25 +458,25 @@ void bbb_profile_option(uint8_t number)
     	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 5000);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 		printf("Time taken for std memset for 5000 byte transfer is %lf\n", diff);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 1000);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 		printf("Time taken for std memset for 1000 byte transfer is %lf\n", diff);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 100);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 		printf("Time taken for std memset for 100 byte transfer is %lf\n", diff);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 10);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
 		printf("Time taken for std memset for 10 byte transfer is %lf\n", diff);
     }
     if (number == 3)
@@ -486,7 +486,7 @@ void bbb_profile_option(uint8_t number)
             ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
             my_memset(source, byte_length[j], 10);
             ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-            diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+            diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
             printf("Time taken for  my_memset for %d byte transfer is %lf\n", byte_length[j], diff);
         }
     }
@@ -497,7 +497,7 @@ void bbb_profile_option(uint8_t number)
             ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
             my_memmove(source, dest, byte_length[j]);
             ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-            diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+            diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
             printf("Time taken for  my_memmove for %d byte transfer is %lf\n", byte_length[j], diff);
         }
     }
