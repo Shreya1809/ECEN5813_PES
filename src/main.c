@@ -57,8 +57,8 @@ int main()
     	}
     	temp_sp_high--;
     }
-    uint32_t diff = temp_sp_high-temp_sp_low;
-    PRINTF("STACKUSE:%d %x",diff,diff);
+    uint32_t diff = (uint32_t)temp_sp_high-(uint32_t)temp_sp_low;
+    PRINTF("STACKUSE:0x%x",diff);
 
     GPIO_Configure();
 

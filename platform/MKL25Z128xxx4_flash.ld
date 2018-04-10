@@ -240,7 +240,7 @@ SECTIONS
   {
     . = ALIGN(8);
     . += STACK_SIZE;
-  } > m_data, fill = 0xDEADDEAD;
+  } > m_data, fill = 0x0a0a0a0a;
 
   /* Initializes stack on the end of block */
   __StackTop   = ORIGIN(m_data) + LENGTH(m_data);
