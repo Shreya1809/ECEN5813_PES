@@ -41,8 +41,8 @@ void kl25z_profile_option(profile_test test_type)
         x[k] = 2;
     }
 
-    source = &x[4000];
-    dest = &x[3000];
+    source = &x[0];
+    dest = &x[5000];
 
 
 
@@ -95,103 +95,113 @@ void kl25z_profile_option(profile_test test_type)
                 //#if 0
                 start = SysTick->VAL;
                 mem_enum ret = memmove_dma(source, dest, 10 , ONE_BYTE );
-                while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                while(DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-                end = SysTick->VAL;
                 diff = start - end;
-                PRINTF("Time taken for  memmove dma for 10 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+                PRINTF("Time taken for  memmove dma for 10 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
                 start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 100 , ONE_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 100 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 100 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 1000 , ONE_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 5000 , ONE_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 10, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 10 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 10 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 100, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR )	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 100 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 100 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 1000, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,5000, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 
                 start = SysTick->VAL;
 				ret = memmove_dma(source, dest,8, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 10 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 10 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,100, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 100 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 100 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,1000, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+                end = SysTick->VAL;
                 if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-				end = SysTick->VAL;
+				//end = SysTick->VAL;
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 1000 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,5000, FOUR_BYTE );
@@ -200,7 +210,7 @@ void kl25z_profile_option(profile_test test_type)
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
 				end = SysTick->VAL;
 				diff = start - end;
-				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+				PRINTF("Time taken for  memmove dma for 5000 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
     }
     if (test_type == MEMSET_DMA)
@@ -214,7 +224,7 @@ void kl25z_profile_option(profile_test test_type)
                 end = SysTick->VAL;
                 diff = start - end;
                 // print report on sizes
-                PRINTF("Time taken for  memset dma for 10 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+                PRINTF("Time taken for  memset dma for 10 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
                start = SysTick->VAL;
 			   ret = memset_dma(dest, 100, 5,ONE_BYTE );
@@ -224,107 +234,117 @@ void kl25z_profile_option(profile_test test_type)
 			   end = SysTick->VAL;
 			   diff = start - end;
 			   // print report on sizes
-			   PRINTF("Time taken for  memset dma for 100 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+			   PRINTF("Time taken for  memset dma for 100 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 1000, 5,ONE_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+			   end = SysTick->VAL;
 			   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 			   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-			   end = SysTick->VAL;
+			   //end = SysTick->VAL;
 			   diff = start - end;
 			   // print report on sizes
-			   PRINTF("Time taken for  memset dma for 1000 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+			   PRINTF("Time taken for  memset dma for 1000 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 5000, 5,ONE_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+			   end = SysTick->VAL;
 			   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 			   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-			   end = SysTick->VAL;
+			   //end = SysTick->VAL;
 			   diff = start - end;
 			   // print report on sizes
-			   PRINTF("Time taken for  memset dma for 5000 byte transfer with 1 byte block size is %lu us\n ", diff/20);
+			   PRINTF("Time taken for  memset dma for 5000 byte transfer with 1 byte block size is %lu us\n ", diff/21);
 
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 10, 5,TWO_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+			   end = SysTick->VAL;
 			if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 			DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-			   end = SysTick->VAL;
+			   //end = SysTick->VAL;
 			   diff = start - end;
 			   // print report on sizes
-			   PRINTF("Time taken for  memset dma for 10 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+			   PRINTF("Time taken for  memset dma for 10 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 			  start = SysTick->VAL;
 		   ret = memset_dma(dest, 100, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		   //end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 100 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 100 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 1000, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		  // end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 1000 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 1000 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 5000, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		   //end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 5000 byte transfer with 2 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 5000 byte transfer with 2 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 8, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		   //end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 10 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 10 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 100, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		   //end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 100 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 100 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 1000, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		  // end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 1000 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 1000 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 5000, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
+		   end = SysTick->VAL;
 		   if(ret != NO_ERROR  || DMA_CHECK_ERROR)	PRINTF("DMA ERROR\n");
 		   DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
-		   end = SysTick->VAL;
+		   //end = SysTick->VAL;
 		   diff = start - end;
 		   // print report on sizes
-		   PRINTF("Time taken for  memset dma for 5000 byte transfer with 4 bytes block size is %lu us\n ", diff/20);
+		   PRINTF("Time taken for  memset dma for 5000 byte transfer with 4 bytes block size is %lu us\n ", diff/21);
 
     }
 
@@ -337,7 +357,7 @@ void kl25z_profile_option(profile_test test_type)
             end = SysTick->VAL;
             diff = start - end;
             // print report on sizes
-            PRINTF("Time taken for my memmove for %d byte transfer is %lu us\n", byte_length[j], diff/20);
+            PRINTF("Time taken for my memmove for %d byte transfer is %lu us\n", byte_length[j], diff/21);
 
          }
     }
@@ -352,7 +372,7 @@ void kl25z_profile_option(profile_test test_type)
             end = SysTick->VAL;
             diff = start - end;
             // print report on sizes
-            PRINTF("Time taken for my memset for %d byte transfer is %lu us\n", byte_length[j], diff/20);
+            PRINTF("Time taken for my memset for %d byte transfer is %lu us\n", byte_length[j], diff/21);
         }
     }
     if (test_type == MEMMOVE)
@@ -365,7 +385,7 @@ void kl25z_profile_option(profile_test test_type)
 			end = SysTick->VAL;
 			diff = start - end;
 			// print report on sizes
-			PRINTF("Time taken for std memmove for %d byte transfer is %lu us\n", byte_length[j], diff/20);
+			PRINTF("Time taken for std memmove for %d byte transfer is %lu us\n", byte_length[j], diff/21);
 		}
     }
     if (test_type == MEMSET)
@@ -378,7 +398,7 @@ void kl25z_profile_option(profile_test test_type)
 			end = SysTick->VAL;
 			diff = start - end;
 			// print report on sizes
-			PRINTF("Time taken for std memset for %d byte transfer is %lu us\n", byte_length[j], diff/20);
+			PRINTF("Time taken for std memset for %d byte transfer is %lu us\n", byte_length[j], diff/21);
 		}
     }
 }
@@ -405,29 +425,63 @@ void bbb_profile_option(uint8_t number)
     double diff;
     if (number == 1)
     {
-        for (int j = 0; j < 4; j++)
-        {
-            ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
-            memmove(source, dest, byte_length[j]);
-            ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-            diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
-            printf("Time taken for std memmove for %d byte transfer is %lf\n", byte_length[j], diff);
-        }
+
+        	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+			memmove(source, dest, 5000 );
+			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			printf("Time taken for std memmove for 5000 byte transfer is %lf\n", diff);
+
+		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+			memmove(source, dest, 1000 );
+			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			printf("Time taken for std memmove for 1000 byte transfer is %lf\n", diff);
+
+		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+			memmove(source, dest, 100 );
+			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			printf("Time taken for std memmove for 100 byte transfer is %lf\n", diff);
+
+		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+			memmove(source, dest, 10);
+			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+			diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+			printf("Time taken for std memmove for 10 byte transfer is %lf\n", diff);
+
+
+
     }
     if (number == 2)
     {
-        for (int j = 0; j < 4; j++)
-        {
-            ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
-            memset(source, 10, byte_length[j]);
-            ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
-            diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
-            printf("Time taken for std memset for %d byte transfer is %lf\n", byte_length[j], diff);
-        }
+    	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+		memset(source, 10, 5000);
+		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		printf("Time taken for std memset for 5000 byte transfer is %lf\n", diff);
+
+	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+		memset(source, 10, 1000);
+		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		printf("Time taken for std memset for 1000 byte transfer is %lf\n", diff);
+
+	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+		memset(source, 10, 100);
+		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		printf("Time taken for std memset for 100 byte transfer is %lf\n", diff);
+
+	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
+		memset(source, 10, 10);
+		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
+		diff = ((end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec));
+		printf("Time taken for std memset for 10 byte transfer is %lf\n", diff);
     }
     if (number == 3)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 3; j >= 0; j--)
         {
             ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
             my_memset(source, byte_length[j], 10);
@@ -438,7 +492,7 @@ void bbb_profile_option(uint8_t number)
     }
     if (number == 4)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 3; j >= 0; j--)
         {
             ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
             my_memmove(source, dest, byte_length[j]);
