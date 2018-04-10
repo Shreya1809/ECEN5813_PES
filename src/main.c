@@ -23,6 +23,14 @@
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
 // TODO - check register differences
 #define CLOCK_SETUP 1
+
+//Defining the the stack top as a pointer to access it in the program
+extern uint32_t __StackTop[];
+extern uint32_t __StackLimit[];
+extern uint32_t STACK_SIZE;
+uint8_t *stack_top = (uint8_t*)__StackTop-4;
+uint8_t *stack_base = (uint8_t*)__StackLimit;
+volatile uint32_t stackptr;
 #endif
 
 int main()
@@ -30,8 +38,30 @@ int main()
 #if defined PROJECT2 || defined PROJECT3
 #ifdef KL25Z
     clock_setup();
-    GPIO_Configure();
     UART_configure(BAUD_115200);
+    __asm__
+	(
+    	"LDR r0, = stackptr;"
+    	"MOV r1, sp;"
+		"STR r1, [r0];"
+    );
+    uint32_t *temp_sp_low = (uint32_t *)stack_base;
+    uint32_t *temp_sp_high = (uint32_t *)stack_top;
+    uint32_t size = (uint32_t)&STACK_SIZE;
+    //uint32_t stack_val_top= *temp_sp_high;
+    for(uint32_t i = 0; i < size; i++)
+    {
+    	if(*temp_sp_high == 0x0a0a0a0a)
+    	{
+    		break;
+    	}
+    	temp_sp_high--;
+    }
+    uint32_t diff = temp_sp_high-temp_sp_low;
+    PRINTF("STACKUSE:%d %x",diff,diff);
+
+    GPIO_Configure();
+
     systick_init();
     SPI_init();
 
