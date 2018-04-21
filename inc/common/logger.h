@@ -14,6 +14,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "malloc.h"
+#include "rtc.h"
+#include "conversion.h"
+#include "uart.h"
+
 
 
 /*
@@ -56,6 +60,10 @@ typedef struct {
  uint32_t checksum;//Any type of checksum you want to implement that allows the log data to be verified
 } log_struct;
 
+log_struct logStructFill;
+
+uint32_t getlogtime();
+
 //void log_item(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
 
 //logger functions for KL25Z
@@ -69,7 +77,6 @@ void log_item_KL25Z(log_struct *item, size_t log_length);//Logs a log item to th
 void log_data_BBB(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
 void log_string_BBB(char *ptr);//Takes a c-string and logs that to the terminal
 void log_integer_BBB(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
-void log_flush_BBB();//Blocks until the current logger buffer is empty
 void log_item_BBB(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
 
 

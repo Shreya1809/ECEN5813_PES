@@ -13,12 +13,13 @@
 
 #include <stdint.h>
 #include "logger.h"
+#include "circbuf.h"
 
 #ifdef VERBOSE
 
 #ifdef PLATFORM_KL25Z
 
-#include "uart0.h"
+#include "uart.h"
 #include "rtc.h"
 
 #define LOG_RAW_DATA(data,len)			log_data_KL25Z(data,len)
@@ -34,10 +35,10 @@ struct timeval log_time;
 #define LOG_RAW_DATA(data,len)			log_data_BBB(data,len)
 #define LOG_RAW_STRING(string)			log_string_BBB(string)
 #define LOG_RAW_INT(number)			log_integer_BBB(number)
-#define LOG_FLUSH()				log_flush_BBB()
+#define LOG_FLUSH()				
 #define LOG_RAW_ITEM(structure,len)		log_item_BBB(structure,len)
 
-uint32_t logtime_BBB();
+
 
 #endif
 
@@ -45,13 +46,15 @@ uint32_t logtime_BBB();
 
 typedef struct
 {	
-	logdata_t * base; // base address
-	logdata_t * tail; // last value address
-	logdata_t * head; // buffer top value address
-	logdata_t * limit; // end address
+	log_struct * base; // base address
+	log_struct * tail; // last value address
+	log_struct * head; // buffer top value address
+	log_struct * limit; // end address
 	size_t length; // total no of items possible
 	size_t count; // current total no of items in the buffer
 } CB_log_struct;
+
+ 
 
 log_struct log_create(log_enum log_ID,log_enum module_ID, size_t log_Length, uint32_t * payload); //function to fill the elements of log struct and store it
 uint32_t getchecksum(log_enum log_ID,log_enum module_ID, uint32_t timestamp , size_t log_Length, uint32_t * payload);//to calculate checksum
