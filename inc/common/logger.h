@@ -17,6 +17,8 @@
 #include "rtc.h"
 #include "conversion.h"
 #include "uart.h"
+#include "sys/time.h"
+#include "time.h"
 
 
 
@@ -48,6 +50,8 @@ typedef enum   {
  LOG_CORE_DUMP,
 }log_enum;
 
+
+char logID_show[21][25] ;
 /*
 * @brief structure for maintaining handle to logger.
 */
@@ -60,25 +64,22 @@ typedef struct {
  uint32_t checksum;//Any type of checksum you want to implement that allows the log data to be verified
 } log_struct;
 
-log_struct logStructFill;
+//log_struct logStructFill;
+log_struct *logStructFill = malloc(sizeof(log_struct));// to pass log info into the struct
 
 uint32_t getlogtime();
 
-//void log_item(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
+
 
 //logger functions for KL25Z
 void log_data_KL25Z(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
 void log_string_KL25Z(char *ptr);//Takes a c-string and logs that to the terminal
 void log_integer_KL25Z(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
 void log_flush_KL25Z();//Blocks until the current logger buffer is empty
-void log_item_KL25Z(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
 
 //logger functions for BBB/HOST
 void log_data_BBB(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
 void log_string_BBB(char *ptr);//Takes a c-string and logs that to the terminal
 void log_integer_BBB(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
-void log_item_BBB(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
-
 
 #endif //LOGGER.H
-

@@ -41,12 +41,23 @@ void log_integer_KL25Z(uint32_t a)// Takes an integer and logs that to the termi
 	length=my_itoa(data,buffer,T10); // Converting in base 10
 	log_data_KL25Z(buffer,length);
 }
-void log_flush_KL25Z()//Blocks until the current logger buffer is empty
+void log_flush_KL25Z(CB_log_struct* src_ptr)//Blocks until the current logger buffer is empty
 {
-	
+	log_struct data;
+	while(log_cb_is_empty(src_ptr)!=1)
+	{
+		log_cb_remove(&data,src_ptr);
+		log_print(&data);
+	}	
 }
-void log_item_KL25Z(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
 
+/*
+@brief gives the timelog
+@return returns seconds 
+*/
+uint32_t getlogtime(){
+	return RTC_TSR;
+}
 
 #else
 //BBB FUNCTIONS
@@ -78,6 +89,6 @@ void log_integer_BBB(uint32_t a)// Takes an integer and logs that to the termina
 	log_data_BBB(buffer,length);
 }
 
-void log_item_BBB(log_struct *item, size_t log_length);//Logs a log item to the logger queue. Takes a log structure pointer and a length of the log.
+
 
 #endif
