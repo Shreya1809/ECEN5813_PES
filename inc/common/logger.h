@@ -14,12 +14,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "malloc.h"
-#include "rtc.h"
 #include "conversion.h"
-#include "uart.h"
-#include "sys/time.h"
-#include "time.h"
-
+//#include "logger_queue.h"
 
 
 /*
@@ -65,11 +61,14 @@ typedef struct {
 } log_struct;
 
 //log_struct logStructFill;
-log_struct *logStructFill = malloc(sizeof(log_struct));// to pass log info into the struct
+log_struct *logStructFill; //= malloc(sizeof(log_struct));// to pass log info into the struct
 
 uint32_t getlogtime();
 
+#ifdef KL25Z
 
+#include "uart.h"
+#include "rtc.h"
 
 //logger functions for KL25Z
 void log_data_KL25Z(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
@@ -77,9 +76,19 @@ void log_string_KL25Z(char *ptr);//Takes a c-string and logs that to the termina
 void log_integer_KL25Z(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
 void log_flush_KL25Z();//Blocks until the current logger buffer is empty
 
+
+#else
+#include "sys/time.h"
+#include "time.h"
+
 //logger functions for BBB/HOST
 void log_data_BBB(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
 void log_string_BBB(char *ptr);//Takes a c-string and logs that to the terminal
 void log_integer_BBB(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
+
+#endif
+
+
+
 
 #endif //LOGGER.H
