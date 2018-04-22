@@ -1,6 +1,7 @@
 #include "logger.h"
 #include "logger_queue.h"
 #include <malloc.h>
+#include "uart.h"
 int platform_flag;
 uint8_t buffer[20];
 
@@ -11,13 +12,15 @@ uint8_t buffer[20];
 #include "MKL25Z4.h"
 //KL25Z FUNCTIONS
 
+char logID_show[21][25];
+//log_struct *logStructFill;
 
 /*Takes a pointer to sequence of bytes and length of bytes to log*/
 void log_data_KL25Z(uint32_t *ptr,size_t length)
 {
 	while(!ptr)
 	{
-	  UART_send_n(ptr,length);
+	  UART_send_n((uint8_t*)ptr,length);
 	}
 }	
 		    
@@ -25,16 +28,16 @@ void log_data_KL25Z(uint32_t *ptr,size_t length)
 void log_string_KL25Z(char *ptr)//Takes a c-string and logs that to the terminal
 {
 	int i = 0;
-	while(*(ptr+j)!='\0')
+	while(*(ptr+i)!='\0')
 	{
-	   Uart_send(*(ptr+j));// UART_send(uint8_t data)
+	   UART_send(*(ptr+i));// UART_send(uint8_t data)
 	}
 }
 void log_integer_KL25Z(uint32_t a)// Takes an integer and logs that to the terminal (use itoa)
 {
 	size_t length;
-	length=my_itoa(data,buffer,T10); // Converting in base 10
-	log_data_KL25Z(buffer,length);
+	length=my_itoa(a,buffer,10); // Converting in base 10
+	log_data_KL25Z((uint32_t*)buffer,length);
 }
 void log_flush_KL25Z(CB_log_struct* src_ptr)//Blocks until the current logger buffer is empty
 {

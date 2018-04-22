@@ -15,7 +15,11 @@
 #include "logger.h"
 #include "circbuf.h"
 
-#ifdef VERBOSE
+#define PLATFORM_KL25Z
+//#define VERBOSE
+
+
+//#ifdef VERBOSE
 
 #ifdef PLATFORM_KL25Z
 
@@ -31,7 +35,7 @@
 #define LOG_RAW_ITEM(structure,len)		log_cb_add(structure,len)
 
 #else
-
+#include "sys/time.h"
 #include <stdio.h>
 struct timeval log_time;
 
@@ -43,7 +47,7 @@ struct timeval log_time;
 
 
 
-#endif
+//#endif
 
 #endif
 
@@ -56,7 +60,7 @@ typedef struct
 	size_t count; // current total no of items in the buffer
 } CB_log_struct;
 
-CB_log_struct *logger_queue;// =malloc(sizeof(CB_log_struct)); 
+extern CB_log_struct *logger_queue;// =malloc(sizeof(CB_log_struct));
  
 
 log_struct* log_create(log_enum log_ID,log_enum module_ID, size_t log_Length, uint32_t * payload); //function to fill the elements of log struct and store it

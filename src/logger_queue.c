@@ -6,11 +6,12 @@
 #include "platform.h"
 #include "memory.h"
 
-
+CB_log_struct *logger_queue;// =malloc(sizeof(CB_log_struct));
 
 //function to fill the elements of log struct and store it
-log_struct * log_create(log_enum log_ID,log_enum module_ID, size_t log_Length, uint32_t * payload) 
+log_struct* log_create(log_enum log_ID,log_enum module_ID, size_t log_Length, uint32_t * payload)
 {
+		log_struct *logStructFill = (log_struct*)malloc(sizeof(log_struct));
 		logStructFill->log_ID=log_ID;
 		logStructFill->module_ID=module_ID;
 		logStructFill->timestamp=getlogtime();
@@ -50,6 +51,7 @@ void log_print(log_struct *logval_ptr) //prints the value for kl25z/bbb with ptr
 		}
 		else LOG_RAW_STRING("WITH INCORRECT CHECKSUM");
 		LOG_RAW_STRING("\n\r");
+		free(logval_ptr);
 	
 }
 void log_flush_BBB(CB_log_struct* src_ptr)//Blocks until the current logger buffer is empty

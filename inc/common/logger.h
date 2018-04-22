@@ -47,7 +47,7 @@ typedef enum   {
 }log_enum;
 
 
-char logID_show[21][25] ;
+extern char logID_show[21][25];
 /*
 * @brief structure for maintaining handle to logger.
 */
@@ -61,7 +61,7 @@ typedef struct {
 } log_struct;
 
 //log_struct logStructFill;
-log_struct *logStructFill; //= malloc(sizeof(log_struct));// to pass log info into the struct
+//extern log_struct *logStructFill; //= malloc(sizeof(log_struct));// to pass log info into the struct
 
 uint32_t getlogtime();
 

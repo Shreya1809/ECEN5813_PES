@@ -1,4 +1,5 @@
 #include "rtc.h"
+#include "MKL25Z4.h"
 
 uint32_t sec = 0;
 
@@ -15,7 +16,6 @@ void rtc_config()
 	//**RTC_CLKIN**//
 	PORTC_PCR1 |= (PORT_PCR_MUX(0x1));       //PTC1 as RTC_CLKIN
 	SIM_SOPT1 |= SIM_SOPT1_OSC32KSEL(0b10);  //32 Khz clock source for RTC
-
 	//**32KHz Frequency**//
 	SIM_SOPT2 |= SIM_SOPT2_CLKOUTSEL(0b100); //Clockout pin --> 32 KHz
 
@@ -23,7 +23,7 @@ void rtc_config()
 
 	// RTC Setup
 	SIM_SCGC6|=SIM_SCGC6_RTC_MASK; // Enable RTC in SIM
-	SIM_SOPT1_OSC32KSEL(2); // Use RTC_CLKIN
+	//SIM_SOPT1_OSC32KSEL(2); // Use RTC_CLKIN
 
 	/*Clear Registers*/
 	RTC_CR  = RTC_CR_SWR_MASK;
@@ -54,7 +54,7 @@ void rtc_config()
 */
 void RTC_Seconds_IRQHandler()
 {
-	sec++
+	sec++;
 	log_cb_add(log_create(LOG_HEARTBEAT,LOG_HEARTBEAT,0,NULL),logger_queue);
 	
 }
