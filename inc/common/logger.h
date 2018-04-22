@@ -46,6 +46,10 @@ typedef enum   {
  LOG_CORE_DUMP,
 }log_enum;
 
+typedef enum {
+ MAIN,
+}log_module_enum;
+
 
 extern char logID_show[21][25];
 /*

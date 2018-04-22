@@ -14,7 +14,7 @@ log_struct* log_create(log_enum log_ID,log_enum module_ID, size_t log_Length, ui
 		log_struct *logStructFill = (log_struct*)malloc(sizeof(log_struct));
 		logStructFill->log_ID=log_ID;
 		logStructFill->module_ID=module_ID;
-		logStructFill->timestamp=getlogtime();
+		//logStructFill->timestamp=getlogtime();
 		logStructFill->log_Length=log_Length;
 		logStructFill->payload=payload;
 		logStructFill->checksum=getchecksum(logStructFill->log_ID,logStructFill->module_ID,logStructFill->timestamp,logStructFill->log_Length,logStructFill->payload);
@@ -29,7 +29,7 @@ uint32_t getchecksum(log_enum log_ID,log_enum module_ID, uint32_t timestamp , si
 void log_print(log_struct *logval_ptr) //prints the value for kl25z/bbb with ptr pointing to the buffer containing the data to be logged
 {
 
-	LOG_RAW_STRING(" LOG ID - ");
+	LOG_RAW_STRING("LOG ID - ");
 	LOG_RAW_STRING(logID_show[logval_ptr->log_ID]);
 	LOG_RAW_STRING(" TIME - ");
 	LOG_RAW_INT(logval_ptr->timestamp);
@@ -105,7 +105,7 @@ cb_enum log_cb_add(log_struct *logval_ptr, CB_log_struct *src_ptr)
 {
 	BEGIN_CRITICAL;
     cb_enum status = CB_SUCCESS;
-    if (logval_ptr == NULL || src_ptr-> head == NULL || src_ptr->tail == NULL || src_ptr->buffer == NULL) //check for null pointer
+    if (logval_ptr == NULL || src_ptr== NULL) //check for null pointer
     {
         status = CB_NULL_ERROR;
     }
@@ -123,7 +123,7 @@ cb_enum log_cb_add(log_struct *logval_ptr, CB_log_struct *src_ptr)
     }
     else
     {// buffer has empty spaces, hence increment the head to the next buffer location
-        *src_ptr->head = *logval_ptr;
+        *(src_ptr->head) = *logval_ptr;
         src_ptr->head++;
         src_ptr->count++;
         status = CB_SUCCESS;
@@ -172,7 +172,7 @@ cb_enum log_cb_is_full(CB_log_struct* src_ptr)//make this attribute (always inli
 {
 	if (src_ptr == NULL || src_ptr->head == NULL || src_ptr->tail == NULL || src_ptr->buffer == NULL) //check for null pointer
     {
-	log_cb_add(log_create(LOG_ERROR,LOG_ERROR,0,NULL),logger_queue);
+	//log_cb_add(log_create(LOG_ERROR,LOG_ERROR,0,NULL),logger_queue);
         return -1; // Evaluates to True / Full
     }
     else if ((src_ptr->tail == src_ptr->head + 1) || (src_ptr->count == src_ptr->size)) // tail is 1 position ahead of header, buffer is full

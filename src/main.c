@@ -13,6 +13,7 @@
 #include "data_processing.h"
 #include "circbuf.h"
 #include <unistd.h>
+#include "logger.h"
 #ifdef KL25Z
 #include "uart.h"
 #include "clock.h"
@@ -20,6 +21,9 @@
 #include "profiler.h"
 #include "nordic.h"
 #include "dma.h"
+
+#define PROJECT2
+
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
 // TODO - check register differences
 #define CLOCK_SETUP 1
@@ -33,10 +37,15 @@ uint8_t *stack_base = (uint8_t*)__StackLimit;
 volatile uint32_t stackptr;
 #endif
 
+log_struct * loggedData = NULL;
+
+
 int main()
 {
-#if defined PROJECT2 || defined PROJECT3
-#ifdef KL25Z
+
+	CB_log_struct * logger_queue = (CB_log_struct*)malloc(sizeof(CB_log_struct));
+	#if defined PROJECT2 || defined PROJECT3
+	#ifdef KL25Z
     clock_setup();
     UART_configure(BAUD_115200);
     __asm__
@@ -61,6 +70,12 @@ int main()
     PRINTF("STACKUSE:0x%x",diff);
 
     GPIO_Configure();
+    UART_configure(BAUD_115200);
+    UART_send(1);
+    log_cb_init(logger_queue, 100);
+    loggedData = log_create(LOG_GPIO_INITIALZED,MAIN,1,NULL);
+    log_cb_add(loggedData,logger_queue);
+    log_flush_KL25Z(logger_queue);
 
     systick_init();
     SPI_init();

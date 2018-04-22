@@ -31,6 +31,7 @@ void log_string_KL25Z(char *ptr)//Takes a c-string and logs that to the terminal
 	while(*(ptr+i)!='\0')
 	{
 	   UART_send(*(ptr+i));// UART_send(uint8_t data)
+	   i++;
 	}
 }
 void log_integer_KL25Z(uint32_t a)// Takes an integer and logs that to the terminal (use itoa)
