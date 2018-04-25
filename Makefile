@@ -45,20 +45,11 @@ $(warning KL25Z platform)
 	-mcpu=cortex-m0plus \
 	-mthumb \
 	-O0 \
-	-fmessage-length=0 \
-	-fsigned-char \
-	-ffunction-sections \
-	-fdata-sections \
-	-fno-common \
-	-ffreestanding \
-	-fno-builtin \
-	-mapcs
+	-march=armv6-m \
+	-mfloat-abi=soft
   LDFLAGS += \
 	-T platform/MKL25Z128xxx4_flash.ld \
-    --specs=nano.specs \
-    -Xlinker --gc-sections \
-    -Xlinker --defsym=__stack_size__=0x0400 \
-    -Xlinker --defsym=__heap_size__=0x0200
+    --specs=nano.specs
 # Note -lg points to libg.a which is the debugging version of libc.a from arm.
 # -lg and -nosys both needed together to find _exit symbol
   LDLIBS := -lg -lnosys
