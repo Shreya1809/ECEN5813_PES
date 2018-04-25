@@ -39,7 +39,7 @@ int main()
     if(rx_buffer); // Avoid unused build error for now
 #endif // platform
 
-#if 0
+#if 1
     rx_buffer = malloc(sizeof(cb_struct));
     cb_enum status = cb_init(rx_buffer, 256);
     if (status != CB_SUCCESS)
