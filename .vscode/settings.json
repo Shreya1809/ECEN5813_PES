@@ -1,6 +1,7 @@
 {
     "C_Cpp.dimInactiveRegions": false,
     "files.associations": {
-        "memory_dma.h": "c"
+        "memory_dma.h": "c",
+        "platform.h": "c"
     }
 }

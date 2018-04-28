@@ -70,9 +70,9 @@ int main()
 		logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
 		log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
 		LOG_RAW_ITEM(tx_buffer, logged_data);
-		log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t *)1);
+		log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t*)"0");
 		LOG_RAW_ITEM(tx_buffer, logged_data);
-    	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t *)1);
+    	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t*)"0");
 	    LOG_RAW_ITEM(tx_buffer, logged_data);
 	    log_create(logged_data, SYSTEM_VERSION,MAIN, 37,(uint8_t *)"KINETICS DESIGN STUDIO VERSION 3.2.0");
 	    LOG_RAW_ITEM(tx_buffer, logged_data);
@@ -143,13 +143,23 @@ int main()
 				}
 	    	    printf("\nStarting Project 4\n");
 	    	    printf("PRESS SPACEBAR TO DISPLAY DATA ANALYSIS, ESC TO DISPLAY LOGGER DATA ANALYSIS\n ");
-	log_create(logged_data, PROFILING_STARTED,PROFILER, 1,(uint8_t *)1);
+	//uint8_t * ptr = NULL;
+	logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
+	log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+	log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t*)"0");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t*)"0");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+	log_create(logged_data, SYSTEM_VERSION,MAIN, 37,(uint8_t *)"KINETICS DESIGN STUDIO VERSION 3.2.0");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+	log_create(logged_data, PROFILING_STARTED,PROFILER, 1, (uint8_t*)"0");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
     bbb_profile_option(1);
     bbb_profile_option(2);
     bbb_profile_option(3);
     bbb_profile_option(4);
-    log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)1);
+    log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)"0");
     LOG_RAW_ITEM(tx_buffer, logged_data);
 
     char string[2000];
@@ -157,25 +167,25 @@ int main()
        {
 
           
-           log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
+           log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)"0");
            LOG_RAW_ITEM(tx_buffer, logged_data);
-	   printf("\nEnter String: ");
-           if(scanf("%s", &string))
-		perror("error enetring string");
+	   printf("\nEnter String: ");scanf("%s", &string);
+        //    if(scanf("%s", &string))
+		// perror("error enetring string");
            for (int j = 0; string[j] != '\0'; j++)
            {
-               //cb_buffer_add_item(rx_buffer, string[j]);
+               cb_buffer_add_item(rx_buffer, string[j]);
         	   data_statistics(string[j]);
            }
            //data_process(rx_buffer);
            int inval;
-           printf("enter spacebar to display data analysis, ESC to display log data analysis");
-           if(scanf("%d", &inval) != 1)
-		perror("error");
-
-           if(inval == 32)
+           printf("Enter option 1 to display data analysis, 2 to display log data analysis : ");
+           //if(scanf("%d", &inval) != 1)
+		//perror("error");
+		scanf("%d", &inval);
+           if(inval == 1 )
         	   print_data_entered();
-           else if (inval == 27)
+           else if (inval == 2 )
         	   print_all_log();
            else printf("invalid input");
 

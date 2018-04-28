@@ -106,21 +106,26 @@ void data_statistics(int8_t character)
     }
 void print_data_entered()
 {
+	#ifdef KL25Z
 	PRINTF("\n----------------- Character Statistics -----------------\n");
 	    PRINTF("---------------------------------------------------------\n");
 	    PRINTF("Letter\t | Number\t | Punctuation\t | Misc\t | Total\n");
 	    PRINTF("--------------------------------------------------------\n");
-#ifdef KL25Z
+
     char line[200];
     char len = sprintf(line,
             " %lu\t | %lu\t\t | %lu\t\t | %lu\t | %lu\r\n",
             alphabet, number, punctuations, miscell, count);
     UART_send_n((uint8_t*)line, len);
-#else
-    // Built-in printf forces line buffering before flush
-    PRINTF(" %lu\t | %lu\t\t | %lu\t\t | %lu\t | %lu\r",
-            alphabet, number, punctuations, miscell, count);
-#endif
+	#else
+
+	printf("\n----------------- Character Statistics -----------------\n");
+	printf("---------------------------------------------------------\n");
+	printf("Letter\t | Number\t | Punctuation\t | Misc\t | Total\n");
+	printf("--------------------------------------------------------\n");
+	printf(" %d\t | %d\t\t | %d\t\t | %d\t | %d",alphabet, number, punctuations, miscell, count);
+
+	#endif
 
 }
 void print_all_log()
@@ -228,95 +233,54 @@ void print_all_log()
 		}
 		#else
 		 {
-		    printf("\r\n ALPHABET : ");
+		    printf("\r\n ALPHABET : %d ", alphabet);
 			uint8_t x[10];
-			uint8_t * p;
 			uint8_t *alpha; //temp pointer to keep a copy
-			p = &x[0];
-			alpha = p;
+			alpha = &x[0];
 			uint8_t len5;
-			len5= my_itoa(alphabet, p, 10);
-
-					while(*p != '\0')
-					{
-						printf("%d",*p);
-						p++;
-					}
+			len5= my_itoa(alphabet, alpha, 10);		
 			printf("\r\n");
 			log_create(logged_data, DATA_ALPHA_COUNT,DATA_PROCESSIING, len5,alpha);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
 
-			printf("\r\n NUMBERS : ");
+			printf("\r\n NUMBERS : %d ", number);
 			uint8_t y[10];
-			uint8_t * q;
 			uint8_t *num;
 			uint8_t len4;
-			q = &y[0];
-			num = q; //stores the value of payload
-			len4 = my_itoa(number, q, 10);
-
-					while(*q != '\0')
-					{
-						printf("%d",*q);
-						q++;
-					}
+			num = &y[0];
+			len4 = my_itoa(number, num, 10);
 			printf("\r\n");
 			log_create(logged_data, DATA_NUMERIC_COUNT,DATA_PROCESSIING, len4,num);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
 
 
-			printf("\r\n PUNCTUATION: ");
+			printf("\r\n PUNCTUATION: %d ", punctuations);
 			uint8_t z[10];
-			uint8_t * r;
 			uint8_t *punc;
 			uint8_t len3;
-			r = &z[0];
-			punc = r;
-			len3 = my_itoa(punctuations, r, 10);
-
-					while(*r != '\0')
-					{
-						printf("%d",*r);
-						r++;
-					}
+			punc = &z[0];
+			len3 = my_itoa(punctuations, punc, 10);
 			printf("\r\n");
 			log_create(logged_data, DATA_PUNCTUATION_COUNT,DATA_PROCESSIING, len3,punc);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
 
 
-			printf("\r\n MISCELL: ");
+			printf("\r\n MISCELL: %d ", miscell);
 			uint8_t w[10];
-			uint8_t * s;
 			uint8_t len1;
 			uint8_t *mis;
-			s = &w[0];
-			mis = s;
-			len1 = my_itoa(miscell, s, 10);
-
-					while(*s != '\0')
-					{
-						printf("%d",*s);
-						s++;
-					}
+			mis = &w[0];
+			len1 = my_itoa(miscell, mis, 10);
 			printf("\r\n");
 			log_create(logged_data, DATA_MISC_COUNT,DATA_PROCESSIING, len1,mis);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
 
-			printf("\r\n COUNT: ");
+			printf("\r\n COUNT:  %d ", count);
 			uint8_t v[10];
 			uint8_t *c;
 			uint8_t len2;
-			uint8_t * t;
-			t = &v[0];
-			c=t;
-
-			len2 = my_itoa(count, t, 10);
-
-					while(*t != '\0')
-					{
-						printf("%d",*t);
-						t++;
-					}
+			c = &v[0];
+			len2 = my_itoa(count, c, 10);
 			printf("\r\n");
 			log_create(logged_data, DATA_ANALYSIS_COMPLETED,DATA_PROCESSIING, len2,c);
 			LOG_RAW_ITEM(tx_buffer, logged_data);

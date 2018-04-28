@@ -115,6 +115,8 @@ log_status UART_data_display(uint8_t * ptr, size_t length);
 log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item);
 
 log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item);
+
+log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item);
 //logger_status_t log_integer(cb_struct * CB_data, int32_t data);
 //
 ///*

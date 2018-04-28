@@ -16,9 +16,9 @@
 #include "MKL25Z4.h"
 #include "uart.h"
 #include "rtc.h"
-#endif
 
-#ifdef BBB
+
+#else
 #include <time.h>
 #include <sys/time.h>
 #endif
@@ -29,7 +29,7 @@ uint8_t buffer[20];
 log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint8_t * payload)
 {
 	log_status status = SUCCESS;
-	if(log_item == NULL || payload == NULL)
+	if(log_item == NULL)
 	{
 
 		status = NULL_POINTER;
@@ -45,16 +45,21 @@ log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_
 	log_item -> Timestamp = RTC_TSR;
 
    	 #else
-	//struct timeval time;
-	//gettimeofday(&time, NULL);
-	//log_item->Timestamp = (int32_t)time.tv_sec;
+	struct timeval time;
+	gettimeofday(&time, NULL);
+	log_item->Timestamp = (int32_t)time.tv_sec;
 	#endif
-
-	log_item -> Payload = (uint8_t *)malloc(length * sizeof(uint8_t));
-	int i;
-	for(i = 0; i < length; i++)
+	if(payload != NULL)
 	{
-		*(log_item -> Payload + i) = *(payload + i);
+		log_item->Payload = (uint8_t *)malloc(length * sizeof(uint8_t));
+		if(log_item->Payload != NULL)
+		{
+			int i;
+			for(i = 0; i < length; i++)
+			{
+				*(log_item->Payload + i) = *(payload + i);
+			}
+		}			
 	}
 	checkSum = (log_item->log_ID) + (log_item->Module_ID)+(log_item->Timestamp) +(log_item->log_Length);
 
@@ -83,9 +88,9 @@ log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_modul
 	log_item -> Timestamp = RTC_TSR;
 
     #else
-	//struct timeval time;
-	//gettimeofday(&time, NULL);
-	//log_item->Timestamp = (int32_t)time.tv_sec;
+	struct timeval time;
+	gettimeofday(&time, NULL);
+	log_item->Timestamp = (int32_t)time.tv_sec;
 	#endif
 
 	log_item -> Payload = payload;
@@ -461,6 +466,7 @@ log_status log_integer_BBB(cb_struct * CB_data, int32_t data)// Takes an integer
 			//if(ptr >= 48 && ptr <= 57)
 			cb_buffer_add_item(CB_data, *ptr);
 			printf("%c",*ptr);
+			ptr++;
 			//a++;
 		}
 	return status;
@@ -546,7 +552,7 @@ log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item)
 
 	printf("\r\n");
 	}
-
+	/*
 	else if(log_item -> log_ID == 20 && beat == 1)
 	{
 
@@ -570,8 +576,79 @@ log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item)
 
 
 		printf("\r\n");
-	}
+	}*/
 	return status;
 }
 
+log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item)
+{
+	log_status status = SUCCESS;
+	if(CB_data == NULL || log_item == NULL)
+	{
+		return NULL_POINTER;
+	}
+
+	uint8_t ID[] = "Log ID: ";
+	uint8_t Module[]= "Module_ID:";
+	uint8_t Payload[] = "PayLoad: ";
+	uint8_t Time[] = "Timestamp: ";
+	uint8_t Checksum[] = "Checksum: ";
+
+	if(log_item -> log_ID != 20)
+	{
+
+	log_data_BBB(CB_data, ID, 8);  //to display log id
+	log_integer_BBB(CB_data, log_item -> log_ID);
+	log_data_BBB(CB_data,(uint8_t*) " ", 1);
+	log_data_BBB(CB_data, Module, 11);//to display module id
+	log_integer_BBB(CB_data, log_item -> Module_ID);
+	log_data_BBB(CB_data,(uint8_t*) " ", 1);
+	log_data_BBB(CB_data, Time, 11);// to display time
+	log_integer_BBB(CB_data, log_item -> Timestamp);
+	log_data_BBB(CB_data, (uint8_t*)" ", 1);
+	log_data_BBB(CB_data, Payload, 9);
+
+
+	if(log_item -> log_Length != 0)
+	{
+		log_integer_BBB(CB_data,(log_item -> Payload));//, log_item -> log_Length);
+		(log_item -> log_Length)--;
+
+	}
+	log_data_BBB(CB_data,(uint8_t*) " ", 1);
+
+	log_data_BBB(CB_data, Checksum, 10);
+	log_integer_BBB(CB_data, log_item -> Checksum);
+	log_data_BBB(CB_data, (uint8_t*)" ", 1);
+
+
+	printf("\r\n");
+	}
+/*
+	else if(log_item -> log_ID == 20 && beat == 1)
+	{
+
+		log_data_BBB(CB_data, ID, 8);  //to display log id
+		log_integer_BBB(CB_data, log_item -> log_ID);
+		log_data_BBB(CB_data,(uint8_t*) " ", 1);
+
+		log_data_BBB(CB_data, Time, 11);// to display time
+		log_integer_BBB(CB_data, log_item -> Timestamp);
+		log_data_BBB(CB_data, (uint8_t*)" ", 1);
+
+
+
+
+		if(log_item -> log_Length != 0)
+		{
+			log_data_BBB(CB_data, Payload, 9);
+			log_data_BBB(CB_data, log_item -> Payload, log_item -> log_Length);
+			log_data_BBB(CB_data,(uint8_t*) " ", 1);
+		}
+
+
+		printf("\r\n");
+	}*/
+	return status;
+}
 #endif

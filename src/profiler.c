@@ -9,7 +9,6 @@
 #include "conversion.h"
 
 log_struct_t2  *logged_data2;
-const size_t byte_length[4] = {10, 100, 1000, 5000};
 uint32_t start, end, diff;
 #ifdef KL25Z
 
@@ -46,9 +45,7 @@ void kl25z_profile_option(profile_test test_type)
 
     source = &x[0];
     dest = &x[5000];
-    uint32_t temp;
-	uint32_t len_diff = 0;
-	logged_data2 = (log_struct_t2 *) malloc(sizeof(log_struct_t2));
+    
 
 
     if (test_type == MEMMOVE_DMA)
@@ -662,6 +659,8 @@ void kl25z_profile_option(profile_test test_type)
 
 void bbb_profile_option(uint8_t number)
 {
+	const size_t byte_length[4] = {10, 100, 1000, 5000};
+	tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
     uint8_t *source, *dest;
     uint8_t x[10000];
     for (int k = 0; k < 5000; k++)
@@ -679,6 +678,9 @@ void bbb_profile_option(uint8_t number)
     int ret_stat = 0;
     struct timespec start_time, end_time;
     double diff;
+	uint32_t temp;
+	uint32_t len_diff = 0;
+	logged_data2 = (log_struct_t2 *) malloc(sizeof(log_struct_t2));
     if (number == 1)
     {
 
@@ -686,25 +688,69 @@ void bbb_profile_option(uint8_t number)
 			memmove(source, dest, 5000 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-			printf("Time taken for std memmove for 5000 byte transfer is %lf\n", diff);
+			//printf("Time taken for std memmove for 5000 byte transfer is %lf\n", diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 1000 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-			printf("Time taken for std memmove for 1000 byte transfer is %lf\n", diff);
+			//printf("Time taken for std memmove for 1000 byte transfer is %lf\n", diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 100 );
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-			printf("Time taken for std memmove for 100 byte transfer is %lf\n", diff);
+			//printf("Time taken for std memmove for 100 byte transfer is %lf\n", diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 10);
 			ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 			diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-			printf("Time taken for std memmove for 10 byte transfer is %lf\n", diff);
+			//printf("Time taken for std memmove for 10 byte transfer is %lf\n", diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 
 
@@ -715,25 +761,69 @@ void bbb_profile_option(uint8_t number)
 		memset(source, 10, 5000);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-		printf("Time taken for std memset for 5000 byte transfer is %lf\n", diff);
+		//printf("Time taken for std memset for 5000 byte transfer is %lf\n", diff);
+		temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 1000);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-		printf("Time taken for std memset for 1000 byte transfer is %lf\n", diff);
+		//printf("Time taken for std memset for 1000 byte transfer is %lf\n", diff);
+		temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 100);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-		printf("Time taken for std memset for 100 byte transfer is %lf\n", diff);
+		//printf("Time taken for std memset for 100 byte transfer is %lf\n", diff);
+		temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 10);
 		ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
 		diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-		printf("Time taken for std memset for 10 byte transfer is %lf\n", diff);
+		//printf("Time taken for std memset for 10 byte transfer is %lf\n", diff);
+		temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
     }
     if (number == 3)
     {
@@ -743,7 +833,18 @@ void bbb_profile_option(uint8_t number)
             my_memset(source, byte_length[j], 10);
             ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
             diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-            printf("Time taken for  my_memset for %d byte transfer is %lf\n", byte_length[j], diff);
+            //printf("Time taken for  my_memset for %d byte transfer is %lf\n", byte_length[j], diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
         }
     }
     if (number == 4)
@@ -754,7 +855,19 @@ void bbb_profile_option(uint8_t number)
             my_memmove(source, dest, byte_length[j]);
             ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
             diff = ((end_time.tv_sec - start_time.tv_sec)*1000000000 + (end_time.tv_nsec - start_time.tv_nsec));
-            printf("Time taken for  my_memmove for %d byte transfer is %lf\n", byte_length[j], diff);
+            //printf("Time taken for  my_memmove for %d byte transfer is %lf\n", byte_length[j], diff);
+			temp = diff;
+					while(temp != 0)
+					{
+						temp = temp/10;
+						len_diff++;
+					}
+
+					temp = 0;
+
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_item_BBB2(tx_buffer, logged_data2);
+			
         }
     }
     if (number == 5)
