@@ -13,6 +13,9 @@
 #include "memory.h"
 #include "platform.h"
 
+cb_struct *rx_buffer = NULL;
+cb_struct *tx_buffer = NULL;
+
 /*initialisation and allocation of dynamic memory*/
 cb_enum cb_init(cb_struct *ptr, size_t length)
 {

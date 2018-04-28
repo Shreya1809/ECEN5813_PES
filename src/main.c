@@ -17,6 +17,8 @@
 #include "circbuf.h"
 #include "logger_queue.h"
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
 #ifdef KL25Z
 #include "uart.h"
 #include "clock.h"
@@ -154,10 +156,12 @@ int main()
        while (1)
        {
 
-           printf("\nEnter String: ");
+          
            log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
            LOG_RAW_ITEM(tx_buffer, logged_data);
-           scanf("%s", string);
+	   printf("\nEnter String: ");
+           if(scanf("%s", &string))
+		perror("error enetring string");
            for (int j = 0; string[j] != '\0'; j++)
            {
                //cb_buffer_add_item(rx_buffer, string[j]);
@@ -165,14 +169,15 @@ int main()
            }
            //data_process(rx_buffer);
            int inval;
-           printf("enter spacebar to display data analysis, ESC to display log data analysis")
-           scanf("%d", &inval);
+           printf("enter spacebar to display data analysis, ESC to display log data analysis");
+           if(scanf("%d", &inval) != 1)
+		perror("error");
 
            if(inval == 32)
         	   print_data_entered();
            else if (inval == 27)
-        	   print_all_log_BBB();
-           else printf("invalid input")
+        	   print_all_log();
+           else printf("invalid input");
 
 
        }

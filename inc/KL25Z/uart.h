@@ -39,8 +39,8 @@ typedef enum BAUD_RATE
 
 }BAUDRATE;
 
-extern cb_struct *rx_buffer;
-extern cb_struct *tx_buffer;
+//extern cb_struct *rx_buffer;
+//extern cb_struct *tx_buffer;
 
 int8_t UART_configure(BAUDRATE baudselect);
 void UART_send(uint8_t data);

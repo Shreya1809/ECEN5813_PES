@@ -18,8 +18,8 @@
 #include "logger_queue.h"
 
 
-cb_struct *rx_buffer = NULL;
-cb_struct *tx_buffer = NULL;
+//cb_struct *rx_buffer = NULL;
+//cb_struct *tx_buffer = NULL;
 //static uint8_t flag = 0;
 
 int8_t UART_configure(BAUDRATE baudselect)
@@ -196,7 +196,7 @@ void UART0_IRQHandler()
         }
         else if (data == 27)
         {
-        	print_all_log_KL25Z();
+        	print_all_log();
         	log_create(logged_data, CORE_DUMP,UART, 9,(uint8_t *)"CORE DUMP");
         	LOG_RAW_ITEM(tx_buffer, logged_data);
         }

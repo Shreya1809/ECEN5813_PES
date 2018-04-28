@@ -25,6 +25,8 @@ static uint32_t miscell= 0;
 static uint32_t count = 0;
 int8_t beat = 1;
 
+
+
 uint8_t alphabetical(uint8_t value) // to check if alphabet
 {
     if ((value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z'))
@@ -121,8 +123,9 @@ void print_data_entered()
 #endif
 
 }
-void print_all_log_KL25Z()
+void print_all_log()
 {
+	#ifdef KL25Z
 	UART0_C2 &= ~UART0_C2_TIE_MASK;
 	UART0_C2 &= ~UART0_C2_RIE_MASK;
 	logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
@@ -222,15 +225,9 @@ void print_all_log_KL25Z()
 			UART_send_n((uint8_t*)"\r\n", 4);
 			log_create(logged_data, DATA_ANALYSIS_COMPLETED,DATA_PROCESSIING, len2,c);
 			log_item_KL25Z(tx_buffer, logged_data);
-	    }
-
-}
-
-void print_all_log_BBB()
-{
-
-
-	    {
+		}
+		#else
+		 {
 		    printf("\r\n ALPHABET : ");
 			uint8_t x[10];
 			uint8_t * p;
@@ -325,7 +322,12 @@ void print_all_log_BBB()
 			LOG_RAW_ITEM(tx_buffer, logged_data);
 	    }
 
+		#endif
+	    
+
 }
+
+
 void heartbeat()
 {
 	if (beat == 1)

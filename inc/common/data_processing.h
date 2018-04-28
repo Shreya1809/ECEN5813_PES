@@ -20,9 +20,9 @@ void data_statistics(uint8_t character);
 
 void print_data_entered();
 
-void print_all_log_KL25Z();
+void print_all_log();
 
-void print_all_log_BBB();
+//void print_all_log_BBB();
 
 void heartbeat();
 #endif // __DATA_PROCESSING_H__

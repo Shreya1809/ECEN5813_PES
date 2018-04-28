@@ -763,5 +763,5 @@ void bbb_profile_option(uint8_t number)
     }
     if (ret_stat)
         ; // Not used
-*/}
+}
 #endif

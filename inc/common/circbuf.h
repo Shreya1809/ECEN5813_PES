@@ -29,6 +29,9 @@ typedef struct
     int8_t* tail; // Pointer to oldest item added
 }cb_struct;
 
+extern cb_struct *rx_buffer;
+extern cb_struct *tx_buffer;
+
 /**
  * @brief Status return codes for circular buffer functions
  */
