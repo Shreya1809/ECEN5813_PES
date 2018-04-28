@@ -46,7 +46,11 @@ void kl25z_profile_option(profile_test test_type)
     source = &x[0];
     dest = &x[5000];
     
+    uint32_t temp;
+    uint32_t len_diff = 0;
 
+     size_t byte_length[4] = {10, 100, 1000, 5000};
+     logged_data2 = (log_struct_t2 *) malloc(sizeof(log_struct_t2));
 
     if (test_type == MEMMOVE_DMA)
     {
