@@ -17,7 +17,7 @@
   // overwrote _write() to give KL25Z printf
   #define PRINTF(...) printf( __VA_ARGS__ )
   #define BEGIN_CRITICAL __disable_irq()
-  #define END_CRITICAL __disable_irq()
+  #define END_CRITICAL __enable_irq()
 #else
   #define PRINTF(...) printf( __VA_ARGS__ )
   #define BEGIN_CRITICAL

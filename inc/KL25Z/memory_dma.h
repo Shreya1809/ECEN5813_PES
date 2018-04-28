@@ -9,7 +9,7 @@
 
 typedef enum  {
 	NO_ERROR,
-	ERROR,
+	DMA_ERROR,
 	INVALID_POINTER,
 	/*
   	NO_OVERLAP,

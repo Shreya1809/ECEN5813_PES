@@ -7,7 +7,7 @@
  * @date 2018-03-04
  */
 
-#include <circbuf.h>
+#include "circbuf.h"
 #include <stdio.h>
 #include <stdint.h>
 #include "memory.h"
@@ -28,23 +28,23 @@ cb_enum cb_init(cb_struct *ptr, size_t length)
     else
     {
         ptr -> buffer = (int8_t *)malloc(length * sizeof(int8_t)); // allocates the length no of items for the buffer memory
-        if(ptr -> buffer == NULL)
-        {//reinitialise size to 0, current item count in the buffer to 0, head and tail to null
-            ptr->size = 0;
-            ptr->head = NULL;
-            ptr->tail = NULL;
-            ptr->count = 0;
-            status = CB_ALLOCATION_FAILURE;
-        }
-        else
-        { //initialise size to given length, current item count in the buffer to 0, head and tail to null
+//        if(ptr -> buffer == NULL)
+//        {//reinitialise size to 0, current item count in the buffer to 0, head and tail to null
+//            ptr->size = 0;
+//            ptr->head = NULL;
+//            ptr->tail = NULL;
+//            ptr->count = 0;
+//            status = CB_ALLOCATION_FAILURE;
+//        }
+//        else
+//        { //initialise size to given length, current item count in the buffer to 0, head and tail to null
             ptr->size = length;
             ptr->head = ptr->buffer;
             ptr->tail = ptr->buffer;
             ptr->count = 0;
-            my_memzero((uint8_t*)ptr->buffer, length);
+//            my_memzero((uint8_t*)ptr->buffer, length);
             status = CB_SUCCESS;
-        }
+//        }
     }
     return status;
 }
@@ -108,6 +108,42 @@ cb_enum cb_buffer_add_item(cb_struct *ptr, int8_t data_add)
     return status;
 
 }
+
+//int8_t cb_is_full(cb_struct *ptr)
+//{
+//    if (ptr == NULL || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
+//    {
+//        return -1; // Evaluates to True / Full
+//    }
+//    else if ((ptr->tail == ptr->head + 1) || (ptr->count == ptr->size)) // tail is 1 position ahead of header, buffer is full
+//    //else if (0)
+//    {
+//        return 1; // Full
+//    }
+//    return 0; // Not Full
+//}
+//
+//
+///**
+// * @brief Checks if circular buffer is empty
+// *
+// * @param ptr Pointer to circular buf struct handle
+// *
+// * @return 1 if empty, 0 if not empty
+// */
+//int8_t cb_is_empty(cb_struct *ptr)
+//{
+//    if (ptr == NULL)// || ptr->head == NULL || ptr->tail == NULL || ptr->buffer == NULL) //check for null pointer
+//    {
+//        return -1; // Evaluates to True / Empty
+//    }
+//    else if((ptr->count == 0))// && (ptr->tail == ptr->head)) //current item count in the buffer is 0 if buffer is empty
+//    {
+//        return 1; // Empty
+//    }
+//    return 0; // Not empty
+//}
+
 
 /*function to remove items from buffer*/
 cb_enum cb_buffer_remove_item(cb_struct *ptr, int8_t *data_remove)

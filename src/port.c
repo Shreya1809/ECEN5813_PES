@@ -9,7 +9,11 @@
 
 #include "port.h"
 #include "MKL25Z4.h"
+#include "logger.h"
+#include "uart.h"
+#include "logger_queue.h"
 
+//log_struct_t *log_data;
 //Configures the RGB LEDs to be output with their initial values.
 void GPIO_Configure()
 {
@@ -24,5 +28,8 @@ void GPIO_Configure()
     //PORTD->PCR[1] |= (1 << 8);
     RGB_RED_OFF();
     RGB_GREEN_OFF();
+//    logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
+	log_create(logged_data, GPIO_INITIALZED, PORT, 1,(uint8_t *)1);
+	LOG_RAW_ITEM(tx_buffer, logged_data);
     //RGB_BLUE_OFF();
 }

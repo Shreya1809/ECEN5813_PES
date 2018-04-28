@@ -7,112 +7,175 @@
  * @date 2018-02-10
  */
 #include "project1.h"
+#include "logger.h"
+#include "malloc.h"
 #include "profiler.h"
+#include "conversion.h"
 #include "data.h"
 #include "platform.h"
 #include "data_processing.h"
 #include "circbuf.h"
+#include "logger_queue.h"
 #include <unistd.h>
-#include "logger.h"
 #ifdef KL25Z
 #include "uart.h"
 #include "clock.h"
 #include "port.h"
-#include "profiler.h"
+#include "rtc.h"
+//#include "profiler.h"
 #include "nordic.h"
 #include "dma.h"
-
-#define PROJECT2
-
 // Not sure exactly what state SystemInit() leaves the device in with CLOCK_SETUP
 // TODO - check register differences
 #define CLOCK_SETUP 1
 
-//Defining the the stack top as a pointer to access it in the program
-extern uint32_t __StackTop[];
-extern uint32_t __StackLimit[];
-extern uint32_t STACK_SIZE;
-uint8_t *stack_top = (uint8_t*)__StackTop-4;
-uint8_t *stack_base = (uint8_t*)__StackLimit;
-volatile uint32_t stackptr;
+
 #endif
 
-log_struct * loggedData = NULL;
+extern cb_struct *rx_buffer;
+extern cb_struct *tx_buffer;
+log_struct_t  *logged_data;
+
+
+
 
 
 int main()
 {
+#if defined PROJECT2 || defined PROJECT3
+#ifdef KL25Z
 
-	CB_log_struct * logger_queue = (CB_log_struct*)malloc(sizeof(CB_log_struct));
-	#if defined PROJECT2 || defined PROJECT3
-	#ifdef KL25Z
-    clock_setup();
+	clock_setup();
     UART_configure(BAUD_115200);
-    __asm__
-	(
-    	"LDR r0, = stackptr;"
-    	"MOV r1, sp;"
-		"STR r1, [r0];"
-    );
-    uint32_t *temp_sp_low = (uint32_t *)stack_base;
-    uint32_t *temp_sp_high = (uint32_t *)stack_top;
-    uint32_t size = (uint32_t)&STACK_SIZE;
-    //uint32_t stack_val_top= *temp_sp_high;
-    for(uint32_t i = 0; i < size; i++)
-    {
-    	if(*temp_sp_high == 0x0a0a0a0a)
-    	{
-    		break;
-    	}
-    	temp_sp_high--;
-    }
-    uint32_t diff = (uint32_t)temp_sp_high-(uint32_t)temp_sp_low;
-    PRINTF("STACKUSE:0x%x",diff);
 
-    GPIO_Configure();
-    UART_configure(BAUD_115200);
-    UART_send(1);
-    log_cb_init(logger_queue, 100);
-    loggedData = log_create(LOG_GPIO_INITIALZED,MAIN,1,NULL);
-    log_cb_add(loggedData,logger_queue);
-    log_flush_KL25Z(logger_queue);
+    rtc_config();
+    cb_struct BUFF[20];
+    rx_buffer = &BUFF[0];
+   // rx_buffer = (cb_struct *)malloc(sizeof(cb_struct)); //statically allocate buffer
+    	    cb_enum status = cb_init(rx_buffer, 256);
+    	    if (status != CB_SUCCESS)
+    	    {
+    		   PRINTF("Error initializing rx buffer\n");
+    	    }
+	tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
+			cb_enum mystatus = cb_init(tx_buffer, 256);
+			if (mystatus != CB_SUCCESS)
+			{
+			   PRINTF("Error initializing tx buffer\n");
+			}
+    	    PRINTF("\nStarting Project 4\n");
+		PRINTF("PRESS SPACEBAR TO DISPLAY DATA ANALYSIS, ESC TO DISPLAY LOGGER DATA ANALYSIS\n ");
+		logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
+		log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
+		LOG_RAW_ITEM(tx_buffer, logged_data);
+		log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t *)1);
+		LOG_RAW_ITEM(tx_buffer, logged_data);
+    	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t *)1);
+	    LOG_RAW_ITEM(tx_buffer, logged_data);
+	    log_create(logged_data, SYSTEM_VERSION,MAIN, 37,(uint8_t *)"KINETICS DESIGN STUDIO VERSION 3.2.0");
+	    LOG_RAW_ITEM(tx_buffer, logged_data);
 
-    systick_init();
-    SPI_init();
+    	 GPIO_Configure();
+    	 systick_init();
+    	  SPI_init();
+
 
 #else  // platform not KL25Z
-    cb_struct *rx_buffer; // defined by uart otherwise
+    cb_struct *rx_buffer;
+    cb_struct *tx_buffer;// defined by uart otherwise
     if(rx_buffer); // Avoid unused build error for now
 #endif // platform
 
-#if 0
-    rx_buffer = malloc(sizeof(cb_struct));
-    cb_enum status = cb_init(rx_buffer, 256);
-    if (status != CB_SUCCESS)
-    {
-	   PRINTF("Error initializing rx buffer\n");
-    }
-    PRINTF("\nStarting Project 2 or 3\n");
-#endif
 
 #ifdef PROJECT3
-    PRINTF("\nProject 3 print\n");
+   // PRINTF("\nProject 3 print\n");
 #ifdef KL25Z
     DMA_config();
+    log_create(logged_data, PROFILING_STARTED,PROFILER, 1,(uint8_t *)1);
+    LOG_RAW_ITEM(tx_buffer, logged_data);
     kl25z_profile_option(MEMMOVE_DMA);
 	kl25z_profile_option(MEMSET_DMA);
 	kl25z_profile_option(MY_MEMMOVE);
 	kl25z_profile_option(MY_MEMSET);
 	kl25z_profile_option(MEMMOVE);
 	kl25z_profile_option(MEMSET);
+	log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)1);
+	LOG_RAW_ITEM(tx_buffer, logged_data);
 
-    nordic_test();
+	log_create(logged_data, INFO,MAIN, 25,(uint8_t *)"NORDIC CHIP NOT CONNECTED");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+	nordic_test();
+	log_create(logged_data, WARNING,MAIN, 12,(uint8_t *)"SPI TEST FAIL");
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+
+
+	log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
+	LOG_RAW_ITEM(tx_buffer, logged_data);
+
+	while (1)
+		{
+			if (!cb_is_empty(rx_buffer))
+			{
+				//data_process(rx_buffer);
+
+				RGB_RED_TOGGLE();
+			}
+
+		}
+
 
 #else
+	cb_struct BUFF[100];
+	    rx_buffer = &BUFF[0];
+	   // rx_buffer = (cb_struct *)malloc(sizeof(cb_struct)); //statically allocate buffer
+	    	    cb_enum status = cb_init(rx_buffer, 256);
+	    	    if (status != CB_SUCCESS)
+	    	    {
+	    		   printf("Error initializing rx buffer\n");
+	    	    }
+		tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
+				cb_enum mystatus = cb_init(tx_buffer, 256);
+				if (mystatus != CB_SUCCESS)
+				{
+				   printf("Error initializing tx buffer\n");
+				}
+	    	    printf("\nStarting Project 4\n");
+	    	    printf("PRESS SPACEBAR TO DISPLAY DATA ANALYSIS, ESC TO DISPLAY LOGGER DATA ANALYSIS\n ");
+	log_create(logged_data, PROFILING_STARTED,PROFILER, 1,(uint8_t *)1);
+	LOG_RAW_ITEM(tx_buffer, logged_data);
     bbb_profile_option(1);
     bbb_profile_option(2);
     bbb_profile_option(3);
     bbb_profile_option(4);
+    log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)1);
+    LOG_RAW_ITEM(tx_buffer, logged_data);
+
+    char string[2000];
+       while (1)
+       {
+
+           printf("\nEnter String: ");
+           log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
+           LOG_RAW_ITEM(tx_buffer, logged_data);
+           scanf("%s", string);
+           for (int j = 0; string[j] != '\0'; j++)
+           {
+               //cb_buffer_add_item(rx_buffer, string[j]);
+        	   data_statistics(string[j]);
+           }
+           //data_process(rx_buffer);
+           int inval;
+           printf("enter spacebar to display data analysis, ESC to display log data analysis")
+           scanf("%d", &inval);
+
+           if(inval == 32)
+        	   print_data_entered();
+           else if (inval == 27)
+        	   print_all_log_BBB();
+           else printf("invalid input")
+
+
+       }
 #endif // platform
 #endif // project 3
 
@@ -157,6 +220,7 @@ int main()
     swap_data_endianness((uint8_t *)&i, sizeof(i));
     PRINTF("post swap 0x%lx\n", i);
 #endif
-
+    log_create(logged_data, SYSTEM_HALTED,MAIN, 1,(uint8_t *)1);
+    LOG_RAW_ITEM(tx_buffer, logged_data);
     return 0;
 }

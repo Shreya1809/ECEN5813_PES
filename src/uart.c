@@ -12,10 +12,15 @@
 #include "MKL25Z4_extension.h"
 #include "circbuf.h"
 #include "port.h"
+#include "conversion.h"
+#include "logger.h"
+#include "data_processing.h"
+#include "logger_queue.h"
 
 
 cb_struct *rx_buffer = NULL;
 cb_struct *tx_buffer = NULL;
+//static uint8_t flag = 0;
 
 int8_t UART_configure(BAUDRATE baudselect)
 {
@@ -148,36 +153,71 @@ void UART_receive_n(uint8_t* data, size_t length)
 void UART0_IRQHandler()
 {
     cb_enum status;
+    static int8_t data;
     //if((UART0->S1 & UART_S1_RDRF_MASK)&&(UART0->C2 & UART_C2_RIE_MASK))
     // Don't need to check UART_C2_RIE, this is a configuration reg that we set once
     //if (UART0->S1 & UART_S1_RDRF_MASK)
-    if (UART0_BRD_S1_RDRF(UART0))
+    if ((UART0_C2 & UART0_C2_RIE_MASK) == UART0_C2_RIE_MASK)//(UART0_BRD_S1_RDRF(UART0))
     {
         RGB_BLUE_TOGGLE();
+        		data = UART0_D;		//receives bit from keyboard
+        		if(data != 0)
+        		cb_buffer_add_item(rx_buffer, data);
         // Can probably directly check what triggered interrupt another way
         //Interrupt caused by receiver
-        int8_t data = UART0->D;
 
-        //UART_send(data);
+        UART0_C2 &= ~UART0_C2_RIE_MASK;
+        UART0_C2 |= UART0_C2_TIE_MASK;
 
-        cb_enum status = cb_buffer_add_item(rx_buffer, data);
+       // if (status);
 
-        if (status);
-
-        //if (status == CB_SUCCESS)
-        //{
-        //    //UART0->D = data;
-        //}
-    }
-    else if ((UART0->S1 & UART_S1_TC_MASK)&& (UART0->C2 & UART_C2_TCIE_MASK))
+           }
+    else if ((UART0_C2 & UART0_C2_TIE_MASK) == UART0_C2_TIE_MASK) //((UART0->S1 & UART_S1_TC_MASK)&& (UART0->C2 & UART_C2_TCIE_MASK))
     {                 //Interrupt caused by transmitter
-        int8_t data;
-        status = cb_buffer_remove_item(tx_buffer , &data);       //send a char
+
+        status = cb_buffer_remove_item(rx_buffer , &data);
 
         if (status == CB_SUCCESS)
         {
             UART0->D = data;
         }
+
+        if(data != 0 && data != 32 && data != 27 && data != 13 && data!=9)
+        {
+        		data_statistics(data);
+
+        }
+
+        else if (data == 32)
+        {
+        	print_data_entered();
+
+
+        }
+        else if (data == 27)
+        {
+        	print_all_log_KL25Z();
+        	log_create(logged_data, CORE_DUMP,UART, 9,(uint8_t *)"CORE DUMP");
+        	LOG_RAW_ITEM(tx_buffer, logged_data);
+        }
+        else if(data == 13)
+        {
+
+			log_create(logged_data, DATA_RECEIVED, UART, 1,(uint8_t *)1);
+			LOG_RAW_ITEM(tx_buffer, logged_data);
+        	UART_send_n((uint8_t*)" \nENTER ANYTHING : ", 20);
+        	heartbeat();
+        }
+        else if(data == 9)
+        {
+        	log_flush_KL25Z(tx_buffer);
+        }
+
+        		UART0_C2 &= ~UART0_C2_TIE_MASK;
+        		UART0_C2 |= UART0_C2_RIE_MASK;
+
+
+
         //Clear transmit receive interrupt flag
     }
 }

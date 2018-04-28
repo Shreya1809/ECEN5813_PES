@@ -104,7 +104,7 @@ mem_enum memmove_dma(uint8_t * src, uint8_t * dst, uint32_t length, dma_block_si
 
     if ( !src || !dst || !length) // NULL pointer or zero size
     {
-        return ERROR;
+        return DMA_ERROR;
     }
 
     // No overlap case
@@ -223,7 +223,7 @@ mem_enum memset_dma(uint8_t * dst, uint32_t length, uint8_t data, dma_block_size
 
     if (dst == NULL || length <= 0)                  //null pointer
     {
-    	return_status = ERROR;
+    	return_status = DMA_ERROR;
     }
 
     else

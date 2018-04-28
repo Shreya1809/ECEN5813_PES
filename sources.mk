@@ -7,8 +7,8 @@ SOURCES_COMMON = \
 	src/project1.c \
 	src/profiler.c \
 	src/data_processing.c\
-	src/logger.c\
-	src/logger_queue.c\
+	src/logger.c
+	
 	
 
 # Must keep main() functions separate between main.c and test

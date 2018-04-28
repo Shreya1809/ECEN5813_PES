@@ -31,7 +31,8 @@ int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base);
  * @param base: base for conversion 
  * @return :length of data converted
  */
-uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base);
+uint8_t * My_itoa(int32_t data, uint8_t *ptr, uint32_t base);
+uint8_t  my_itoa(int32_t data, uint8_t * ptr, uint32_t base);
 
 
 #endif /*CONVERSION_H*/

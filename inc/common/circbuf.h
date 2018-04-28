@@ -44,6 +44,10 @@ typedef enum
     CB_ALLOCATION_FAILURE, // if malloc fails
 }cb_enum;
 
+
+//int8_t cb_is_full(cb_struct *ptr);
+//
+//int8_t cb_is_empty(cb_struct *ptr);
 /**
  * @brief Initialize circular buffer with 'length' bytes
  * Allocates dynamic memory, and populates struct.
@@ -130,6 +134,8 @@ static inline int cb_is_empty(cb_struct *ptr)
     }
     return 0; // Not empty
 }
+
+
 /**
  * @brief Shows an item at any position in circular buffer
  * without removing item from buffer. If position is not populated,

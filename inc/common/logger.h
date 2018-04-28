@@ -1,98 +1,194 @@
-/**
- * @file logger.h
- * @brief logger buffer library
- * @author Shreya Chakraborty
- * @author Miles Frain
- * @version 1
- * @date 2018-04-21
+/*
+ * logger.h
+ *
+ *  Created on: Apr 24, 2018
+ *      Author: Shreya
  */
 
-#ifndef __LOGGER_H__
-#define __LOGGER_H__
+#ifndef INC_COMMON_LOGGER_H_
+#define INC_COMMON_LOGGER_H_
 
 #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include "malloc.h"
-#include "conversion.h"
-//#include "logger_queue.h"
+#include "circbuf.h"
 
 
-/*
-* @brief enum for maintaining handle to logger.
-*/
+#ifndef LOGGER_H_
+#define LOGGER_H_
 
-typedef enum   {
- LOG_SYSTEM_ID,
- LOG_SYSTEM_VERSION,
- LOG_LOGGER_INITIALZED,
- LOG_GPIO_INITIALZED,
- LOG_SYSTEM_INITIALIZED,
- LOG_SYSTEM_HALTED,
- LOG_INFO,
- LOG_WARNING,
- LOG_ERROR,
- LOG_PROFILING_STARTED,
- LOG_PROFILING_RESULT,
- LOG_PROFILING_COMPLETED,
- LOG_DATA_RECEIVED,
- LOG_DATA_ANALYSIS_STARTED,
- LOG_DATA_ALPHA_COUNT,
- LOG_DATA_NUMERIC_COUNT,
- LOG_DATA_PUNCTUATION_COUNT,
- LOG_DATA_MISC_COUNT,
- LOG_DATA_ANALYSIS_COMPLETED,
- LOG_HEARTBEAT,
- LOG_CORE_DUMP,
-}log_enum;
+typedef enum
+{
+	ERROR,
+	SUCCESS,
+	NULL_POINTER,
+	ALLOCATION_FAILED,
+}log_status;
 
-typedef enum {
- MAIN,
-}log_module_enum;
+typedef enum
+{
+	SYSTEM_ID, // Send important information about your system
+	SYSTEM_VERSION ,//- Send important information about your system firmware/hardware versions
+	LOGGER_INITIALZED, //- No Payload
+	GPIO_INITIALZED, //- No Payload
+	SYSTEM_INITIALIZED,// - No Payload
+	SYSTEM_HALTED,// - No Payload
+	INFO ,//- Sends important information with regards to an info string
+    WARNING,// - Sends important information with regards to an info string
+	LOG_ERROR,// - Sends important information with regards to an info string
+	PROFILING_STARTED,// - Profiling analysis has started
+	PROFILING_RESULT,// - Logs a function identifier and a count for how long it took
+	PROFILING_COMPLETED,// - Profiling analysis has completed
+	DATA_RECEIVED,// - Logs that an item was received on the UART, transmits it back
+	DATA_ANALYSIS_STARTED,// - No Payload
+	DATA_ALPHA_COUNT,// - Logs number of alphabetic characters
+	DATA_NUMERIC_COUNT,// - Logs number of alphabetic characters
+	DATA_PUNCTUATION_COUNT,// - Logs number of alphabetic characters
+	DATA_MISC_COUNT,// - Logs number of alphabetic characters
+	DATA_ANALYSIS_COMPLETED,// - No Payload
+	HEARTBEAT,// - No Payload
+	CORE_DUMP,// - Send information with respect
+}logger_enum_t;
 
+typedef enum
+{
+	MAIN,
+	PORT,
+	PROFILER,
+	DATA_PROCESSIING,
+	LOGGER,
+	UART,
+	RTC_MOD,
 
-extern char logID_show[21][25];
-/*
-* @brief structure for maintaining handle to logger.
-*/
-typedef struct {
- log_enum log_ID; //Indicator on what the log is
- log_enum module_ID;//Indicator of where the log is coming from (File/module)
- uint32_t timestamp;//32-bit RTC value
- size_t log_Length; // Number of bytes of Payload
- uint32_t *payload; //Any associated data that is sent with the log (can vary in size). Dependent on the log ID
- uint32_t checksum;//Any type of checksum you want to implement that allows the log data to be verified
-} log_struct;
+}logger_module_t;
 
-//log_struct logStructFill;
-//extern log_struct *logStructFill; //= malloc(sizeof(log_struct));// to pass log info into the struct
+typedef struct
+{
+	logger_enum_t log_ID;
+	logger_module_t Module_ID;
+	uint32_t Timestamp;
+	size_t log_Length;
+	uint8_t * Payload;
+	uint32_t Checksum;
+}log_struct_t;
 
-uint32_t getlogtime();
+typedef struct
+{
+	logger_enum_t log_ID;
+	logger_module_t Module_ID;
+	uint32_t Timestamp;
+	size_t log_Length;
+	uint32_t  Payload;
+	uint32_t Checksum;
+}log_struct_t2;
 
-#ifdef KL25Z
+extern log_struct_t  *logged_data;
 
-#include "uart.h"
-#include "rtc.h"
+//log_status log_create(log_struct_t * log_item , logger_enum_t ID, size_t length, uint8_t * payload);
+log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint8_t * payload);
 
-//logger functions for KL25Z
-void log_data_KL25Z(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
-void log_string_KL25Z(char *ptr);//Takes a c-string and logs that to the terminal
-void log_integer_KL25Z(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
-void log_flush_KL25Z();//Blocks until the current logger buffer is empty
+log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint32_t  payload);
 
+log_status log_data_KL25Z(cb_struct * CB_data, uint8_t * ptr, size_t length);
 
-#else
-#include "sys/time.h"
-#include "time.h"
+log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item);
 
-//logger functions for BBB/HOST
-void log_data_BBB(uint32_t *ptr,size_t length);//Takes a pointer to sequence of bytes and length of bytes to log
-void log_string_BBB(char *ptr);//Takes a c-string and logs that to the terminal
-void log_integer_BBB(uint32_t a);// Takes an integer and logs that to the terminal (use itoa)
+log_status log_string_KL25Z(cb_struct * CB_data, uint8_t *data_ptr);
+
+log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length);
+
+log_status log_string_BBB(cb_struct * CB_data, uint8_t *data_ptr);
+
+log_status log_integer_KL25Z(cb_struct * CB_data, int32_t data);
+
+log_status log_integer_BBB(cb_struct * CB_data, int32_t data);
+
+log_status log_flush_KL25Z(cb_struct * CB_data);
+
+log_status log_flush_BBB(cb_struct * CB_data);
+
+log_status UART_integer_display(int32_t data);
+
+log_status UART_string_display(uint8_t * ptr);
+
+log_status UART_data_display(uint8_t * ptr, size_t length);
+
+log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item);
+
+log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item);
+//logger_status_t log_integer(cb_struct * CB_data, int32_t data);
+//
+///*
+// *@brief - log flush
+// *Blocks until the current logger buffer is empty
+// *@param -
+// *         CB_data: buffer to be flushed
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if operation is successful
+// */
+//logger_status_t log_flush(cb_struct * CB_data);
+//
+///*
+// *@brief - log data to UART
+// *Takes a pointer to a sequence of bytes and length of bytes and adds it to the log buffer. This is used for HEARTBEAT
+// *@param -
+// *         data_ptr: Destination Pointer
+// *         length: Length of the bytes
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if logging is successful
+// */
+//logger_status_t log_data_to_UART(uint8_t *data_ptr, size_t length);
+//
+///*
+// *@brief - log string to UART
+// *Takes a C-string and adds it to the log buffer. This is used for HEARTBEAT
+// *@param -
+// *         data_ptr: Destination Pointer
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if logging is successful
+// */
+//logger_status_t log_string_to_UART(uint8_t *data_ptr);
+//
+///*
+// *@brief - log integer to UART
+// *Takes an integer and adds it to the log buffer. This is used for HEARTBEAT
+// *@param -
+// *         data: integer data to be logged
+// *         CB_data: Destination Pointer
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if logging is successful
+// */
+//logger_status_t log_integer_to_UART(int32_t data);
+//
+///*
+// *@brief - Create log item
+// *Updates the logger struct.
+// *@param -
+// *         Item: logger buffer
+// *         ID: Indicator on what the log is
+// *         length: Number of bytes of Payload
+// *         payload: Any associated data that is sent with the log
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if the operation is successful
+// */
+//logger_status_t create_log(LoggedItem_t *Item , logger_status_t ID, size_t length, uint8_t *payload);
+//
+///*
+// *@brief - log item
+// *It updates the logger buffer
+// *@param -
+// *         CB_data: circular buffer
+// *         Item: logger buffer
+// *@return  NULL_POINTER_PASSED: for null pointer
+// *@return  success: if the operation is successful
+// */
+//logger_status_t log_item(cb_struct * CB_data, LoggedItem_t *Item);
+//
+//void toggleHeartbeat();
 
 #endif
 
 
 
 
-#endif //LOGGER.H
+
+#endif /* INC_COMMON_LOGGER_H_ */

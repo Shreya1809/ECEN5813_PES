@@ -1,7 +1,10 @@
 #include "rtc.h"
 #include "MKL25Z4.h"
+#include "logger.h"
+#include "uart.h"
 
-uint32_t sec = 0;
+log_struct_t * data;
+//cb_struct *rx_buffer;
 
 void rtc_config()
 {
@@ -54,8 +57,9 @@ void rtc_config()
 */
 void RTC_Seconds_IRQHandler()
 {
-	sec++;
-	log_cb_add(log_create(LOG_HEARTBEAT,LOG_HEARTBEAT,0,NULL),logger_queue);
+	data = (log_struct_t *) malloc(sizeof(log_struct_t));
+	log_create(data, HEARTBEAT, RTC_MOD,1,(uint8_t*)1);
+	log_item_KL25Z(tx_buffer, data);
 	
 }
 
