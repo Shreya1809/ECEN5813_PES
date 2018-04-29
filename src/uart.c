@@ -199,12 +199,14 @@ void UART0_IRQHandler()
         	print_all_log();
         	log_create(logged_data, CORE_DUMP,UART, 9,(uint8_t *)"CORE DUMP");
         	LOG_RAW_ITEM(tx_buffer, logged_data);
+            LOG_FLUSH(tx_buffer);
         }
         else if(data == 13)
         {
 
 			log_create(logged_data, DATA_RECEIVED, UART, 1,(uint8_t *)1);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+            LOG_FLUSH(tx_buffer);
         	UART_send_n((uint8_t*)" \nENTER ANYTHING : ", 20);
         	heartbeat();
         }

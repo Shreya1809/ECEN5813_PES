@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "logger.h"
 #include "conversion.h"
+#include "logger_queue.h"
 
 log_struct_t2  *logged_data2;
 uint32_t start, end, diff;
@@ -74,6 +75,7 @@ void kl25z_profile_option(profile_test test_type)
 
                 				log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
                 				log_item_KL25Z2(tx_buffer, logged_data2);
+								LOG_FLUSH(tx_buffer);
 
                 start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 100 , ONE_BYTE );
@@ -84,6 +86,7 @@ void kl25z_profile_option(profile_test test_type)
                 	//PRINTF("DMA ERROR\n");
                 	log_create(logged_data, LOG_ERROR,PROFILER, 9, (uint8_t*)"DMA ERROR");
                 	 log_item_KL25Z(tx_buffer, logged_data);
+					 LOG_FLUSH(tx_buffer);
                 }
                 DMA_DSR_BCR0 |= DMA_DSR_BCR_DONE(1);
 
@@ -100,6 +103,7 @@ void kl25z_profile_option(profile_test test_type)
 
 								log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 								log_item_KL25Z2(tx_buffer, logged_data2);
+								LOG_FLUSH(tx_buffer);
 
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 1000 , ONE_BYTE );
@@ -121,6 +125,7 @@ void kl25z_profile_option(profile_test test_type)
 
 								log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 								log_item_KL25Z2(tx_buffer, logged_data2);
+								LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 5000 , ONE_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -141,6 +146,7 @@ void kl25z_profile_option(profile_test test_type)
 
 								log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 								log_item_KL25Z2(tx_buffer, logged_data2);
+								LOG_FLUSH(tx_buffer);
 
 				//PRINTF("LOGGER for MEMMOVE DMA 10, 100, 1000 , 5000 BYTES , BLOCK SIZE TWO BYTES");
 				start = SysTick->VAL;
@@ -163,6 +169,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 100, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -183,6 +190,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest, 1000, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -203,6 +211,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,5000, TWO_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -223,6 +232,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 
 				//PRINTF("LOGGER for MEMMOVE DMA 10, 100, 1000 , 5000 BYTES , BLOCK SIZE FOUR BYTES");
                 start = SysTick->VAL;
@@ -245,6 +255,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,100, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -265,6 +276,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,1000, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -285,6 +297,7 @@ void kl25z_profile_option(profile_test test_type)
 
 												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 												log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
 				start = SysTick->VAL;
 				ret = memmove_dma(source, dest,5000, FOUR_BYTE );
                 while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -305,6 +318,7 @@ void kl25z_profile_option(profile_test test_type)
 
 				log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 				log_item_KL25Z2(tx_buffer, logged_data2);
+				LOG_FLUSH(tx_buffer);
   }
     if (test_type == MEMSET_DMA)
     {
@@ -329,6 +343,7 @@ void kl25z_profile_option(profile_test test_type)
 
                 								log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
                 								log_item_KL25Z2(tx_buffer, logged_data2);
+												LOG_FLUSH(tx_buffer);
                start = SysTick->VAL;
 			   ret = memset_dma(dest, 100, 5,ONE_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -349,6 +364,7 @@ void kl25z_profile_option(profile_test test_type)
 
 									log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 									log_item_KL25Z2(tx_buffer, logged_data2);
+									LOG_FLUSH(tx_buffer);
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 1000, 5,ONE_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -370,6 +386,7 @@ void kl25z_profile_option(profile_test test_type)
 
 			   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 			   												log_item_KL25Z2(tx_buffer, logged_data2);
+															   LOG_FLUSH(tx_buffer);
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 5000, 5,ONE_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -391,6 +408,7 @@ void kl25z_profile_option(profile_test test_type)
 
 			   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 			   												log_item_KL25Z2(tx_buffer, logged_data2);
+															   LOG_FLUSH(tx_buffer);
 			   start = SysTick->VAL;
 			   ret = memset_dma(dest, 10, 5,TWO_BYTE );
 			   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -412,6 +430,7 @@ void kl25z_profile_option(profile_test test_type)
 
 									log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 									log_item_KL25Z2(tx_buffer, logged_data2);
+									LOG_FLUSH(tx_buffer);
 			  start = SysTick->VAL;
 		   ret = memset_dma(dest, 100, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -433,6 +452,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 1000, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -454,6 +474,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 5000, 5,TWO_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -475,6 +496,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 8, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -496,6 +518,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 100, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -517,6 +540,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 1000, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -538,6 +562,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
 		   start = SysTick->VAL;
 		   ret = memset_dma(dest, 5000, 5,FOUR_BYTE );
 		   while((ret == NO_ERROR) && DMA_DSR_BCR0 & DMA_DSR_BCR_BSY(1));
@@ -559,6 +584,7 @@ void kl25z_profile_option(profile_test test_type)
 
 		   												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 		   												log_item_KL25Z2(tx_buffer, logged_data2);
+														   LOG_FLUSH(tx_buffer);
     }
 
     if (test_type == MY_MEMMOVE)
@@ -582,6 +608,7 @@ void kl25z_profile_option(profile_test test_type)
 
             												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
             												log_item_KL25Z2(tx_buffer, logged_data2);
+															LOG_FLUSH(tx_buffer);
          }
     }
     if (test_type == MY_MEMSET)
@@ -607,6 +634,7 @@ void kl25z_profile_option(profile_test test_type)
 
             												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
             												log_item_KL25Z2(tx_buffer, logged_data2);
+															LOG_FLUSH(tx_buffer);
         }
 
     }
@@ -632,6 +660,7 @@ void kl25z_profile_option(profile_test test_type)
 
 															log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 															log_item_KL25Z2(tx_buffer, logged_data2);
+															LOG_FLUSH(tx_buffer);
 		}
     }
     if (test_type == MEMSET)
@@ -656,6 +685,7 @@ void kl25z_profile_option(profile_test test_type)
 
 															log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
 															log_item_KL25Z2(tx_buffer, logged_data2);
+															LOG_FLUSH(tx_buffer);
 		}
     }
 }
@@ -685,6 +715,11 @@ void bbb_profile_option(uint8_t number)
 	uint32_t temp;
 	uint32_t len_diff = 0;
 	logged_data2 = (log_struct_t2 *) malloc(sizeof(log_struct_t2));
+	cb_enum mystatus = cb_init(tx_buffer, 5000);
+				if (mystatus != CB_SUCCESS)
+				{
+				   printf("Error initializing tx buffer\n");
+				}
     if (number == 1)
     {
 
@@ -704,6 +739,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 1000 );
@@ -721,6 +757,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 100 );
@@ -738,6 +775,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 		ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 			memmove(source, dest, 10);
@@ -755,6 +793,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 
 
@@ -777,6 +816,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 1000);
@@ -794,6 +834,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 100);
@@ -811,6 +852,7 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 
 	ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
 		memset(source, 10, 10);
@@ -828,11 +870,13 @@ void bbb_profile_option(uint8_t number)
 
 			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
     }
     if (number == 3)
     {
         for (int j = 3; j >= 0; j--)
         {
+			
             ret_stat = clock_gettime(CLOCK_REALTIME, &start_time);
             my_memset(source, byte_length[j], 10);
             ret_stat = clock_gettime(CLOCK_REALTIME, &end_time);
@@ -847,8 +891,10 @@ void bbb_profile_option(uint8_t number)
 
 					temp = 0;
 
-			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/20);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
+
         }
     }
     if (number == 4)
@@ -869,15 +915,14 @@ void bbb_profile_option(uint8_t number)
 
 					temp = 0;
 
-			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+			log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/20);
 			log_item_BBB2(tx_buffer, logged_data2);
+			LOG_FLUSH(tx_buffer);
 			
         }
     }
-    if (number == 5)
-    {
-        // show statistics of all bbb execution times
-    }
+	//log_flush_BBB(tx_buffer);
+    
     if (ret_stat)
         ; // Not used
 }

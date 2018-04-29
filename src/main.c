@@ -60,7 +60,7 @@ int main()
     		   PRINTF("Error initializing rx buffer\n");
     	    }
 	tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
-			cb_enum mystatus = cb_init(tx_buffer, 256);
+			cb_enum mystatus = cb_init(tx_buffer, 300);
 			if (mystatus != CB_SUCCESS)
 			{
 			   PRINTF("Error initializing tx buffer\n");
@@ -70,12 +70,16 @@ int main()
 		logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
 		log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
 		LOG_RAW_ITEM(tx_buffer, logged_data);
+		LOG_FLUSH(tx_buffer);
 		log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t*)"0");
 		LOG_RAW_ITEM(tx_buffer, logged_data);
+		LOG_FLUSH(tx_buffer);
     	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t*)"0");
 	    LOG_RAW_ITEM(tx_buffer, logged_data);
+		LOG_FLUSH(tx_buffer);
 	    log_create(logged_data, SYSTEM_VERSION,MAIN, 37,(uint8_t *)"KINETICS DESIGN STUDIO VERSION 3.2.0");
 	    LOG_RAW_ITEM(tx_buffer, logged_data);
+		LOG_FLUSH(tx_buffer);
 
     	 GPIO_Configure();
     	 systick_init();
@@ -95,6 +99,7 @@ int main()
     DMA_config();
     log_create(logged_data, PROFILING_STARTED,PROFILER, 1,(uint8_t *)1);
     LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
     kl25z_profile_option(MEMMOVE_DMA);
 	kl25z_profile_option(MEMSET_DMA);
 	kl25z_profile_option(MY_MEMMOVE);
@@ -103,16 +108,18 @@ int main()
 	kl25z_profile_option(MEMSET);
 	log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)1);
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 
 	log_create(logged_data, INFO,MAIN, 25,(uint8_t *)"NORDIC CHIP NOT CONNECTED");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
-	nordic_test();
+	LOG_FLUSH(tx_buffer);
+	//nordic_test();
 	log_create(logged_data, WARNING,MAIN, 12,(uint8_t *)"SPI TEST FAIL");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
-
-
+	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 
 	while (1)
 		{
@@ -136,7 +143,7 @@ int main()
 	    		   printf("Error initializing rx buffer\n");
 	    	    }
 		tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
-				cb_enum mystatus = cb_init(tx_buffer, 256);
+				cb_enum mystatus = cb_init(tx_buffer, 2000);
 				if (mystatus != CB_SUCCESS)
 				{
 				   printf("Error initializing tx buffer\n");
@@ -147,20 +154,27 @@ int main()
 	logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
 	log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t*)"0");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, SYSTEM_INITIALIZED,MAIN, 1,(uint8_t*)"0");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, SYSTEM_VERSION,MAIN, 37,(uint8_t *)"KINETICS DESIGN STUDIO VERSION 3.2.0");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, PROFILING_STARTED,PROFILER, 1, (uint8_t*)"0");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+	LOG_FLUSH(tx_buffer);
     bbb_profile_option(1);
     bbb_profile_option(2);
     bbb_profile_option(3);
     bbb_profile_option(4);
+	//bbb_profile_option(5);
     log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)"0");
     LOG_RAW_ITEM(tx_buffer, logged_data);
+	//log_flush_BBB(tx_buffer);
 
     char string[2000];
        while (1)
@@ -187,6 +201,8 @@ int main()
         	   print_data_entered();
            else if (inval == 2 )
         	   print_all_log();
+			else if (inval == 3)
+				log_flush_BBB(tx_buffer);
            else printf("invalid input");
 
 

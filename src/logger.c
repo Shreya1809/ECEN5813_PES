@@ -10,6 +10,7 @@
 #include "circbuf.h"
 #include "conversion.h"
 #include "data_processing.h"
+#include "logger_queue.h"
 //#define KL25Z
 
 #ifdef KL25Z
@@ -45,9 +46,11 @@ log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_
 	log_item -> Timestamp = RTC_TSR;
 
    	 #else
-	struct timeval time;
-	gettimeofday(&time, NULL);
-	log_item->Timestamp = (int32_t)time.tv_sec;
+	//#include <stdio.h>
+	struct timeval start;
+	gettimeofday(&start, NULL);
+	log_item->Timestamp = (uint8_t)start.tv_sec;
+	//printf("%d",time.tv_sec);
 	#endif
 	if(payload != NULL)
 	{
@@ -90,7 +93,7 @@ log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_modul
     #else
 	struct timeval time;
 	gettimeofday(&time, NULL);
-	log_item->Timestamp = (int32_t)time.tv_sec;
+	log_item->Timestamp = (uint8_t)time.tv_sec;
 	#endif
 
 	log_item -> Payload = payload;
@@ -115,7 +118,7 @@ log_status log_data_KL25Z(cb_struct * CB_data, uint8_t * ptr, size_t length)
 	while(length != 0)
 	{
 		cb_buffer_add_item(CB_data, *ptr);
-		UART_send(*ptr);
+		//UART_send(*ptr);
 		length--;
 		ptr++;
 	}
@@ -137,7 +140,7 @@ log_status log_string_KL25Z(cb_struct * CB_data, uint8_t * ptr)
 	while(*ptr != '\0')
 	{
 		cb_buffer_add_item(CB_data, *ptr);
-		UART_send(*ptr);
+		//UART_send(*ptr);
 		ptr++;
 	}
 		return status;
@@ -162,7 +165,7 @@ log_status log_integer_KL25Z(cb_struct * CB_data, int32_t data)// Takes an integ
 		{
 			if(*ptr >= 48 && *ptr <= 57)
 			cb_buffer_add_item(CB_data, *ptr);
-			UART_send(*ptr);
+			//UART_send(*ptr);
 			ptr++;
 			//a++;
 		}
@@ -419,7 +422,7 @@ log_status log_string_BBB(cb_struct * CB_data, uint8_t * ptr)
 	while(ptr != '\0')
 	{
 		cb_buffer_add_item(CB_data, *ptr);
-		printf("%c",*(ptr));
+		//printf("%c",*(ptr));
 		ptr++;
 	}
 	return status;
@@ -438,11 +441,11 @@ log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length)
 	while(length != 0)
 	{
 		cb_buffer_add_item(CB_data, *ptr);
-		printf("%c",*(ptr));
+		//printf("%c",*(ptr));
 		length--;
 		ptr++;
 	}
-
+	
 	return status;
 }
 
@@ -465,7 +468,7 @@ log_status log_integer_BBB(cb_struct * CB_data, int32_t data)// Takes an integer
 		{
 			//if(ptr >= 48 && ptr <= 57)
 			cb_buffer_add_item(CB_data, *ptr);
-			printf("%c",*ptr);
+			//printf("%c",*ptr);
 			ptr++;
 			//a++;
 		}
@@ -499,6 +502,7 @@ log_status log_flush_BBB(cb_struct * CB_data)
 		}
 
 	}
+	printf("\r\n");
 	//__enable_irq();
 
 	return status;
@@ -549,34 +553,10 @@ log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item)
 	log_integer_BBB(CB_data, log_item -> Checksum);
 	log_data_BBB(CB_data, (uint8_t*)" ", 1);
 
-
+	//log_data_BBB(CB_data,(uint8_t*) "\r\n ", 4);
 	printf("\r\n");
 	}
-	/*
-	else if(log_item -> log_ID == 20 && beat == 1)
-	{
-
-		log_data_BBB(CB_data, ID, 8);  //to display log id
-		log_integer_BBB(CB_data, log_item -> log_ID);
-		log_data_BBB(CB_data,(uint8_t*) " ", 1);
-
-		log_data_BBB(CB_data, Time, 11);// to display time
-		log_integer_BBB(CB_data, log_item -> Timestamp);
-		log_data_BBB(CB_data, (uint8_t*)" ", 1);
-
-
-
-
-		if(log_item -> log_Length != 0)
-		{
-			log_data_BBB(CB_data, Payload, 9);
-			log_data_BBB(CB_data, log_item -> Payload, log_item -> log_Length);
-			log_data_BBB(CB_data,(uint8_t*) " ", 1);
-		}
-
-
-		printf("\r\n");
-	}*/
+	
 	return status;
 }
 
@@ -624,31 +604,7 @@ log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item)
 
 	printf("\r\n");
 	}
-/*
-	else if(log_item -> log_ID == 20 && beat == 1)
-	{
 
-		log_data_BBB(CB_data, ID, 8);  //to display log id
-		log_integer_BBB(CB_data, log_item -> log_ID);
-		log_data_BBB(CB_data,(uint8_t*) " ", 1);
-
-		log_data_BBB(CB_data, Time, 11);// to display time
-		log_integer_BBB(CB_data, log_item -> Timestamp);
-		log_data_BBB(CB_data, (uint8_t*)" ", 1);
-
-
-
-
-		if(log_item -> log_Length != 0)
-		{
-			log_data_BBB(CB_data, Payload, 9);
-			log_data_BBB(CB_data, log_item -> Payload, log_item -> log_Length);
-			log_data_BBB(CB_data,(uint8_t*) " ", 1);
-		}
-
-
-		printf("\r\n");
-	}*/
 	return status;
 }
 #endif

@@ -31,5 +31,6 @@ void GPIO_Configure()
 //    logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
 	log_create(logged_data, GPIO_INITIALZED, PORT, 1,(uint8_t *)1);
 	LOG_RAW_ITEM(tx_buffer, logged_data);
+    LOG_FLUSH(tx_buffer);
     //RGB_BLUE_OFF();
 }

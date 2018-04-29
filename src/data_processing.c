@@ -123,7 +123,7 @@ void print_data_entered()
 	printf("---------------------------------------------------------\n");
 	printf("Letter\t | Number\t | Punctuation\t | Misc\t | Total\n");
 	printf("--------------------------------------------------------\n");
-	printf(" %d\t | %d\t\t | %d\t\t | %d\t | %d",alphabet, number, punctuations, miscell, count);
+	printf(" %d\t | %d\t\t | %d\t\t | %d\t | %d\n",alphabet, number, punctuations, miscell, count);
 
 	#endif
 
@@ -155,6 +155,7 @@ void print_all_log()
 
 			log_create(logged_data, DATA_ALPHA_COUNT,DATA_PROCESSIING, len5,alpha);
 			log_item_KL25Z(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 			UART_send_n((uint8_t*)" NUMBER: ", 10);
 			uint8_t y[10];
@@ -173,6 +174,7 @@ void print_all_log()
 			UART_send_n((uint8_t*)"\r\n", 4);
 			log_create(logged_data, DATA_NUMERIC_COUNT,DATA_PROCESSIING, len4,num);
 			log_item_KL25Z(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 
 			UART_send_n((uint8_t*)" PUNCTUATION: ", 15);
@@ -192,6 +194,7 @@ void print_all_log()
 			UART_send_n((uint8_t*)"\r\n", 4);
 			log_create(logged_data, DATA_PUNCTUATION_COUNT,DATA_PROCESSIING, len3,punc);
 			log_item_KL25Z(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 
 			UART_send_n((uint8_t*)" MISCELL: ", 10);
@@ -211,6 +214,7 @@ void print_all_log()
 			UART_send_n((uint8_t*)"\r\n", 4);
 			log_create(logged_data, DATA_MISC_COUNT,DATA_PROCESSIING, len1,mis);
 			log_item_KL25Z(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 			UART_send_n((uint8_t*)" COUNT: ", 10);
 			uint8_t v[10];
@@ -230,6 +234,7 @@ void print_all_log()
 			UART_send_n((uint8_t*)"\r\n", 4);
 			log_create(logged_data, DATA_ANALYSIS_COMPLETED,DATA_PROCESSIING, len2,c);
 			log_item_KL25Z(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 		}
 		#else
 		 {
@@ -242,6 +247,7 @@ void print_all_log()
 			printf("\r\n");
 			log_create(logged_data, DATA_ALPHA_COUNT,DATA_PROCESSIING, len5,alpha);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 			printf("\r\n NUMBERS : %d ", number);
 			uint8_t y[10];
@@ -252,6 +258,7 @@ void print_all_log()
 			printf("\r\n");
 			log_create(logged_data, DATA_NUMERIC_COUNT,DATA_PROCESSIING, len4,num);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 
 			printf("\r\n PUNCTUATION: %d ", punctuations);
@@ -263,6 +270,7 @@ void print_all_log()
 			printf("\r\n");
 			log_create(logged_data, DATA_PUNCTUATION_COUNT,DATA_PROCESSIING, len3,punc);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 
 			printf("\r\n MISCELL: %d ", miscell);
@@ -274,6 +282,7 @@ void print_all_log()
 			printf("\r\n");
 			log_create(logged_data, DATA_MISC_COUNT,DATA_PROCESSIING, len1,mis);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 
 			printf("\r\n COUNT:  %d ", count);
 			uint8_t v[10];
@@ -284,6 +293,7 @@ void print_all_log()
 			printf("\r\n");
 			log_create(logged_data, DATA_ANALYSIS_COMPLETED,DATA_PROCESSIING, len2,c);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
+			LOG_FLUSH(tx_buffer);
 	    }
 
 		#endif
