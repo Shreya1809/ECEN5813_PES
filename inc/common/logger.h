@@ -61,6 +61,27 @@ typedef enum
 	RTC_MOD,
 
 }logger_module_t;
+//
+//typedef struct
+//{
+//	logger_enum_t log_ID;
+//	logger_module_t Module_ID;
+//	uint32_t Timestamp;
+//	size_t log_Length;
+//	uint8_t * Payload;
+//	uint32_t Checksum;
+//}log_struct_t;
+//
+//typedef struct
+//{
+//	logger_enum_t log_ID;
+//	logger_module_t Module_ID;
+//	uint32_t Timestamp;
+//	size_t log_Length;
+//	uint32_t  Payload;
+//	uint32_t Checksum;
+//}log_struct_t2;
+
 
 typedef struct
 {
@@ -68,7 +89,7 @@ typedef struct
 	logger_module_t Module_ID;
 	uint32_t Timestamp;
 	size_t log_Length;
-	uint8_t * Payload;
+	uint8_t Payload[32];
 	uint32_t Checksum;
 }log_struct_t;
 
@@ -82,19 +103,21 @@ typedef struct
 	uint32_t Checksum;
 }log_struct_t2;
 
+
+
 extern log_struct_t  *logged_data;
 
 /*function to fill the log struct elements*/
 log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint8_t * payload);
 
 /*function to fill the log struct elements*/
-log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint32_t  payload);
+log_status log_create1(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint32_t  payload);
 
 /*function to store data in buffer for kl25z*/
 log_status log_data_KL25Z(cb_struct * CB_ptr, uint8_t * ptr, size_t length);
 
 /*function to store the entire log data in buffer for kl25z*/
-log_status log_item_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item);
+log_status log_item_KL25Z2(cb_struct * CB_ptr, log_struct_t *log_item);
 
 /*function to store string in buffer for kl25z*/
 log_status log_string_KL25Z(cb_struct * CB_ptr, uint8_t *data_ptr);
@@ -133,15 +156,13 @@ log_status log_item_BBB(cb_struct * CB_ptr, log_struct_t *log_item);
 /*function to store the entire log data in the buffer for BBB*/
 log_status log_item_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item);
 
-void log_binary_KL25Z(cb_struct * CB_ptr, log_struct_t *log_item);
+log_status log_binary(cb_struct * CB_ptr, log_struct_t *log_item);
 
-void log_binary_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item);
+log_status log_raw_common(cb_struct * CB_ptr, uint8_t *data, size_t len);
 
-void log_binary_BBB(cb_struct * CB_ptr, log_struct_t *log_item);
+log_status log_item_KL25Z_readable(cb_struct * CB_ptr, log_struct_t *log_item);
 
-void log_binary_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item);
-
-
+log_status log_item_BBB_readable(cb_struct * CB_ptr, log_struct_t *log_item);
 
 #endif
 

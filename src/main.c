@@ -31,7 +31,8 @@
 // TODO - check register differences
 #define CLOCK_SETUP 1
 
-
+#else
+uint8_t binary_logger = 0;
 #endif
 
 extern cb_struct *rx_buffer;
@@ -206,7 +207,11 @@ int main()
            else if (inval == 2 )
         	   print_all_log();
 			else if (inval == 3)
-				log_flush_BBB(tx_buffer);
+//				log_flush_BBB(tx_buffer);
+           if(inval == 9)
+		   {
+        	   (binary_logger == 0) ? (binary_logger = 1) : (binary_logger = 0);
+		   }
            else printf("invalid input");
 
 

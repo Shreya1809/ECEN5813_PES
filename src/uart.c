@@ -22,6 +22,9 @@
 //cb_struct *tx_buffer = NULL;
 //static uint8_t flag = 0;
 
+
+volatile uint8_t binary_logger = 0;
+
 int8_t UART_configure(BAUDRATE baudselect)
 {
     if (baudselect != BAUD_115200 &&
@@ -213,11 +216,15 @@ void UART0_IRQHandler()
         }
         else if(data == 9)
         {
-        	log_flush_KL25Z(tx_buffer);
+        	(binary_logger == 0) ? (binary_logger = 1) : (binary_logger = 0);
         }
+//        else if(data == 9)
+//        {
+//        	log_flush_KL25Z(tx_buffer);
+//        }
 
-        		UART0_C2 &= ~UART0_C2_TIE_MASK;
-        		UART0_C2 |= UART0_C2_RIE_MASK;
+		UART0_C2 &= ~UART0_C2_TIE_MASK;
+		UART0_C2 |= UART0_C2_RIE_MASK;
 
 
 
