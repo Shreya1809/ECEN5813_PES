@@ -478,7 +478,7 @@ log_status log_string_BBB(cb_struct * CB_ptr, uint8_t * ptr)
 
 			}
 
-	while(ptr != '\0')
+	while(ptr && *ptr != '\0')
 	{
 		cb_buffer_add_item(CB_ptr, *ptr);
 		//printf("%c",*(ptr));
@@ -528,7 +528,7 @@ log_status log_raw_BBB(cb_struct * CB_ptr, uint8_t *data, size_t len)// Takes an
 	while(data && len)
 	{
 
-		status = cb_buffer_add_item(CB_ptr, *data);
+		cb_enum status = cb_buffer_add_item(CB_ptr, *data);
 		if(status !=CB_SUCCESS)
 		{
 			break;
@@ -651,7 +651,7 @@ log_status log_item_BBB(cb_struct * CB_ptr, log_struct_t *log_item)
 {
 	if(binary_logger)
 	{
-		r log_binary(CB_ptr,log_item);
+		return log_binary(CB_ptr,log_item);
 	}
 	else
 	{

@@ -206,9 +206,8 @@ int main()
         	   print_data_entered();
            else if (inval == 2 )
         	   print_all_log();
-			else if (inval == 3)
-//				log_flush_BBB(tx_buffer);
-           if(inval == 9)
+			
+           else if(inval == 3)
 		   {
         	   (binary_logger == 0) ? (binary_logger = 1) : (binary_logger = 0);
 		   }
