@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 24, 2018
  *      Author: Shreya
+ *      @brief: logger functions for both platforms
  */
 
 #ifndef INC_COMMON_LOGGER_H_
@@ -83,109 +84,55 @@ typedef struct
 
 extern log_struct_t  *logged_data;
 
-//log_status log_create(log_struct_t * log_item , logger_enum_t ID, size_t length, uint8_t * payload);
+/*function to fill the log struct elements*/
 log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint8_t * payload);
 
+/*function to fill the log struct elements*/
 log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint32_t  payload);
 
-log_status log_data_KL25Z(cb_struct * CB_data, uint8_t * ptr, size_t length);
+/*function to store data in buffer for kl25z*/
+log_status log_data_KL25Z(cb_struct * CB_ptr, uint8_t * ptr, size_t length);
 
-log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item);
+/*function to store the entire log data in buffer for kl25z*/
+log_status log_item_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item);
 
-log_status log_string_KL25Z(cb_struct * CB_data, uint8_t *data_ptr);
+/*function to store string in buffer for kl25z*/
+log_status log_string_KL25Z(cb_struct * CB_ptr, uint8_t *data_ptr);
 
-log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length);
+/*function to store data in buffer for host/bbb*/
+log_status log_data_BBB(cb_struct * CB_ptr, uint8_t * ptr, size_t length);
 
-log_status log_string_BBB(cb_struct * CB_data, uint8_t *data_ptr);
+/*function to store string in buffer for host/bbb*/
+log_status log_string_BBB(cb_struct * CB_ptr, uint8_t *data_ptr);
 
-log_status log_integer_KL25Z(cb_struct * CB_data, int32_t data);
+/*function to store integer in buffer for kl25z*/
+log_status log_integer_KL25Z(cb_struct * CB_ptr, int32_t data);
 
-log_status log_integer_BBB(cb_struct * CB_data, int32_t data);
+/*function to store integer in buffer for bbb*/
+log_status log_integer_BBB(cb_struct * CB_ptr, int32_t data);
 
-log_status log_flush_KL25Z(cb_struct * CB_data);
+/*function to remove  from buffer and print kl25z*/
+log_status log_flush_KL25Z(cb_struct * CB_ptr);
 
-log_status log_flush_BBB(cb_struct * CB_data);
+/*function to remove  from buffer and print bbb*/
+log_status log_flush_BBB(cb_struct * CB_ptr);
 
+/* simple functions to print on uart*/
 log_status UART_integer_display(int32_t data);
 
 log_status UART_string_display(uint8_t * ptr);
 
 log_status UART_data_display(uint8_t * ptr, size_t length);
 
-log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item);
+/*function to store the entire log data in the buffer for KL25Z*/
+log_status log_item_KL25Z(cb_struct * CB_ptr, log_struct_t *log_item);
 
-log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item);
+/*function to store the entire log data in the buffer for BBB*/
+log_status log_item_BBB(cb_struct * CB_ptr, log_struct_t *log_item);
 
-log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item);
-//logger_status_t log_integer(cb_struct * CB_data, int32_t data);
-//
-///*
-// *@brief - log flush
-// *Blocks until the current logger buffer is empty
-// *@param -
-// *         CB_data: buffer to be flushed
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if operation is successful
-// */
-//logger_status_t log_flush(cb_struct * CB_data);
-//
-///*
-// *@brief - log data to UART
-// *Takes a pointer to a sequence of bytes and length of bytes and adds it to the log buffer. This is used for HEARTBEAT
-// *@param -
-// *         data_ptr: Destination Pointer
-// *         length: Length of the bytes
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if logging is successful
-// */
-//logger_status_t log_data_to_UART(uint8_t *data_ptr, size_t length);
-//
-///*
-// *@brief - log string to UART
-// *Takes a C-string and adds it to the log buffer. This is used for HEARTBEAT
-// *@param -
-// *         data_ptr: Destination Pointer
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if logging is successful
-// */
-//logger_status_t log_string_to_UART(uint8_t *data_ptr);
-//
-///*
-// *@brief - log integer to UART
-// *Takes an integer and adds it to the log buffer. This is used for HEARTBEAT
-// *@param -
-// *         data: integer data to be logged
-// *         CB_data: Destination Pointer
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if logging is successful
-// */
-//logger_status_t log_integer_to_UART(int32_t data);
-//
-///*
-// *@brief - Create log item
-// *Updates the logger struct.
-// *@param -
-// *         Item: logger buffer
-// *         ID: Indicator on what the log is
-// *         length: Number of bytes of Payload
-// *         payload: Any associated data that is sent with the log
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if the operation is successful
-// */
-//logger_status_t create_log(LoggedItem_t *Item , logger_status_t ID, size_t length, uint8_t *payload);
-//
-///*
-// *@brief - log item
-// *It updates the logger buffer
-// *@param -
-// *         CB_data: circular buffer
-// *         Item: logger buffer
-// *@return  NULL_POINTER_PASSED: for null pointer
-// *@return  success: if the operation is successful
-// */
-//logger_status_t log_item(cb_struct * CB_data, LoggedItem_t *Item);
-//
-//void toggleHeartbeat();
+/*function to store the entire log data in the buffer for BBB*/
+log_status log_item_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item);
+
 
 #endif
 

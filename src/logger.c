@@ -28,6 +28,7 @@
 uint32_t checkSum= 0;
 uint8_t buffer[20];
 
+
 log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_t Module, size_t length, uint8_t * payload)
 {
 	log_status status = SUCCESS;
@@ -47,11 +48,9 @@ log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_
 	log_item -> Timestamp = RTC_TSR;
 
    	 #else
-	//#include <stdio.h>
 	struct timeval start;
 	gettimeofday(&start, NULL);
 	log_item->Timestamp = (uint8_t)start.tv_sec;
-	//printf("%d",time.tv_sec);
 	#endif
 	if(payload != NULL)
 	{
@@ -108,17 +107,17 @@ log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_modul
 
 
 #ifdef KL25Z
-log_status log_data_KL25Z(cb_struct * CB_data, uint8_t * ptr, size_t length)
+log_status log_data_KL25Z(cb_struct * CB_ptr, uint8_t * ptr, size_t length)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || ptr == NULL)
+	if(CB_ptr == NULL || ptr == NULL)
 	{
 		status = NULL_POINTER;
 	}
 
 	while(length != 0)
 	{
-		cb_buffer_add_item(CB_data, *ptr);
+		cb_buffer_add_item(CB_ptr, *ptr);
 		//UART_send(*ptr);
 		length--;
 		ptr++;
@@ -129,10 +128,10 @@ log_status log_data_KL25Z(cb_struct * CB_data, uint8_t * ptr, size_t length)
 
 
 
-log_status log_string_KL25Z(cb_struct * CB_data, uint8_t * ptr)
+log_status log_string_KL25Z(cb_struct * CB_ptr, uint8_t * ptr)
 {
 	log_status status = SUCCESS;
-		if(CB_data == NULL || ptr == NULL)
+		if(CB_ptr == NULL || ptr == NULL)
 		{
 
 			status = NULL_POINTER;
@@ -140,35 +139,34 @@ log_status log_string_KL25Z(cb_struct * CB_data, uint8_t * ptr)
 		}
 	while(*ptr != '\0')
 	{
-		cb_buffer_add_item(CB_data, *ptr);
+		cb_buffer_add_item(CB_ptr, *ptr);
 		//UART_send(*ptr);
 		ptr++;
 	}
 		return status;
 }
 
-log_status log_integer_KL25Z(cb_struct * CB_data, int32_t data)// Takes an integer and logs that to the terminal (use itoa)
+log_status log_integer_KL25Z(cb_struct * CB_ptr, int32_t data)// Takes an integer and logs that to the terminal (use itoa)
 {
-	//size_t length;
-	//int8_t *a;
+
 	uint8_t * ptr;
 	log_status status = SUCCESS;
-	if(CB_data == NULL)
+	if(CB_ptr == NULL)
 		{
 
 		status = NULL_POINTER;
 
 		}
-	ptr =My_itoa(data, (uint8_t*)CB_data,10); // Converting in base 10
-	//a = &ptr;
+	ptr =My_itoa(data, (uint8_t*)CB_ptr,10); // Converting in base 10
+
 
 	while(*ptr!= '\0')
 		{
-			//if(*ptr >= 48 && *ptr <= 57)
-			cb_buffer_add_item(CB_data, *ptr);
+
+			cb_buffer_add_item(CB_ptr, *ptr);
 			//UART_send(*ptr);
 			ptr++;
-			//a++;
+
 		}
 	return status;
 }
@@ -233,10 +231,10 @@ log_status UART_integer_display(int32_t data)
 
 
 
-log_status log_flush_KL25Z(cb_struct * CB_data)
+log_status log_flush_KL25Z(cb_struct * CB_ptr)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL)
+	if(CB_ptr == NULL)
 	{
 
 	status = NULL_POINTER;
@@ -252,9 +250,9 @@ log_status log_flush_KL25Z(cb_struct * CB_data)
 	int8_t a;
 	int8_t * ptr;
 	ptr = &a;
-	while(CB_data -> count != 0)
+	while(CB_ptr -> count != 0)
 	{
-		cb_buffer_remove_item(CB_data,ptr);
+		cb_buffer_remove_item(CB_ptr,ptr);
 		{
 		if((a != 0 && a >= 97 && a <= 122 )||( a >= 65 &&a <= 90)
 				|| (a >= 48 && a <= 57)
@@ -270,10 +268,10 @@ log_status log_flush_KL25Z(cb_struct * CB_data)
 	return status;
 }
 
-log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item)
+log_status log_item_KL25Z(cb_struct * CB_ptr, log_struct_t *log_item)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || log_item == NULL)
+	if(CB_ptr == NULL || log_item == NULL)
 	{
 		return NULL_POINTER;
 	}
@@ -291,65 +289,62 @@ log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item)
 	else if(log_item -> log_ID != 19)
 	{
 
-	log_data_KL25Z(CB_data, ID, 8);  //to display log id
-	log_integer_KL25Z(CB_data, log_item -> log_ID);
-	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-	log_data_KL25Z(CB_data, Module, 11);//to display module id
-	log_integer_KL25Z(CB_data, log_item -> Module_ID);
-	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-	log_data_KL25Z(CB_data, Time, 11);// to display time
-	log_integer_KL25Z(CB_data, log_item -> Timestamp);
-	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+	log_data_KL25Z(CB_ptr, ID, 8);  //to display log id
+	log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+	log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+	log_data_KL25Z(CB_ptr, Module, 11);//to display module id
+	log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+	log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+	log_data_KL25Z(CB_ptr, Time, 11);// to display time
+	log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+	log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
 
 
 	if(log_item -> log_Length != 0)
 	{
 
-		log_data_KL25Z(CB_data, Payload, 9);
-		log_data_KL25Z(CB_data, log_item -> Payload, log_item -> log_Length);
-		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_ptr, Payload, 9);
+		log_data_KL25Z(CB_ptr, log_item -> Payload, log_item -> log_Length);
+		log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
 	}
 
-	log_data_KL25Z(CB_data, Checksum, 10);
-	log_integer_KL25Z(CB_data, log_item -> Checksum);
-	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+	log_data_KL25Z(CB_ptr, Checksum, 10);
+	log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+	log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
 
-//	uint8_t nextline1[] = "\r\n";
-//	UART_send_n(nextline1, 4);
 	}
 
 	else if(log_item -> log_ID == 19 && beat == 1)
 	{
-		log_data_KL25Z(CB_data, ID, 8);
-		log_integer_KL25Z(CB_data, log_item -> log_ID);
-		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-		log_data_KL25Z(CB_data, Module, 11);//to display module id
-		log_integer_KL25Z(CB_data, log_item -> Module_ID);
-		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-		log_data_KL25Z(CB_data, Time, 11);// to display time
-		log_integer_KL25Z(CB_data, log_item -> Timestamp);
-		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+		log_data_KL25Z(CB_ptr, ID, 8);
+		log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+		log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_ptr, Module, 11);//to display module id
+		log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+		log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_ptr, Time, 11);// to display time
+		log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+		log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
 
 		if(log_item -> log_Length != 0)
 		{
-		log_data_KL25Z(CB_data, Payload, 9);
-		log_data_KL25Z(CB_data, log_item -> Payload, log_item -> log_Length);
-		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_ptr, Payload, 9);
+		log_data_KL25Z(CB_ptr, log_item -> Payload, log_item -> log_Length);
+		log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
 		}
 
-		log_data_KL25Z(CB_data, Checksum, 10);
-		log_integer_KL25Z(CB_data, log_item -> Checksum);
-		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
-//		uint8_t nextline[] = "\r\n";
-//		UART_send_n(nextline, 4);
+		log_data_KL25Z(CB_ptr, Checksum, 10);
+		log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+		log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
+
 	}
 	return status;
 }
 
-log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item)
+log_status log_item_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || log_item == NULL)
+	if(CB_ptr == NULL || log_item == NULL)
 	{
 		return NULL_POINTER;
 	}
@@ -367,66 +362,63 @@ log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item)
 	else if(log_item -> log_ID != 19)
 	{
 
-	log_data_KL25Z(CB_data, ID, 8);  //to display log id
-	log_integer_KL25Z(CB_data, log_item -> log_ID);
-	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-	log_data_KL25Z(CB_data, Module, 11);//to display module id
-	log_integer_KL25Z(CB_data, log_item -> Module_ID);
-	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-	log_data_KL25Z(CB_data, Time, 11);// to display time
-	log_integer_KL25Z(CB_data, log_item -> Timestamp);
-	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
-	log_data_KL25Z(CB_data, Payload, 9);
+	log_data_KL25Z(CB_ptr, ID, 8);  //to display log id
+	log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+	log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+	log_data_KL25Z(CB_ptr, Module, 11);//to display module id
+	log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+	log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+	log_data_KL25Z(CB_ptr, Time, 11);// to display time
+	log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+	log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
+	log_data_KL25Z(CB_ptr, Payload, 9);
 
 	if(log_item -> log_Length != 0)
 	{
-		log_integer_KL25Z(CB_data,(int32_t)(log_item -> Payload));//, log_item -> log_Length);
-		//log_data_KL25Z(CB_data, (uint8_t*)log_item -> Payload, log_item -> log_Length);
-		//(log_item -> log_Length)--;
+		log_integer_KL25Z(CB_ptr,(int32_t)(log_item -> Payload));//, log_item -> log_Length);
+
 
 	}
-	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+	log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
 
-	log_data_KL25Z(CB_data, Checksum, 10);
-	log_integer_KL25Z(CB_data, log_item -> Checksum);
-	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+	log_data_KL25Z(CB_ptr, Checksum, 10);
+	log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+	log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
 
-//	uint8_t nextline1[] = "\r\n";
-//	UART_send_n(nextline1, 4);
+
 	}
 
 	else if(log_item -> log_ID == 19 && beat == 1)
 	{
-		log_data_KL25Z(CB_data, ID, 8);
-				log_integer_KL25Z(CB_data, log_item -> log_ID);
-				log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-				log_data_KL25Z(CB_data, Module, 11);//to display module id
-				log_integer_KL25Z(CB_data, log_item -> Module_ID);
-				log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
-				log_data_KL25Z(CB_data, Time, 11);// to display time
-				log_integer_KL25Z(CB_data, log_item -> Timestamp);
-				log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+		log_data_KL25Z(CB_ptr, ID, 8);
+				log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+				log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+				log_data_KL25Z(CB_ptr, Module, 11);//to display module id
+				log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+				log_data_KL25Z(CB_ptr,(uint8_t*) " ", 1);
+				log_data_KL25Z(CB_ptr, Time, 11);// to display time
+				log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+				log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
 
 				if(log_item -> log_Length != 0)
 					{
-						log_integer_KL25Z(CB_data,(log_item -> Payload));//, log_item -> log_Length);
+						log_integer_KL25Z(CB_ptr,(log_item -> Payload));//, log_item -> log_Length);
 						(log_item -> log_Length)--;
 
 					}
-		log_data_KL25Z(CB_data, Checksum, 10);
-		log_integer_KL25Z(CB_data, log_item -> Checksum);
-		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
-//		uint8_t nextline[] = "\r\n";
-//		UART_send_n(nextline, 4);
+		log_data_KL25Z(CB_ptr, Checksum, 10);
+		log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+		log_data_KL25Z(CB_ptr, (uint8_t*)" ", 1);
+
 	}
 	return status;
 }
 
 #else 
-log_status log_string_BBB(cb_struct * CB_data, uint8_t * ptr)
+log_status log_string_BBB(cb_struct * CB_ptr, uint8_t * ptr)
 {
 	log_status status = SUCCESS;
-			if(CB_data == NULL || ptr == NULL)
+			if(CB_ptr == NULL || ptr == NULL)
 			{
 
 				status = NULL_POINTER;
@@ -435,7 +427,7 @@ log_status log_string_BBB(cb_struct * CB_data, uint8_t * ptr)
 
 	while(ptr != '\0')
 	{
-		cb_buffer_add_item(CB_data, *ptr);
+		cb_buffer_add_item(CB_ptr, *ptr);
 		//printf("%c",*(ptr));
 		ptr++;
 	}
@@ -445,7 +437,7 @@ log_status log_string_BBB(cb_struct * CB_data, uint8_t * ptr)
 log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || ptr == NULL)
+	if(CB_ptr == NULL || ptr == NULL)
 	{
 
 		status = NULL_POINTER;
@@ -454,7 +446,7 @@ log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length)
 
 	while(length != 0)
 	{
-		cb_buffer_add_item(CB_data, *ptr);
+		cb_buffer_add_item(CB_ptr, *ptr);
 		//printf("%c",*(ptr));
 		length--;
 		ptr++;
@@ -464,34 +456,33 @@ log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length)
 }
 
 
-log_status log_integer_BBB(cb_struct * CB_data, int32_t data)// Takes an integer and logs that to the terminal (use itoa)
+log_status log_integer_BBB(cb_struct * CB_ptr, int32_t data)// Takes an integer and logs that to the terminal (use itoa)
 {
-	//size_t length;
-	//int8_t *a;
+
 	uint8_t *  ptr;
 	log_status status = SUCCESS;
-	if(CB_data == NULL)
+	if(CB_ptr == NULL)
 		{
 
 		status = NULL_POINTER;
 
 		}
-	ptr =My_itoa(data, (uint8_t*)CB_data,10); // Converting in base 10
-	//*a = &ptr;
+	ptr =My_itoa(data, (uint8_t*)CB_ptr,10); // Converting in base 10
+
 	while(*ptr!= '\0')
 		{
-			//if(ptr >= 48 && ptr <= 57)
-			cb_buffer_add_item(CB_data, *ptr);
+
+			cb_buffer_add_item(CB_ptr, *ptr);
 			//printf("%c",*ptr);
 			ptr++;
-			//a++;
+
 		}
 	return status;
 }
-log_status log_flush_BBB(cb_struct * CB_data)
+log_status log_flush_BBB(cb_struct * CB_ptr)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL)
+	if(CB_ptr == NULL)
 	{
 
 	status = NULL_POINTER;
@@ -499,13 +490,13 @@ log_status log_flush_BBB(cb_struct * CB_data)
 	}
 	printf("\r\n");
 
-	//__disable_irq();
+
 	int8_t a;
 	int8_t * ptr;
 	ptr = &a;
-	while(CB_data -> count != 0)
+	while(CB_ptr -> count != 0)
 	{
-		cb_buffer_remove_item(CB_data,ptr);
+		cb_buffer_remove_item(CB_ptr,ptr);
 		{
 		if((a != 0 && a >= 97 && a <= 122 )||( a >= 65 &&a <= 90)
 				|| (a >= 48 && a <= 57)
@@ -517,7 +508,7 @@ log_status log_flush_BBB(cb_struct * CB_data)
 
 	}
 	printf("\r\n");
-	//__enable_irq();
+
 
 	return status;
 }
@@ -525,10 +516,10 @@ log_status log_flush_BBB(cb_struct * CB_data)
 
 
 
-log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item)
+log_status log_item_BBB(cb_struct * CB_ptr, log_struct_t *log_item)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || log_item == NULL)
+	if(CB_ptr == NULL || log_item == NULL)
 	{
 		return NULL_POINTER;
 	}
@@ -542,42 +533,39 @@ log_status log_item_BBB(cb_struct * CB_data, log_struct_t *log_item)
 	if(log_item -> log_ID != 20)
 	{
 
-	log_data_BBB(CB_data, ID, 8);  //to display log id
-	log_integer_BBB(CB_data, log_item -> log_ID);
-	log_data_BBB(CB_data,(uint8_t*) " ", 1);
-	log_data_BBB(CB_data, Module, 11);//to display module id
-	log_integer_BBB(CB_data, log_item -> Module_ID);
-	log_data_BBB(CB_data,(uint8_t*) " ", 1);
-	log_data_BBB(CB_data, Time, 11);// to display time
-	log_integer_BBB(CB_data, log_item -> Timestamp);
-	log_data_BBB(CB_data, (uint8_t*)" ", 1);
-//	log_data_KL25Z(CB_data, Length, 13);// to display time
-//	log_integer_KL25Z(CB_data, log_item -> log_Length);
-//	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+	log_data_BBB(CB_ptr, ID, 8);  //to display log id
+	log_integer_BBB(CB_ptr, log_item -> log_ID);
+	log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
+	log_data_BBB(CB_ptr, Module, 11);//to display module id
+	log_integer_BBB(CB_ptr, log_item -> Module_ID);
+	log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
+	log_data_BBB(CB_ptr, Time, 11);// to display time
+	log_integer_BBB(CB_ptr, log_item -> Timestamp);
+	log_data_BBB(CB_ptr, (uint8_t*)" ", 1);
 
 	if(log_item -> log_Length != 0)
 	{
 
-		log_data_BBB(CB_data, Payload, 9);
-		log_data_BBB(CB_data, log_item -> Payload, log_item -> log_Length);
-		log_data_BBB(CB_data,(uint8_t*) " ", 1);
+		log_data_BBB(CB_ptr, Payload, 9);
+		log_data_BBB(CB_ptr, log_item -> Payload, log_item -> log_Length);
+		log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
 	}
 
-	log_data_BBB(CB_data, Checksum, 10);
-	log_integer_BBB(CB_data, log_item -> Checksum);
-	log_data_BBB(CB_data, (uint8_t*)" ", 1);
+	log_data_BBB(CB_ptr, Checksum, 10);
+	log_integer_BBB(CB_ptr, log_item -> Checksum);
+	log_data_BBB(CB_ptr, (uint8_t*)" ", 1);
 
-	//log_data_BBB(CB_data,(uint8_t*) "\r\n ", 4);
+
 	printf("\r\n");
 	}
 	
 	return status;
 }
 
-log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item)
+log_status log_item_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item)
 {
 	log_status status = SUCCESS;
-	if(CB_data == NULL || log_item == NULL)
+	if(CB_ptr == NULL || log_item == NULL)
 	{
 		return NULL_POINTER;
 	}
@@ -591,29 +579,29 @@ log_status log_item_BBB2(cb_struct * CB_data, log_struct_t2 *log_item)
 	if(log_item -> log_ID != 20)
 	{
 
-	log_data_BBB(CB_data, ID, 8);  //to display log id
-	log_integer_BBB(CB_data, log_item -> log_ID);
-	log_data_BBB(CB_data,(uint8_t*) " ", 1);
-	log_data_BBB(CB_data, Module, 11);//to display module id
-	log_integer_BBB(CB_data, log_item -> Module_ID);
-	log_data_BBB(CB_data,(uint8_t*) " ", 1);
-	log_data_BBB(CB_data, Time, 11);// to display time
-	log_integer_BBB(CB_data, log_item -> Timestamp);
-	log_data_BBB(CB_data, (uint8_t*)" ", 1);
-	log_data_BBB(CB_data, Payload, 9);
+	log_data_BBB(CB_ptr, ID, 8);  //to display log id
+	log_integer_BBB(CB_ptr, log_item -> log_ID);
+	log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
+	log_data_BBB(CB_ptr, Module, 11);//to display module id
+	log_integer_BBB(CB_ptr, log_item -> Module_ID);
+	log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
+	log_data_BBB(CB_ptr, Time, 11);// to display time
+	log_integer_BBB(CB_ptr, log_item -> Timestamp);
+	log_data_BBB(CB_ptr, (uint8_t*)" ", 1);
+	log_data_BBB(CB_ptr, Payload, 9);
 
 
 	if(log_item -> log_Length != 0)
 	{
-		log_integer_BBB(CB_data,(log_item -> Payload));//, log_item -> log_Length);
+		log_integer_BBB(CB_ptr,(log_item -> Payload));//, log_item -> log_Length);
 		(log_item -> log_Length)--;
 
 	}
-	log_data_BBB(CB_data,(uint8_t*) " ", 1);
+	log_data_BBB(CB_ptr,(uint8_t*) " ", 1);
 
-	log_data_BBB(CB_data, Checksum, 10);
-	log_integer_BBB(CB_data, log_item -> Checksum);
-	log_data_BBB(CB_data, (uint8_t*)" ", 1);
+	log_data_BBB(CB_ptr, Checksum, 10);
+	log_integer_BBB(CB_ptr, log_item -> Checksum);
+	log_data_BBB(CB_ptr, (uint8_t*)" ", 1);
 
 
 	printf("\r\n");

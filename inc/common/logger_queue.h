@@ -4,6 +4,7 @@
  *
  *  Created on: Apr 27, 2018
  *      Author: Shreya
+ *      @brief: wrapper function to make codes portable on all platform
  */
 
 #include "logger.h"
