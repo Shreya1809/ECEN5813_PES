@@ -4,6 +4,7 @@
 #include "uart.h"
 
 log_struct_t * data;
+int flag;
 //cb_struct *rx_buffer;
 
 void rtc_config()
@@ -57,9 +58,11 @@ void rtc_config()
 */
 void RTC_Seconds_IRQHandler()
 {
+
 	data = (log_struct_t *) malloc(sizeof(log_struct_t));
 	log_create(data, HEARTBEAT, RTC_MOD,1,(uint8_t*)1);
 	log_item_KL25Z(tx_buffer, data);
+	log_flush_KL25Z(tx_buffer);
 	
 }
 

@@ -207,8 +207,9 @@ void UART0_IRQHandler()
 			log_create(logged_data, DATA_RECEIVED, UART, 1,(uint8_t *)1);
 			LOG_RAW_ITEM(tx_buffer, logged_data);
             LOG_FLUSH(tx_buffer);
-        	UART_send_n((uint8_t*)" \nENTER ANYTHING : ", 20);
+        	UART_send_n((uint8_t*)" \r\nENTER ANYTHING : ", 20);
         	heartbeat();
+        	if (flag == 1) {flag = 0;} else flag = 1;
         }
         else if(data == 9)
         {

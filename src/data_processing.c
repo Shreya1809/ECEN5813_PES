@@ -17,12 +17,13 @@
 #include "uart.h"
 #endif
 
-static uint32_t alphabet= 0;
-static uint32_t number= 0;
-static uint32_t punctuations= 0;
-static uint32_t miscell= 0;
+volatile static uint32_t alphabet;
+volatile static uint32_t number= 0;
+//uint32_t number= 0;
+volatile static uint32_t punctuations = 0;
+volatile static uint32_t miscell = 0;
 //static uint32_t current_data= 0;
-static uint32_t count = 0;
+volatile static uint32_t count = 0;
 int8_t beat = 1;
 
 
@@ -107,15 +108,18 @@ void data_statistics(int8_t character)
 void print_data_entered()
 {
 	#ifdef KL25Z
-	PRINTF("\n----------------- Character Statistics -----------------\n");
-	    PRINTF("---------------------------------------------------------\n");
-	    PRINTF("Letter\t | Number\t | Punctuation\t | Misc\t | Total\n");
-	    PRINTF("--------------------------------------------------------\n");
+	UART_send_n((uint8_t*)"\r\n", 4);
+	//PRINTF("\r\n");
+	//PRINTF("\n----------------- Character Statistics -----------------\n");
+	//UART_send_n((uint8_t*)"\r\n--------------Character Statistics------------\n",55);
+	//UART_send_n((uint8_t*)"\r\n------------------------------------------------\n",55);
+	UART_send_n((uint8_t*)"\r\nLetter\t | Number\t | Punctuation\t | Misc\n",50 );
+	//PRINTF("\n----------------------------------------------\n",50);
 
-    char line[200];
+    char line[50];
     char len = sprintf(line,
-            " %lu\t | %lu\t\t | %lu\t\t | %lu\t | %lu\r\n",
-            alphabet, number, punctuations, miscell, count);
+            "\r\n %u       | %d\t\t | %d\t\t | %d\t\n",
+            alphabet, number, punctuations, miscell);
     UART_send_n((uint8_t*)line, len);
 	#else
 
@@ -156,6 +160,8 @@ void print_all_log()
 			log_create(logged_data, DATA_ALPHA_COUNT,DATA_PROCESSIING, len5,alpha);
 			log_item_KL25Z(tx_buffer, logged_data);
 			LOG_FLUSH(tx_buffer);
+			UART_send_n((uint8_t*)"\r\n", 4);
+
 
 			UART_send_n((uint8_t*)" NUMBER: ", 10);
 			uint8_t y[10];
@@ -175,6 +181,7 @@ void print_all_log()
 			log_create(logged_data, DATA_NUMERIC_COUNT,DATA_PROCESSIING, len4,num);
 			log_item_KL25Z(tx_buffer, logged_data);
 			LOG_FLUSH(tx_buffer);
+			UART_send_n((uint8_t*)"\r\n", 4);
 
 
 			UART_send_n((uint8_t*)" PUNCTUATION: ", 15);
@@ -195,6 +202,8 @@ void print_all_log()
 			log_create(logged_data, DATA_PUNCTUATION_COUNT,DATA_PROCESSIING, len3,punc);
 			log_item_KL25Z(tx_buffer, logged_data);
 			LOG_FLUSH(tx_buffer);
+			UART_send_n((uint8_t*)"\r\n", 4);
+
 
 
 			UART_send_n((uint8_t*)" MISCELL: ", 10);
@@ -215,6 +224,8 @@ void print_all_log()
 			log_create(logged_data, DATA_MISC_COUNT,DATA_PROCESSIING, len1,mis);
 			log_item_KL25Z(tx_buffer, logged_data);
 			LOG_FLUSH(tx_buffer);
+			UART_send_n((uint8_t*)"\r\n", 4);
+
 
 			UART_send_n((uint8_t*)" COUNT: ", 10);
 			uint8_t v[10];
@@ -235,6 +246,8 @@ void print_all_log()
 			log_create(logged_data, DATA_ANALYSIS_COMPLETED,DATA_PROCESSIING, len2,c);
 			log_item_KL25Z(tx_buffer, logged_data);
 			LOG_FLUSH(tx_buffer);
+			UART_send_n((uint8_t*)"\r\n", 4);
+
 		}
 		#else
 		 {

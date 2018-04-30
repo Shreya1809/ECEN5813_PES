@@ -11,6 +11,7 @@
 #include "conversion.h"
 #include "data_processing.h"
 #include "logger_queue.h"
+
 //#define KL25Z
 
 #ifdef KL25Z
@@ -163,7 +164,7 @@ log_status log_integer_KL25Z(cb_struct * CB_data, int32_t data)// Takes an integ
 
 	while(*ptr!= '\0')
 		{
-			if(*ptr >= 48 && *ptr <= 57)
+			//if(*ptr >= 48 && *ptr <= 57)
 			cb_buffer_add_item(CB_data, *ptr);
 			//UART_send(*ptr);
 			ptr++;
@@ -241,8 +242,11 @@ log_status log_flush_KL25Z(cb_struct * CB_data)
 	status = NULL_POINTER;
 
 	}
+	if(flag==0)
+	{
 	uint8_t enter1[] = "\r\n";
 	UART_send_n(enter1,4);
+	}
 
 	__disable_irq();
 	int8_t a;
@@ -284,7 +288,7 @@ log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item)
 	{
 
 	}
-	else if(log_item -> log_ID != 20)
+	else if(log_item -> log_ID != 19)
 	{
 
 	log_data_KL25Z(CB_data, ID, 8);  //to display log id
@@ -310,29 +314,34 @@ log_status log_item_KL25Z(cb_struct * CB_data, log_struct_t *log_item)
 	log_integer_KL25Z(CB_data, log_item -> Checksum);
 	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
 
-	uint8_t nextline1[] = "\r\n";
-	UART_send_n(nextline1, 4);
+//	uint8_t nextline1[] = "\r\n";
+//	UART_send_n(nextline1, 4);
 	}
 
 	else if(log_item -> log_ID == 19 && beat == 1)
 	{
-		UART_send_n(ID, 8);
-		UART_send(log_item -> log_ID);
-		UART_send_n((uint8_t*)" ", 1);
-
-		UART_send_n(Time, 11);
-		UART_send(log_item -> Timestamp);
-		UART_send_n((uint8_t*)" ", 1);
+		log_data_KL25Z(CB_data, ID, 8);
+		log_integer_KL25Z(CB_data, log_item -> log_ID);
+		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_data, Module, 11);//to display module id
+		log_integer_KL25Z(CB_data, log_item -> Module_ID);
+		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+		log_data_KL25Z(CB_data, Time, 11);// to display time
+		log_integer_KL25Z(CB_data, log_item -> Timestamp);
+		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
 
 		if(log_item -> log_Length != 0)
 		{
-			UART_send_n(Payload, 9);
-			UART_send_n(log_item -> Payload, log_item -> log_Length);
-			UART_send_n((uint8_t*)" ", 1);
+		log_data_KL25Z(CB_data, Payload, 9);
+		log_data_KL25Z(CB_data, log_item -> Payload, log_item -> log_Length);
+		log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
 		}
 
-		uint8_t nextline[] = "\r\n";
-		UART_send_n(nextline, 4);
+		log_data_KL25Z(CB_data, Checksum, 10);
+		log_integer_KL25Z(CB_data, log_item -> Checksum);
+		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+//		uint8_t nextline[] = "\r\n";
+//		UART_send_n(nextline, 4);
 	}
 	return status;
 }
@@ -355,7 +364,7 @@ log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item)
 	{
 
 	}
-	else if(log_item -> log_ID != 20)
+	else if(log_item -> log_ID != 19)
 	{
 
 	log_data_KL25Z(CB_data, ID, 8);  //to display log id
@@ -371,8 +380,9 @@ log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item)
 
 	if(log_item -> log_Length != 0)
 	{
-		log_integer_KL25Z(CB_data,(log_item -> Payload));//, log_item -> log_Length);
-		(log_item -> log_Length)--;
+		log_integer_KL25Z(CB_data,(int32_t)(log_item -> Payload));//, log_item -> log_Length);
+		//log_data_KL25Z(CB_data, (uint8_t*)log_item -> Payload, log_item -> log_Length);
+		//(log_item -> log_Length)--;
 
 	}
 	log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
@@ -381,29 +391,33 @@ log_status log_item_KL25Z2(cb_struct * CB_data, log_struct_t2 *log_item)
 	log_integer_KL25Z(CB_data, log_item -> Checksum);
 	log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
 
-	uint8_t nextline1[] = "\r\n";
-	UART_send_n(nextline1, 4);
+//	uint8_t nextline1[] = "\r\n";
+//	UART_send_n(nextline1, 4);
 	}
 
 	else if(log_item -> log_ID == 19 && beat == 1)
 	{
-		UART_send_n(ID, 8);
-		UART_send(log_item -> log_ID);
-		UART_send_n((uint8_t*)" ", 1);
+		log_data_KL25Z(CB_data, ID, 8);
+				log_integer_KL25Z(CB_data, log_item -> log_ID);
+				log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+				log_data_KL25Z(CB_data, Module, 11);//to display module id
+				log_integer_KL25Z(CB_data, log_item -> Module_ID);
+				log_data_KL25Z(CB_data,(uint8_t*) " ", 1);
+				log_data_KL25Z(CB_data, Time, 11);// to display time
+				log_integer_KL25Z(CB_data, log_item -> Timestamp);
+				log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
 
-		UART_send_n(Time, 11);
-		UART_send(log_item -> Timestamp);
-		UART_send_n((uint8_t*)" ", 1);
+				if(log_item -> log_Length != 0)
+					{
+						log_integer_KL25Z(CB_data,(log_item -> Payload));//, log_item -> log_Length);
+						(log_item -> log_Length)--;
 
-		if(log_item -> log_Length != 0)
-		{
-			UART_send_n(Payload, 9);
-			UART_send_n((uint8_t*)(log_item -> Payload), log_item -> log_Length);
-			UART_send_n((uint8_t*)" ", 1);
-		}
-
-		uint8_t nextline[] = "\r\n";
-		UART_send_n(nextline, 4);
+					}
+		log_data_KL25Z(CB_data, Checksum, 10);
+		log_integer_KL25Z(CB_data, log_item -> Checksum);
+		log_data_KL25Z(CB_data, (uint8_t*)" ", 1);
+//		uint8_t nextline[] = "\r\n";
+//		UART_send_n(nextline, 4);
 	}
 	return status;
 }

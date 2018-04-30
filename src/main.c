@@ -49,7 +49,6 @@ int main()
 
 	clock_setup();
     UART_configure(BAUD_115200);
-
     rtc_config();
     cb_struct BUFF[20];
     rx_buffer = &BUFF[0];
@@ -60,7 +59,7 @@ int main()
     		   PRINTF("Error initializing rx buffer\n");
     	    }
 	tx_buffer = (cb_struct *)malloc(sizeof(cb_struct));
-			cb_enum mystatus = cb_init(tx_buffer, 300);
+			cb_enum mystatus = cb_init(tx_buffer, 350);
 			if (mystatus != CB_SUCCESS)
 			{
 			   PRINTF("Error initializing tx buffer\n");
@@ -100,12 +99,15 @@ int main()
     log_create(logged_data, PROFILING_STARTED,PROFILER, 1,(uint8_t *)1);
     LOG_RAW_ITEM(tx_buffer, logged_data);
 	LOG_FLUSH(tx_buffer);
-    kl25z_profile_option(MEMMOVE_DMA);
-	kl25z_profile_option(MEMSET_DMA);
-	kl25z_profile_option(MY_MEMMOVE);
+//    kl25z_profile_option(MEMMOVE_DMA);
+//	kl25z_profile_option(MEMSET_DMA);
+//	kl25z_profile_option(MY_MEMMOVE);
 	kl25z_profile_option(MY_MEMSET);
 	kl25z_profile_option(MEMMOVE);
 	kl25z_profile_option(MEMSET);
+    kl25z_profile_option(MEMMOVE_DMA);
+//	kl25z_profile_option(MEMSET_DMA);
+//	kl25z_profile_option(MY_MEMMOVE);
 	log_create(logged_data, PROFILING_COMPLETED,PROFILER, 1,(uint8_t *)1);
 	LOG_RAW_ITEM(tx_buffer, logged_data);
 	LOG_FLUSH(tx_buffer);
@@ -114,12 +116,13 @@ int main()
 	LOG_RAW_ITEM(tx_buffer, logged_data);
 	LOG_FLUSH(tx_buffer);
 	//nordic_test();
-	log_create(logged_data, WARNING,MAIN, 12,(uint8_t *)"SPI TEST FAIL");
+	log_create(logged_data, WARNING,MAIN, 1,(uint8_t *)"D");
 	LOG_RAW_ITEM(tx_buffer, logged_data);
 	LOG_FLUSH(tx_buffer);
 	log_create(logged_data, DATA_ANALYSIS_STARTED,DATA_PROCESSIING, 1,(uint8_t *)1);
 	LOG_RAW_ITEM(tx_buffer, logged_data);
 	LOG_FLUSH(tx_buffer);
+
 
 	while (1)
 		{

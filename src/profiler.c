@@ -606,7 +606,8 @@ void kl25z_profile_option(profile_test test_type)
 
             														temp = 0;
 
-            												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff/21);
+            												log_create1(logged_data2, PROFILING_RESULT,PROFILER, len_diff, diff);
+            												//log_create1(logged_data2, PROFILING_RESULT,PROFILER, 4, 2765);
             												log_item_KL25Z2(tx_buffer, logged_data2);
 															LOG_FLUSH(tx_buffer);
          }
