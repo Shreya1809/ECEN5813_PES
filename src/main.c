@@ -69,6 +69,7 @@ int main()
 		logged_data = (log_struct_t *) malloc(sizeof(log_struct_t));
 		log_create(logged_data, SYSTEM_ID,MAIN, 20,(uint8_t *)"SYSTEM ID WINDOWS 10");
 		LOG_RAW_ITEM(tx_buffer, logged_data);
+//		LOG_BINARY(tx_buffer, logged_data);
 		LOG_FLUSH(tx_buffer);
 		log_create(logged_data, LOGGER_INITIALZED,MAIN, 1,(uint8_t*)"0");
 		LOG_RAW_ITEM(tx_buffer, logged_data);

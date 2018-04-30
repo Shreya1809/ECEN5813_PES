@@ -64,7 +64,7 @@ log_status log_create(log_struct_t * log_item , logger_enum_t ID, logger_module_
 			}
 		}			
 	}
-	checkSum = (log_item->log_ID) + (log_item->Module_ID)+(log_item->Timestamp) +(log_item->log_Length);
+	checkSum = (log_item->log_ID) + (log_item->Module_ID)+(log_item->Timestamp); //+(log_item->log_Length);
 
 	log_item ->Checksum = checkSum;
 
@@ -98,7 +98,7 @@ log_status log_create1(log_struct_t2 * log_item , logger_enum_t ID, logger_modul
 
 	log_item -> Payload = payload;
 
-	checkSum = (log_item->log_ID) + (log_item->Module_ID)+(log_item->Timestamp) +(log_item->log_Length);
+	checkSum = (log_item->log_ID) + (log_item->Module_ID)+(log_item->Timestamp);// +(log_item->log_Length);
 
 	log_item ->Checksum = checkSum;
 
@@ -414,6 +414,22 @@ log_status log_item_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item)
 	return status;
 }
 
+void log_binary_KL25Z(cb_struct * CB_ptr, log_struct_t *log_item)
+{
+	log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+	log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+	log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+	log_integer_KL25Z(CB_ptr, (int32_t)log_item -> Payload);
+	log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+}
+void log_binary_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item)
+{
+	log_integer_KL25Z(CB_ptr, log_item -> log_ID);
+	log_integer_KL25Z(CB_ptr, log_item -> Module_ID);
+	log_integer_KL25Z(CB_ptr, log_item -> Timestamp);
+	log_integer_KL25Z(CB_ptr, log_item -> Payload);
+	log_integer_KL25Z(CB_ptr, log_item -> Checksum);
+}
 #else 
 log_status log_string_BBB(cb_struct * CB_ptr, uint8_t * ptr)
 {
@@ -608,5 +624,22 @@ log_status log_item_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item)
 	}
 
 	return status;
+}
+
+void log_binary_BBB(cb_struct * CB_ptr, log_struct_t *log_item)
+{
+	log_integer_BBB(CB_ptr, log_item -> log_ID);
+	log_integer_BBB(CB_ptr, log_item -> Module_ID);
+	log_integer_BBB(CB_ptr, log_item -> Timestamp);
+	log_integer_BBB(CB_ptr, (int32_t)log_item -> Payload);
+	log_integer_BBB(CB_ptr, log_item -> Checksum);
+}
+void log_binary_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item)
+{
+	log_integer_BBB(CB_ptr, log_item -> log_ID);
+	log_integer_BBB(CB_ptr, log_item -> Module_ID);
+	log_integer_BBB(CB_ptr, log_item -> Timestamp);
+	log_integer_BBB(CB_ptr, log_item -> Payload);
+	log_integer_BBB(CB_ptr, log_item -> Checksum);
 }
 #endif

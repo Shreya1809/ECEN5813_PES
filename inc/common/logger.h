@@ -133,6 +133,15 @@ log_status log_item_BBB(cb_struct * CB_ptr, log_struct_t *log_item);
 /*function to store the entire log data in the buffer for BBB*/
 log_status log_item_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item);
 
+void log_binary_KL25Z(cb_struct * CB_ptr, log_struct_t *log_item);
+
+void log_binary_KL25Z2(cb_struct * CB_ptr, log_struct_t2 *log_item);
+
+void log_binary_BBB(cb_struct * CB_ptr, log_struct_t *log_item);
+
+void log_binary_BBB2(cb_struct * CB_ptr, log_struct_t2 *log_item);
+
+
 
 #endif
 

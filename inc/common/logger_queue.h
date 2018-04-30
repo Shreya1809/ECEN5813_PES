@@ -24,6 +24,7 @@
 #define LOG_RAW_INT(ptr,number)				log_integer_KL25Z(ptr,number)
 #define LOG_FLUSH(ptr)							log_flush_KL25Z(ptr)
 #define LOG_RAW_ITEM(structure,ptr)			log_item_KL25Z(structure,ptr)
+#define LOG_BINARY(cb_ptr,ptr)				log_binary_KL25Z(cb_ptr,ptr)
 
 #else
 #include "sys/time.h"
@@ -35,7 +36,7 @@ struct timeval log_time;
 #define LOG_RAW_INT(ptr,number)				log_integer_BBB(ptr,number)
 #define LOG_FLUSH(ptr)							log_flush_BBB(ptr)
 #define LOG_RAW_ITEM(structure,ptr)			log_item_BBB(structure,ptr)
-
+#define LOG_BINARY(cb_ptr,ptr)				log_binary_BBB(cb_ptr,ptr)
 
 #endif
 
