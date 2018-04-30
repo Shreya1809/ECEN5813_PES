@@ -450,7 +450,7 @@ log_status log_string_BBB(cb_struct * CB_ptr, uint8_t * ptr)
 	return status;
 }
 
-log_status log_data_BBB(cb_struct * CB_data, uint8_t * ptr, size_t length)
+log_status log_data_BBB(cb_struct * CB_ptr, uint8_t * ptr, size_t length)
 {
 	log_status status = SUCCESS;
 	if(CB_ptr == NULL || ptr == NULL)
